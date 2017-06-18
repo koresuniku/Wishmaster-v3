@@ -20,6 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="com.koresuniku.wishmaster"
+            android:name=".database.BoardsProvider"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>
