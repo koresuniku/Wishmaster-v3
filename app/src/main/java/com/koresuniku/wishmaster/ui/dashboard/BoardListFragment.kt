@@ -5,14 +5,29 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ExpandableListView
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.ui.view.ExpandableListViewView
 
-class BoardListFragment : Fragment() {
-    var mRootView: View? = null
+class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
+    var mExpandableListView: ExpandableListView? = null
+    var mExpandableListViewAdapter: com.koresuniku.wishmaster.ui.BoardsExpandableListViewAdapter? = null
+    val mRootView: View = mView.getActivity().layoutInflater.inflate(R.layout.board_list_fragment, null,  false)
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mRootView = inflater!!.inflate(R.layout.board_list_fragment, container, false)
+        //mRootView = inflater!!.inflate(R.layout.board_list_fragment, container, false)
 
         return mRootView
+    }
+
+    fun onDataLoaded() {
+        setupExpandableListView()
+    }
+
+    fun setupExpandableListView() {
+        mExpandableListView = mRootView!!.findViewById(R.id.board_list) as ExpandableListView
+        mExpandableListViewAdapter = com.koresuniku.wishmaster.ui.BoardsExpandableListViewAdapter(mView)
+        mExpandableListView!!.setGroupIndicator(null)
+        mExpandableListView!!.setAdapter(mExpandableListViewAdapter)
     }
 }

@@ -1,27 +1,17 @@
-package com.koresuniku.wishmaster
+package com.koresuniku.wishmaster.system
 
-import android.app.Application
-import android.content.Context
-import android.media.AudioManager
-import android.os.Handler
-import android.util.Log
-
-import com.koresuniku.wishmaster.http.HttpClient
-
-import java.io.InputStream
-
-class App : Application() {
+class App : android.app.Application() {
     // public static SettingsContentObserver mSettingsContentObserver;
 
 
     override fun onCreate() {
         super.onCreate()
 
-        Log.d("Application: ", "App")
+        android.util.Log.d("Application: ", "App")
         //BigImageViewer.initialize(GlideImageLoader.with(this));
         //Glide.get(this).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(HttpClient.INSTANCE.getClient()));
-        val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        App.soundVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+        val audio = getSystemService(android.content.Context.AUDIO_SERVICE) as android.media.AudioManager
+        com.koresuniku.wishmaster.system.App.Companion.soundVolume = audio.getStreamVolume(android.media.AudioManager.STREAM_MUSIC)
         setupContentObserver()
 
     }
@@ -34,17 +24,17 @@ class App : Application() {
 
     override fun onTerminate() {
         super.onTerminate()
-        Log.d(LOG_TAG, "onTerminate:")
+        android.util.Log.d(com.koresuniku.wishmaster.system.App.Companion.LOG_TAG, "onTerminate:")
         //getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     }
 
     companion object {
-        internal val LOG_TAG = App::class.java.simpleName
+        internal val LOG_TAG = com.koresuniku.wishmaster.system.App::class.java.simpleName
 
         var soundVolume: Int = 0
     }
 
-    fun getContext(): Context {
+    fun getContext(): android.content.Context {
         return applicationContext
     }
 

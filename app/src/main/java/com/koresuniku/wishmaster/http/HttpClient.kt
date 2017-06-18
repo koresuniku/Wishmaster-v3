@@ -1,7 +1,6 @@
 package com.koresuniku.wishmaster.http
 
 import com.google.gson.GsonBuilder
-import com.koresuniku.wishmaster.Constants
 import com.koresuniku.wishmaster.http.boards_api.BoardsApiService
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -21,7 +20,7 @@ object HttpClient {
 
     val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl(Constants.DVACH_BASE_URL)
+            .baseUrl(Dvach.DVACH_BASE_URL)
             .client(client)
             .build()!!
 

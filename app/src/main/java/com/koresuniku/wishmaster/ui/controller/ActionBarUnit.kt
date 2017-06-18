@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.system.PreferencesManager
 import com.koresuniku.wishmaster.ui.dashboard.BoardListFragment
 import com.koresuniku.wishmaster.ui.dashboard.FavouritesFragment
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
@@ -26,8 +27,11 @@ class ActionBarUnit(val mView: ActionBarView) {
     var mViewPager: ViewPager? = null
     var mViewPagerAdapter: PagerAdapter? = null
 
+    var mTabPosition: Int = -1
+
     init {
         setupActionBar(mView.getAppCompatActivity().resources.configuration)
+        if (mView.addTabs()) addTabs()
     }
 
     fun setupActionBar(configuration: Configuration) {
@@ -49,24 +53,19 @@ class ActionBarUnit(val mView: ActionBarView) {
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)
         mView.setupActionBarTitle()
 
-       if (mView.addTabs()) addTabs()
+
 
     }
 
     fun addTabs() {
 
         setupViewPager()
-
-        mTabLayout = mLocalToolbarContainer!!.findViewById(R.id.tab_layout) as TabLayout
-        mTabLayout!!.setupWithViewPager(mView.getViewPager())
-
-        mTabLayout!!.getTabAt(0)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_favorite_black)
-        mTabLayout!!.getTabAt(1)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_list_black)
-        mTabLayout!!.getTabAt(2)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_history_black)
+        setupTabsIcons()
 
         mTabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 Log.d(LOG_TAG, "tab: " + tab.position)
+                mTabPosition = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -77,13 +76,31 @@ class ActionBarUnit(val mView: ActionBarView) {
 
             }
         })
+
+        if (mTabPosition == -1) {
+            mTabPosition = mView.getPreferencesManager().getSharedPreferences(
+                    mView.getAppCompatActivity()).getInt(
+                    PreferencesManager.DASHBOARD_TAB_POSITION_KEY,
+                    PreferencesManager.DASHBOARD_TAB_POSITION_BOARD_LIST_DEFAULT)
+        }
+
+        mTabLayout!!.getTabAt(mTabPosition)!!.select()
+    }
+
+    fun setupTabsIcons() {
+        mTabLayout = mLocalToolbarContainer!!.findViewById(R.id.tab_layout) as TabLayout
+        mTabLayout!!.setupWithViewPager(mView.getViewPager())
+
+        mTabLayout!!.getTabAt(0)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_favorite_black)
+        mTabLayout!!.getTabAt(1)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_list_black)
+        mTabLayout!!.getTabAt(2)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_history_black)
     }
 
     fun setupViewPager() {
         mViewPager = mView.getViewPager()
         mViewPagerAdapter = PagerAdapter(mView.getAppCompatActivity().supportFragmentManager)
         mViewPagerAdapter!!.addFragment(FavouritesFragment())
-        mViewPagerAdapter!!.addFragment(BoardListFragment())
+        mViewPagerAdapter!!.addFragment(mView.getBoardListFragment())
         mViewPagerAdapter!!.addFragment(HistoryFragment())
         mViewPager!!.adapter = mViewPagerAdapter
 
@@ -108,5 +125,6 @@ class ActionBarUnit(val mView: ActionBarView) {
 
     fun onConfigurationChanged(configuration: Configuration) {
         setupActionBar(configuration)
+        if (mView.addTabs()) setupTabsIcons()
     }
 }

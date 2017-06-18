@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Wishmaster</string>
+
+
+    <string name="adult_boards">Взрослым</string>
+    <string name="games_boards">Игры</string>
+    <string name="politics_boards">Политика</string>
+    <string name="users_boards">Пользовательские</string>
+    <string name="different_boards">Разное</string>
+    <string name="creativity_boards">Творчество</string>
+    <string name="subject_boards">Тематика</string>
+    <string name="tech_boards">Техника и софт</string>
+    <string name="japanese_boards">Японская культура</string>
 </resources>
