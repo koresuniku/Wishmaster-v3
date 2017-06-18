@@ -3,6 +3,8 @@ package com.koresuniku.wishmaster.ui.dashboard
 import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import android.widget.FrameLayout
 
 import com.koresuniku.wishmaster.R
@@ -31,5 +33,16 @@ class DashboardActivity : AppCompatActivity(), ActionBarView {
         return findViewById(R.id.toolbar_container) as FrameLayout
     }
 
+    override fun setupActionBarTitle() {
+
+    }
+
+    override fun addTabs(): Boolean {
+        return true
+    }
+
+    override fun getViewPager(): ViewPager {
+        return findViewById(R.id.dashboard_viewpager) as ViewPager
+    }
 
 }

@@ -1,15 +1,30 @@
 package com.koresuniku.wishmaster.ui.controller
 
 import android.content.res.Configuration
+import android.support.design.widget.TabLayout
+import android.support.v4.app.*
+import android.support.v4.view.ViewPager
+import android.support.v7.app.ActionBar
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.ui.dashboard.BoardListFragment
+import com.koresuniku.wishmaster.ui.dashboard.FavouritesFragment
+import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
 import com.koresuniku.wishmaster.ui.view.ActionBarView
 
 class ActionBarUnit(val mView: ActionBarView) {
+    val LOG_TAG: String = ActionBarUnit::class.java.simpleName
+
     val mActivityToolbarContainer: FrameLayout = mView.getToolbarContainer()
-    var mLocalToolbarContainer: FrameLayout? = null
+
+    var mLocalToolbarContainer: RelativeLayout? = null
     var mToolbar: Toolbar? = null
+    var mTabLayout: TabLayout? = null
+    var mViewPager: ViewPager? = null
+    var mViewPagerAdapter: PagerAdapter? = null
 
     init {
         setupActionBar(mView.getAppCompatActivity().resources.configuration)
@@ -18,7 +33,7 @@ class ActionBarUnit(val mView: ActionBarView) {
     fun setupActionBar(configuration: Configuration) {
         mActivityToolbarContainer.removeAllViews()
 
-        mLocalToolbarContainer = mView.getAppCompatActivity().layoutInflater.inflate(R.layout.action_bar_layout, null, false) as FrameLayout
+        mLocalToolbarContainer = mView.getAppCompatActivity().layoutInflater.inflate(R.layout.action_bar_layout, null, false) as RelativeLayout
         mToolbar = mLocalToolbarContainer!!.findViewById(R.id.toolbar) as Toolbar?
         val height: Int
         if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -30,7 +45,66 @@ class ActionBarUnit(val mView: ActionBarView) {
         mToolbar!!.layoutParams.width = Toolbar.LayoutParams.MATCH_PARENT
 
         mActivityToolbarContainer.addView(mLocalToolbarContainer)
+
+        mView.getAppCompatActivity().setSupportActionBar(mToolbar)
+        mView.setupActionBarTitle()
+
+       if (mView.addTabs()) addTabs()
+
     }
+
+    fun addTabs() {
+
+        setupViewPager()
+
+        mTabLayout = mLocalToolbarContainer!!.findViewById(R.id.tab_layout) as TabLayout
+        mTabLayout!!.setupWithViewPager(mView.getViewPager())
+
+        mTabLayout!!.getTabAt(0)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_favorite_black)
+        mTabLayout!!.getTabAt(1)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_list_black)
+        mTabLayout!!.getTabAt(2)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_history_black)
+
+        mTabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                Log.d(LOG_TAG, "tab: " + tab.position)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+        })
+    }
+
+    fun setupViewPager() {
+        mViewPager = mView.getViewPager()
+        mViewPagerAdapter = PagerAdapter(mView.getAppCompatActivity().supportFragmentManager)
+        mViewPagerAdapter!!.addFragment(FavouritesFragment())
+        mViewPagerAdapter!!.addFragment(BoardListFragment())
+        mViewPagerAdapter!!.addFragment(HistoryFragment())
+        mViewPager!!.adapter = mViewPagerAdapter
+
+    }
+
+    class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+        val mFragmentList = ArrayList<Fragment>()
+
+        override fun getItem(position: Int): Fragment? {
+            return mFragmentList[position]
+        }
+
+        override fun getCount(): Int {
+            return 3
+        }
+
+        fun addFragment(fragment: Fragment) {
+            mFragmentList.add(fragment)
+        }
+    }
+
 
     fun onConfigurationChanged(configuration: Configuration) {
         setupActionBar(configuration)
