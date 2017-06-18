@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui;
+package com.koresuniku.wishmaster.ui.dashboard;
 
 import android.app.Activity;
 import android.view.View;

@@ -11,7 +11,7 @@ import com.koresuniku.wishmaster.ui.view.ExpandableListViewView
 
 class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
     var mExpandableListView: ExpandableListView? = null
-    var mExpandableListViewAdapter: com.koresuniku.wishmaster.ui.BoardsExpandableListViewAdapter? = null
+    var mExpandableListViewAdapter: BoardsExpandableListViewAdapter? = null
     val mRootView: View = mView.getActivity().layoutInflater.inflate(R.layout.board_list_fragment, null,  false)
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -26,7 +26,7 @@ class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
 
     fun setupExpandableListView() {
         mExpandableListView = mRootView!!.findViewById(R.id.board_list) as ExpandableListView
-        mExpandableListViewAdapter = com.koresuniku.wishmaster.ui.BoardsExpandableListViewAdapter(mView)
+        mExpandableListViewAdapter = BoardsExpandableListViewAdapter(mView)
         mExpandableListView!!.setGroupIndicator(null)
         mExpandableListView!!.setAdapter(mExpandableListViewAdapter)
     }
