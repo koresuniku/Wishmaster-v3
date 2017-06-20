@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.database
 
 import android.app.Activity
+import android.content.ContentValues
 import android.database.Cursor
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
@@ -232,11 +233,184 @@ object BoardsUtils {
     }
 
     fun queryABoard(activity: Activity, boardId: String?): Cursor {
-
         val cursor: Cursor = activity.contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
                 mBoardsProjection, DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
                 arrayOf(boardId), null, null)
-
         return cursor
+    }
+
+    fun writeInAllTheBoardsIntoDatabase(mSchema: BoardsJsonSchema?, activity: Activity) {
+        var values: ContentValues = ContentValues()
+
+        for (board in mSchema!!.adults!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_ADULTS)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.creativity!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_CREATIVITY)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.games!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_GAMES)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.japanese!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_JAPANESE)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.other!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_OTHER)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.politics!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_POLITICS)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.subject!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_SUBJECTS)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.tech!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_TECH)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+
+        for (board in mSchema!!.users!!) {
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_USERS)
+            activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
+            values = ContentValues()
+        }
+    }
+
+    fun insertNewBoards(mSchema: BoardsJsonSchema?, activity: Activity) {
+        val boardsNewIdsSet: Set<String> = HashSet()
+
+        for (adults: Adults in mSchema!!.adults!!) {
+            boardsNewIdsSet.plus(adults.id)
+        }
+        for (creativity: Creativity in mSchema!!.creativity!!) {
+            boardsNewIdsSet.plus(creativity.id)
+        }
+        for (games: Games in mSchema!!.games!!) {
+            boardsNewIdsSet.plus(games.id)
+        }
+        for (japanese: Japanese in mSchema!!.japanese!!) {
+            boardsNewIdsSet.plus(japanese.id)
+        }
+        for (other: Other in mSchema!!.other!!) {
+            boardsNewIdsSet.plus(other.id)
+        }
+        for (politics: Politics in mSchema!!.politics!!) {
+            boardsNewIdsSet.plus(politics.id)
+        }
+        for (subjects: Subjects in mSchema!!.subject!!) {
+            boardsNewIdsSet.plus(subjects.id)
+        }
+        for (tech: Tech in mSchema!!.tech!!) {
+            boardsNewIdsSet.plus(tech.id)
+        }
+        for (users: Users in mSchema!!.users!!) {
+            boardsNewIdsSet.plus(users.id)
+        }
+
+        val cursor: Cursor = activity.contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
+                mBoardsProjection, null, null, null, null)
+        val columnIndex = cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID)
+        var boardId: String
+        val boardsDatabaseIdsSet: Set<String> = HashSet()
+        while (cursor.moveToNext()) {
+            boardId = cursor.getString(columnIndex)
+            boardsDatabaseIdsSet.plus(boardId)
+        }
+        cursor.close()
+
+        val resultSet: Set<String> = boardsNewIdsSet.subtract(boardsDatabaseIdsSet)
+
+        for (newBoardId: String in resultSet) {
+            mSchema!!.adults!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_ADULTS))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.creativity!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_CREATIVITY))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.games!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_GAMES))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.japanese!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_JAPANESE))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.other!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_OTHER))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.politics!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_POLITICS))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.subject!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_SUBJECTS))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.tech!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_TECH))
+            }
+        }
+        for (newBoardId: String in resultSet) {
+            mSchema!!.users!!.filter { it.id!! == newBoardId }.forEach {
+                insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_USERS))
+            }
+        }
+    }
+
+    fun insertNewBoard(boardData: Array<String?>) {
+        val values: ContentValues = ContentValues();
+        values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, boardData[0])
+        values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, boardData[1])
+        values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, boardData[2])
+
     }
 }

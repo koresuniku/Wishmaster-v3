@@ -21,6 +21,16 @@ object DatabaseContract {
 
         val BOARD_PREFERRED_FALSE: Int = 0
         val BOARD_PREFERRED_TRUE: Int = 1
+
+        val CATEGORY_ADULTS: String = "adults"
+        val CATEGORY_CREATIVITY: String = "creativity"
+        val CATEGORY_GAMES: String = "games"
+        val CATEGORY_JAPANESE: String = "japanese"
+        val CATEGORY_OTHER: String = "other"
+        val CATEGORY_POLITICS: String = "politics"
+        val CATEGORY_SUBJECTS: String = "subjects"
+        val CATEGORY_TECH: String = "tech"
+        val CATEGORY_USERS: String = "users"
     }
 
 }

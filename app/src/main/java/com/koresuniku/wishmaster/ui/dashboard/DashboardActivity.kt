@@ -1,7 +1,6 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.res.Configuration
 import android.database.Cursor
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +10,7 @@ import android.util.Log
 import android.widget.FrameLayout
 
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.database.BoardsUtils
 import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
@@ -116,82 +116,9 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
         if (cursor.count == 0) {
             Log.d(LOG_TAG, "there are no rows in boards table, loading new boards...")
-            var values: ContentValues = ContentValues()
-
-            for (board in mSchema!!.adults!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.adult_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.creativity!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.creativity_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.games!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.games_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.japanese!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.japanese_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.other!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.different_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.politics!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.politics_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.subject!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.subject_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.tech!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.tech_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            for (board in mSchema!!.users!!) {
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
-                values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, R.string.users_boards_en)
-                contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
-                values = ContentValues()
-            }
-
-            this.mBoardListFragment!!.onDataLoaded()
+            BoardsUtils.writeInAllTheBoardsIntoDatabase(this.mSchema, this)
             cursor.close()
+            this.mBoardListFragment!!.onDataLoaded()
             return
         }
 
@@ -208,7 +135,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
         if (cursor.count != totalBoardsCount){
             Log.d(LOG_TAG, "new boards came! " + cursor.count + " " + totalBoardsCount)
-
+            BoardsUtils.insertNewBoards(this.mSchema, this)
         } else {
             Log.d(LOG_TAG, "no new boards")
         }

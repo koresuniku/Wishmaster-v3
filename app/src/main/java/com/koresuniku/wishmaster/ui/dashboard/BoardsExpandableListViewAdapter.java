@@ -244,11 +244,6 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
     }
 
     public void likeClicked(ImageView likeImage, String boardId) {
-//        Cursor cursor = BoardsUtils.INSTANCE.queryABoard(mActivity, boardId);
-//        cursor.moveToFirst();
-//        int columnIndex = cursor.getColumnIndex(
-//                DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED());
-//        int ifPreferredValue = cursor.getInt(columnIndex);
 
         int ifPreferredValue = getPreferredValue(boardId);
 
