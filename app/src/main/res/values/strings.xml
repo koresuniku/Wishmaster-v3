@@ -12,15 +12,7 @@
     <string name="tech_boards">Техника и софт</string>
     <string name="japanese_boards">Японская культура</string>
 
-    <string name="adult_boards_en">adults</string>
-    <string name="games_boards_en">games</string>
-    <string name="politics_boards_en">politics</string>
-    <string name="users_boards_en">users</string>
-    <string name="different_boards_en">other</string>
-    <string name="creativity_boards_en">creativity</string>
-    <string name="subject_boards_en">subjects</string>
-    <string name="tech_boards_en">tech</string>
-    <string name="japanese_boards_en">japanese</string>
+    <string name="action_refresh_boards">Обновить список борд</string>
 
     <string name="more_boards_text">Нужно больше любимых борд!</string>
 

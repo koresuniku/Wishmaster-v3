@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.FrameLayout
 
 import com.koresuniku.wishmaster.R
@@ -15,11 +17,13 @@ import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
+import com.koresuniku.wishmaster.http.boards_api.model.Tech
 import com.koresuniku.wishmaster.system.PreferencesManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.view.ActionBarView
 import com.koresuniku.wishmaster.ui.view.ExpandableListViewView
 import com.koresuniku.wishmaster.ui.view.LoadDataView
+import java.util.ArrayList
 
 class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListViewView, LoadDataView {
     val LOG_TAG: String = DashboardActivity::class.java.simpleName
@@ -32,13 +36,11 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
     var mSchema: BoardsJsonSchema? = null
 
-    var mBoardsProjection = arrayOf(
-            DatabaseContract.BoardsEntry.COLUMN_BOARD_ID,
-            DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME,
-            DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED
-    )
-
-
+//    var mBoardsProjection = arrayOf(
+//            DatabaseContract.BoardsEntry.COLUMN_BOARD_ID,
+//            DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME,
+//            DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED
+//    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +51,12 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         mBoardListFragment = BoardListFragment(this)
         mActionBarUnit = ActionBarUnit(this)
 
-
         initBoardList()
     }
 
     fun initBoardList() {
-        val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI, mBoardsProjection, null, null, null)
+        val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
+                BoardsUtils.mBoardsProjection, null, null, null)
         if (cursor.count == 0) {
             Log.d(LOG_TAG, "there are no rows in boards table, loading new boards...")
             mDataLoader!!.loadData()
@@ -67,6 +69,21 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.dashboard_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.action_refresh_boards -> {
+                mDataLoader!!.loadData()
+            }
+        }
+
+        return true
     }
 
     override fun getAppCompatActivity(): AppCompatActivity {
@@ -112,7 +129,21 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         this.mSchema = schema[0] as BoardsJsonSchema
 
-        val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI, mBoardsProjection, null, null, null)
+        var techList: ArrayList<Tech> = mSchema!!.tech!! as ArrayList
+//        var test: Tech = Tech()
+//        test.id = "test 2"
+//        test.name = "test board"
+//        techList.add(test)
+//        var test2: Tech = Tech()
+//        test2.id = "test 3"
+//        test2.name = "test board"
+//        techList.add(test2)
+
+        this.mSchema!!.tech = techList
+
+
+        val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
+                BoardsUtils.mBoardsProjection, null, null, null)
 
         if (cursor.count == 0) {
             Log.d(LOG_TAG, "there are no rows in boards table, loading new boards...")
@@ -134,15 +165,22 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         totalBoardsCount += mSchema!!.users!!.size
 
         if (cursor.count != totalBoardsCount){
-            Log.d(LOG_TAG, "new boards came! " + cursor.count + " " + totalBoardsCount)
-            BoardsUtils.insertNewBoards(this.mSchema, this)
+            Log.d(LOG_TAG, "boards count changed! " + cursor.count + " " + totalBoardsCount)
+            if (cursor.count < totalBoardsCount) {
+                Log.d(LOG_TAG, "new boards came!")
+                BoardsUtils.insertNewBoards(this.mSchema, this)
+            } else {
+                Log.d(LOG_TAG, "some boards deleted")
+                BoardsUtils.deleteOldBoards(this.mSchema, this)
+            }
+
         } else {
-            Log.d(LOG_TAG, "no new boards")
+            Log.d(LOG_TAG, "no new boards: cursor " + cursor.count + ", schema " + totalBoardsCount)
+            Log.d(LOG_TAG, "tech count: " + mSchema!!.tech!!.count())
         }
         cursor.close()
 
         this.mBoardListFragment!!.onDataLoaded()
-
     }
 
     override fun showProgressBar() {

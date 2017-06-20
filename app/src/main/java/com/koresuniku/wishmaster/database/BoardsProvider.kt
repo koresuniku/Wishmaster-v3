@@ -43,7 +43,9 @@ class BoardsProvider : ContentProvider() {
     }
 
     override fun delete(uri: Uri?, selection: String?, selectionArgs: Array<out String>?): Int {
-        return -1
+        val database: SQLiteDatabase = mDatabaseHelper!!.writableDatabase
+        val number: Int = database.delete(DatabaseContract.BoardsEntry.TABLE_NAME, selection, selectionArgs)
+        return number
     }
 
     override fun getType(uri: Uri?): String {

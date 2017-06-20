@@ -158,7 +158,7 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
         view = mActivity.getLayoutInflater()
                 .inflate(R.layout.boards_exp_listview_child_item, viewGroup, false);
 
-        Log.d(LOG_TAG, "getChildView:");
+        //Log.d(LOG_TAG, "getChildView:");
 
         TextView boardNameTextView = (TextView) view.findViewById(R.id.child_board_name);
         final String boardId;
