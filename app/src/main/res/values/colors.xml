@@ -6,4 +6,6 @@
 
     <color name="general_background_color">#f5f5f5</color>
     <color name="material_gray_middle">#e0e0e0</color>
+
+    <color name="color_unchecked">@color/material_gray_middle</color>
 </resources>

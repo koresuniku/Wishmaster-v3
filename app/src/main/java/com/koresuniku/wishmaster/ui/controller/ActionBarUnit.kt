@@ -4,14 +4,12 @@ import android.content.res.Configuration
 import android.support.design.widget.TabLayout
 import android.support.v4.app.*
 import android.support.v4.view.ViewPager
-import android.support.v7.app.ActionBar
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.system.PreferencesManager
-import com.koresuniku.wishmaster.ui.dashboard.BoardListFragment
 import com.koresuniku.wishmaster.ui.dashboard.FavouritesFragment
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
 import com.koresuniku.wishmaster.ui.view.ActionBarView
@@ -52,8 +50,6 @@ class ActionBarUnit(val mView: ActionBarView) {
 
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)
         mView.setupActionBarTitle()
-
-
 
     }
 

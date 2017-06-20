@@ -12,4 +12,5 @@ class Japanese {
     @Expose
     var name: String? = null
 
+    var isPreferred: Boolean? = null
 }

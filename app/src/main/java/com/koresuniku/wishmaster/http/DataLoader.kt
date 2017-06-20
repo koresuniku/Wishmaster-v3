@@ -1,7 +1,7 @@
 package com.koresuniku.wishmaster.http
 
 import android.util.Log
-import com.koresuniku.wishmaster.http.boards_api.model.BoardsJsonSchema
+import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
 import com.koresuniku.wishmaster.ui.view.LoadDataView
 import retrofit2.Call
 import retrofit2.Callback

@@ -15,5 +15,5 @@ object PreferencesManager {
         return context.getPreferences(Context.MODE_PRIVATE)
     }
 
-
+    fun addnew() {}
 }

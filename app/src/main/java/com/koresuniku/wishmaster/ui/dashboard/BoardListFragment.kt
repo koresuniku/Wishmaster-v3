@@ -15,7 +15,6 @@ class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
     val mRootView: View = mView.getActivity().layoutInflater.inflate(R.layout.board_list_fragment, null,  false)
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //mRootView = inflater!!.inflate(R.layout.board_list_fragment, container, false)
 
         return mRootView
     }
@@ -25,7 +24,7 @@ class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
     }
 
     fun setupExpandableListView() {
-        mExpandableListView = mRootView!!.findViewById(R.id.board_list) as ExpandableListView
+        mExpandableListView = mRootView.findViewById(R.id.board_list) as ExpandableListView
         mExpandableListViewAdapter = BoardsExpandableListViewAdapter(mView)
         mExpandableListView!!.setGroupIndicator(null)
         mExpandableListView!!.setAdapter(mExpandableListViewAdapter)

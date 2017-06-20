@@ -1,8 +1,9 @@
-package com.koresuniku.wishmaster.http.boards_api.model
+package com.koresuniku.wishmaster.http.boards_api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
+import com.koresuniku.wishmaster.http.boards_api.model.*
 
 class BoardsJsonSchema : IBaseJsonSchema {
 

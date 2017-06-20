@@ -14,8 +14,13 @@ object DatabaseContract {
         val COLUMN_ID = "_id"
         val COLUMN_BOARD_ID = "board_id"
         val COLUMN_BOARD_NAME = "board_name"
-        val COLUMN_BOARD_IF_PREFERRED_POSITION = "board_if_preferred_position"
+        val COLUMN_BOARD_CATEGORY = "board_category"
+        val COLUMN_BOARD_PREFERRED = "board_preferred"
 
-        val CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME)
+        val CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME)!!
+
+        val BOARD_PREFERRED_FALSE: Int = 0
+        val BOARD_PREFERRED_TRUE: Int = 1
     }
+
 }
