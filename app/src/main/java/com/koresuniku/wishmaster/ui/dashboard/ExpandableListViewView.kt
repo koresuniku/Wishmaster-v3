@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.view
+package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema

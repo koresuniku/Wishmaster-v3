@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_container"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/general_background_color">
+
+    <TextView
+        android:id="@+id/board_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_toLeftOf="@+id/drag_and_drop"
+        android:layout_toStartOf="@+id/drag_and_drop"
+        android:text="TextView" />
+
+</RelativeLayout>

@@ -473,47 +473,47 @@ object BoardsUtils {
 //
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.adults!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.creativity!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.games!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.japanese!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.other!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.politics!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.subject!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.tech!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
 //        for (newBoardId: String? in resultSet) {
 //            mSchema!!.users!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteABoard(it.id!!, activity)
+//                deleteFavouriteBoard(it.id!!, activity)
 //            }
 //        }
     }

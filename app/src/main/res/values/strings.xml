@@ -15,6 +15,7 @@
     <string name="action_refresh_boards">Обновить список борд</string>
 
     <string name="more_boards_text">Нужно больше любимых борд!</string>
+    <string name="there_is_nothing_text">Здесь ничего нет.\nВпрочем, как и смысла в твоей жизни.</string>
 
 </resources>
 

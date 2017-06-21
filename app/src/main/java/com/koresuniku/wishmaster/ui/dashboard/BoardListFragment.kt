@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.ui.view.ExpandableListViewView
 
 class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
     var mExpandableListView: ExpandableListView? = null

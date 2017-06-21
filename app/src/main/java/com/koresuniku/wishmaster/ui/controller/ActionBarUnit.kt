@@ -90,12 +90,13 @@ class ActionBarUnit(val mView: ActionBarView) {
         mTabLayout!!.getTabAt(0)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_favorite_black)
         mTabLayout!!.getTabAt(1)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_list_black)
         mTabLayout!!.getTabAt(2)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_history_black)
+        mTabLayout!!.offsetLeftAndRight(1)
     }
 
     fun setupViewPager() {
         mViewPager = mView.getViewPager()
         mViewPagerAdapter = PagerAdapter(mView.getAppCompatActivity().supportFragmentManager)
-        mViewPagerAdapter!!.addFragment(FavouritesFragment())
+        mViewPagerAdapter!!.addFragment(FavouritesFragment(mView.getAppCompatActivity()))
         mViewPagerAdapter!!.addFragment(mView.getBoardListFragment())
         mViewPagerAdapter!!.addFragment(HistoryFragment())
         mViewPager!!.adapter = mViewPagerAdapter

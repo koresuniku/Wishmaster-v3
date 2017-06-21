@@ -3,7 +3,6 @@ package com.koresuniku.wishmaster.ui.dashboard;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -15,7 +14,7 @@ import com.koresuniku.wishmaster.R;
 import com.koresuniku.wishmaster.database.BoardsUtils;
 import com.koresuniku.wishmaster.database.DatabaseContract;
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema;
-import com.koresuniku.wishmaster.ui.view.ExpandableListViewView;
+import com.koresuniku.wishmaster.system.PreferencesManager;
 
 import java.util.List;
 
@@ -254,6 +253,7 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
             mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
                     values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
                     new String[]{boardId});
+            PreferencesManager.INSTANCE.deleteFavouriteBoard(mActivity, "/" + boardId + "/");
             likeImage.setImageResource(R.drawable.ic_favorite_unchecked);
         } else {
             ContentValues values = new ContentValues();
@@ -262,10 +262,9 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
             mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
                     values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
                     new String[]{boardId});
+            PreferencesManager.INSTANCE.addNewFavouriteBoard(mActivity, "/" + boardId + "/");
             likeImage.setImageResource(R.drawable.ic_favorite_checked);
         }
-
-        //cursor.close();
     }
 
     public int getPreferredValue(String boardId) {

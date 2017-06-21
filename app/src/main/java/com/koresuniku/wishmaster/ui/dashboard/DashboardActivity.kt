@@ -21,26 +21,20 @@ import com.koresuniku.wishmaster.http.boards_api.model.Tech
 import com.koresuniku.wishmaster.system.PreferencesManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.view.ActionBarView
-import com.koresuniku.wishmaster.ui.view.ExpandableListViewView
 import com.koresuniku.wishmaster.ui.view.LoadDataView
 import java.util.ArrayList
 
-class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListViewView, LoadDataView {
+class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListViewView, LoadDataView, FavouritesFragmentView {
     val LOG_TAG: String = DashboardActivity::class.java.simpleName
 
     var mBoardListFragment: BoardListFragment? = null
+    var mFavouritesFragment: FavouritesFragment? = null
 
     var mActionBarUnit: ActionBarUnit? = null
     var mDataLoader: DataLoader? = null
     var mPreferencesManager: PreferencesManager? = null
 
     var mSchema: BoardsJsonSchema? = null
-
-//    var mBoardsProjection = arrayOf(
-//            DatabaseContract.BoardsEntry.COLUMN_BOARD_ID,
-//            DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME,
-//            DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED
-//    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +43,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         mDataLoader = DataLoader(this)
 
         mBoardListFragment = BoardListFragment(this)
+        mFavouritesFragment = FavouritesFragment(this)
         mActionBarUnit = ActionBarUnit(this)
 
         initBoardList()
@@ -193,7 +188,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     }
 
     override fun getFavouritesFragment(): FavouritesFragment {
-        return FavouritesFragment()
+        return this.mFavouritesFragment!!
     }
 
     override fun getHistoryFragment(): HistoryFragment {

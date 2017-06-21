@@ -27,4 +27,5 @@ interface ActionBarView {
     fun getHistoryFragment(): HistoryFragment
 
     fun getPreferencesManager(): PreferencesManager
+
 }
