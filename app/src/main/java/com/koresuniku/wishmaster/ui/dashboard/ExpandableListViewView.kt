@@ -12,4 +12,6 @@ interface ExpandableListViewView {
 
     fun getFavouritesFragment(): FavouritesFragment
 
+    fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String)
+
 }

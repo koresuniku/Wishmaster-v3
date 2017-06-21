@@ -222,11 +222,11 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
             ((ImageView) favouriteContainer.findViewById(R.id.favourite_icon)).setImageResource(R.drawable.ic_favorite_checked);
         }
 
-        favouriteContainer.setOnClickListener(new View.OnClickListener() {
+        view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
                 likeClicked(((ImageView)favouriteContainer.findViewById(R.id.favourite_icon)), boardId);
-
+                return false;
             }
         });
 
@@ -247,25 +247,27 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
         int ifPreferredValue = getPreferredValue(boardId);
 
         if (ifPreferredValue > DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_FALSE()) {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED(),
-                    DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_FALSE());
-            mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
-                    values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
-                    new String[]{boardId});
-            PreferencesManager.INSTANCE.deleteFavouriteBoard(mActivity, "/" + boardId + "/");
-            mView.getFavouritesFragment().notifyOrInitBoardList();
-            likeImage.setImageResource(R.drawable.ic_favorite_unchecked);
+//            ContentValues values = new ContentValues();
+//            values.put(DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED(),
+//                    DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_FALSE());
+//            mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
+//                    values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
+//                    new String[]{boardId});
+//            PreferencesManager.INSTANCE.deleteFavouriteBoard(mActivity, "/" + boardId + "/");
+//            mView.getFavouritesFragment().notifyOrInitBoardList();
+//            likeImage.setImageResource(R.drawable.ic_favorite_unchecked);
+            mView.showChoiceDialog(true, boardId);
         } else {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED(),
-                    DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_TRUE());
-            mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
-                    values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
-                    new String[]{boardId});
-            PreferencesManager.INSTANCE.addNewFavouriteBoard(mActivity, "/" + boardId + "/");
-            mView.getFavouritesFragment().notifyOrInitBoardList();
-            likeImage.setImageResource(R.drawable.ic_favorite_checked);
+//            ContentValues values = new ContentValues();
+//            values.put(DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED(),
+//                    DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_TRUE());
+//            mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
+//                    values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
+//                    new String[]{boardId});
+//            PreferencesManager.INSTANCE.addNewFavouriteBoard(mActivity, "/" + boardId + "/");
+//            mView.getFavouritesFragment().notifyOrInitBoardList();
+//            likeImage.setImageResource(R.drawable.ic_favorite_checked);
+            mView.showChoiceDialog(false, boardId);
         }
 
 

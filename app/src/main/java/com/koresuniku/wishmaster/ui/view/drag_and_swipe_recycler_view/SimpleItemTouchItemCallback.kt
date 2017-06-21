@@ -14,7 +14,7 @@ class SimpleItemTouchItemCallback(private val adapter: ItemTouchHelperAdapter) :
     }
 
     override fun onSwiped(viewHolder: android.support.v7.widget.RecyclerView.ViewHolder, direction: Int) {
-        adapter.onItemDismiss(viewHolder.adapterPosition)
+        adapter.onItemRemoved(viewHolder.adapterPosition)
     }
 
     override fun onSelectedChanged(viewHolder: android.support.v7.widget.RecyclerView.ViewHolder?, actionState: Int) {
@@ -22,7 +22,7 @@ class SimpleItemTouchItemCallback(private val adapter: ItemTouchHelperAdapter) :
     }
 
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {

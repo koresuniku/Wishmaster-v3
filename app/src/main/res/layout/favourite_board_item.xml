@@ -15,7 +15,8 @@
         android:layout_marginRight="16dp"
         android:layout_toLeftOf="@+id/drag_and_drop"
         android:layout_toStartOf="@+id/drag_and_drop"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textColor="@color/colorAccent" />
 
     <ImageView
         android:id="@+id/drag_and_drop"

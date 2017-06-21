@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
+import android.content.ContentValues
 import android.database.Cursor
 import android.os.Bundle
 import android.os.Handler
@@ -27,10 +28,10 @@ import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleItem
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
+class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStartDragListener{
     val LOG_TAG: String = FavouritesFragment::class.java.simpleName!!
 
-    var mRootView: View = mView.layoutInflater.inflate(R.layout.favourites_fragment, null, false)
+    var mRootView: View = mView.getActivity().layoutInflater.inflate(R.layout.favourites_fragment, null, false)
 
     var mNoBoardsContainer: View? = null
     var mRecyclerView: RecyclerView? = null
@@ -62,8 +63,8 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
 
         if (mRecyclerViewAdapter != null) mRecyclerViewAdapter!!.notifyDataSetChanged()
         else {
-            mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.resources))
-            mRecyclerView!!.layoutManager = LinearLayoutManager(mView) as RecyclerView.LayoutManager?
+            mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.getActivity().resources))
+            mRecyclerView!!.layoutManager = LinearLayoutManager(mView.getActivity()) as RecyclerView.LayoutManager?
             mRecyclerViewAdapter = RecyclerViewAdapter(this)
             mRecyclerView!!.adapter = mRecyclerViewAdapter
 
@@ -74,7 +75,7 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
     }
 
     fun getFavouriteBoardsList(): Boolean {
-        val rawQueue = PreferencesManager.getFavouriteBoardsQueue(mView)
+        val rawQueue = PreferencesManager.getFavouriteBoardsQueue(mView.getActivity())
         if (rawQueue.isEmpty()) return false
 
         val rawBoardsList: List<String> = rawQueue.substring(1, rawQueue.length).split(Regex(pattern = "\\s"))
@@ -82,14 +83,14 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
         rawBoardsList.filterNot { it.isEmpty() }.mapTo(boardsList) { it.replace("/", "") }
 
         favouriteBoardsList = ArrayList()
-        var cursor: Cursor = mView.contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
+        var cursor: Cursor = mView.getActivity().contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
                 BoardsUtils.mBoardsProjection, null, null, null, null)
         val boardNameIndex: Int = cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME)
         var boardName: String
         for (boardId: String in boardsList) {
             val boardObject: BaseBoardSchema = BaseBoardSchema()
 
-            cursor = BoardsUtils.queryABoard(mView, boardId)
+            cursor = BoardsUtils.queryABoard(mView.getActivity(), boardId)
             cursor.moveToFirst()
             boardName = cursor.getString(boardNameIndex)
 
@@ -103,6 +104,7 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
 
     fun rewriteBoardsQueue() {
         var newQueue: String = ""
+
         for (board: BaseBoardSchema in favouriteBoardsList!!) {
             newQueue += " /"
             newQueue += board.id
@@ -110,9 +112,32 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
         }
 
         Log.d(LOG_TAG, "rewritten queue: " + newQueue)
-        PreferencesManager.writeInFavouriteBoardsQueue(mView, newQueue)
+        PreferencesManager.writeInFavouriteBoardsQueue(mView.getActivity(), newQueue)
     }
 
+    fun onBoardRemoved(boardId: String) {
+        if (favouriteBoardsList == null) return
+        var position: Int = -1
+        for (board in favouriteBoardsList!!) {
+            Log.d(LOG_TAG, "board.id: " + board.id + ", boardId: " + boardId)
+            if (board.id == boardId) {
+                position = favouriteBoardsList!!.indexOf(board)
+                break
+            }
+        }
+        mRecyclerViewAdapter!!.onItemRemoved(position)
+//        getFavouriteBoardsList()
+//        if (mRecyclerView!= null) {
+//        mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.getActivity().resources))
+//        mRecyclerView!!.layoutManager = LinearLayoutManager(mView.getActivity()) as RecyclerView.LayoutManager?
+//        mRecyclerViewAdapter = RecyclerViewAdapter(this)
+//        mRecyclerView!!.adapter = mRecyclerViewAdapter
+//
+//        val callback = SimpleItemTouchItemCallback(mRecyclerViewAdapter!!)
+//        mItemTouchHelper = ItemTouchHelper(callback)
+//        mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
+//        }
+    }
 
     inner class RecyclerViewAdapter(val mOnStartDragListener: OnStartDragListener) :
             RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>(),
@@ -131,18 +156,38 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
             notifyItemMoved(fromPosition, toPosition)
         }
 
-        override fun onItemDismiss(position: Int) {
+        override fun onItemRemoved(position: Int) {
+            Log.d(LOG_TAG, "onItemRemoved:")
 
+            val values: ContentValues = ContentValues()
+            values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,
+                    DatabaseContract.BoardsEntry.BOARD_PREFERRED_FALSE)
+            mView.getActivity().contentResolver.update(DatabaseContract.BoardsEntry.CONTENT_URI,
+                    values, DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
+                    arrayOf(favouriteBoardsList!![position].id))
+            favouriteBoardsList!!.removeAt(position)
+
+            rewriteBoardsQueue()
+            notifyItemRemoved(position)
+
+            if (favouriteBoardsList!!.size == 0) {
+                mRecyclerView!!.visibility = View.GONE
+                mNoBoardsContainer!!.visibility = View.VISIBLE
+            } else Handler().postDelayed({this.notifyDataSetChanged()}, 250)
         }
 
         override fun onSelectedChanged(actionState: Int) {
             if (actionState == 0) {
+                Log.d(LOG_TAG, "onSelectedChanged: " + actionState)
                 rewriteBoardsQueue()
                 Handler().postDelayed({this.notifyDataSetChanged()}, 250)
             }
+
+            Log.d(LOG_TAG, "favboardsCount: " + favouriteBoardsList!!.size)
         }
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+            Log.d(LOG_TAG, "onBindViewHolder:")
 
             holder!!.boardNameTextView.text = getTextForTextView(position)
 
@@ -150,6 +195,12 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
             holder.dragAndDropDots.setOnLongClickListener({
                 mOnStartDragListener.onStartDrag(holder); false
             })
+
+            Log.d(LOG_TAG, "setting long click listener for board: " + favouriteBoardsList!![position].id!!)
+            holder.itemContainer.setOnLongClickListener {
+                Log.d(LOG_TAG, "sending board: " + favouriteBoardsList!![position].id!!)
+                mView.showChoiceDialog(true, favouriteBoardsList!![position].id!!); false
+            }
 
         }
 

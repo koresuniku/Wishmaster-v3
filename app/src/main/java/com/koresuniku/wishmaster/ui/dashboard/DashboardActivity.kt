@@ -1,6 +1,10 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.database.Cursor
 import android.support.v7.app.AppCompatActivity
@@ -17,15 +21,16 @@ import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
-import com.koresuniku.wishmaster.http.boards_api.model.Tech
 import com.koresuniku.wishmaster.system.PreferencesManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.view.ActionBarView
 import com.koresuniku.wishmaster.ui.view.LoadDataView
-import java.util.ArrayList
 
 class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListViewView, LoadDataView, FavouritesFragmentView {
     val LOG_TAG: String = DashboardActivity::class.java.simpleName
+    val DIALOG_ID: Int = 0
+    val DIALOG_REMOVE_FROM_FAVOURITES_KEY: String = "dialog_remove_from_favourites_key"
+    val DIALOG_BOARD_ID_KEY: String = "dialog_board_id_key"
 
     var mBoardListFragment: BoardListFragment? = null
     var mFavouritesFragment: FavouritesFragment? = null
@@ -40,7 +45,8 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+        Log.d(LOG_TAG, "onCreate:")
+        setContentView(R.layout.activity_dashboard_drawer)
 
 
         mPreferencesManager = PreferencesManager
@@ -51,6 +57,16 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         mActionBarUnit = ActionBarUnit(this)
 
         initBoardList()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(LOG_TAG, "onStart:")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(LOG_TAG, "onResume:")
     }
 
     fun initBoardList() {
@@ -129,6 +145,48 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         return this.mSchema!!
     }
 
+    override fun onCreateDialog(id: Int, args: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(getActivity())
+
+        builder.setItems(if (args!!.getBoolean(DIALOG_REMOVE_FROM_FAVOURITES_KEY))
+            R.array.on_board_clicked_choice_remove else
+            R.array.on_board_clicked_choice_add, DialogInterface.OnClickListener {
+            dialog, which -> run {
+            Log.d(LOG_TAG, "which clicked: " + which)
+            if (which == 2) {
+                if (args.getBoolean(DIALOG_REMOVE_FROM_FAVOURITES_KEY)) {
+                    PreferencesManager.deleteFavouriteBoard(
+                            getActivity(), "/${args.getString(DIALOG_BOARD_ID_KEY)}/")
+                    val values = ContentValues()
+                    values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,
+                            DatabaseContract.BoardsEntry.BOARD_PREFERRED_FALSE)
+                    contentResolver.update(DatabaseContract.BoardsEntry.CONTENT_URI,
+                            values, DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
+                            arrayOf<String>(args.getString(DIALOG_BOARD_ID_KEY)))
+                    //mBoardListFragment!!.onDataLoaded()
+                    mFavouritesFragment!!.onBoardRemoved(args.getString(DIALOG_BOARD_ID_KEY))
+                } else {
+                    PreferencesManager.addNewFavouriteBoard(
+                            getActivity(), "/${args.getString(DIALOG_BOARD_ID_KEY)}/")
+                    val values = ContentValues()
+                    values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,
+                            DatabaseContract.BoardsEntry.BOARD_PREFERRED_TRUE)
+                    contentResolver.update(DatabaseContract.BoardsEntry.CONTENT_URI,
+                            values, DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
+                            arrayOf<String>(args.getString(DIALOG_BOARD_ID_KEY)))
+                    //mBoardListFragment!!.onDataLoaded()
+                    mFavouritesFragment!!.notifyOrInitBoardList()
+                }
+            }
+        }
+
+        })
+        builder.setCancelable(true)
+
+        return builder.create()
+    }
+
+
     override fun onBoardsSelected(boardId: String, boardName: String) {
 //        val intent = Intent(this, ThreadListActivity::class.java)
 //
@@ -205,5 +263,22 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
     override fun getMenu(): Menu? {
         return this.mMenu
+    }
+
+    override fun getContentContainer(): FrameLayout {
+        return findViewById(R.id.dashboard_viewpager_container) as FrameLayout
+    }
+
+    override fun updateBoardListFragment() {
+        this.mBoardListFragment!!.onDataLoaded()
+    }
+
+    override fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String) {
+        Log.d(LOG_TAG, "showChoiceDialog, received board: " + boardId)
+        var bundle: Bundle = Bundle()
+        bundle.putBoolean(DIALOG_REMOVE_FROM_FAVOURITES_KEY, removeFromFavourites)
+        bundle.putString(DIALOG_BOARD_ID_KEY, boardId)
+        removeDialog(DIALOG_ID)
+        showDialog(DIALOG_ID, bundle)
     }
 }

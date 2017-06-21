@@ -18,5 +18,16 @@
     <string name="there_is_nothing_text">Здесь ничего нет.\nВпрочем, как и смысла в твоей жизни.</string>
     <string name="action_add_board">Добавить борду</string>
 
+    <string-array name="on_board_clicked_choice_remove">
+        <item name="action_open_board">Открыть</item>
+        <item name="action_copy_link">Копировать ссылку</item>
+        <item name="action_remove_from_favourites">Убрать из избранных</item>
+    </string-array>
+    <string-array name="on_board_clicked_choice_add">
+        <item name="action_open_board">Открыть</item>
+        <item name="action_copy_link">Копировать ссылку</item>
+        <item name="action_add_to_favourites">Добавить в избранное</item>
+    </string-array>
+
 </resources>
 

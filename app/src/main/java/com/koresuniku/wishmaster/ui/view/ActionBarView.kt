@@ -31,4 +31,6 @@ interface ActionBarView {
 
     fun getMenu(): Menu?
 
+    fun getContentContainer(): FrameLayout
+
 }
