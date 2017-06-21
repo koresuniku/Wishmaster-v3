@@ -57,4 +57,10 @@ object PreferencesManager {
                 FAVOURITE_BOARDS_QUEUE_EMPTY_DEFAULT)
         return queue
     }
+
+    fun writeInFavouriteBoardsQueue(activity: Activity, queue: String) {
+        val editor: SharedPreferences.Editor = getSharedPreferences(activity).edit()
+        editor.putString(FAVOUTITE_BOARDS_QUEUE_KEY, queue)
+        editor.commit()
+    }
 }

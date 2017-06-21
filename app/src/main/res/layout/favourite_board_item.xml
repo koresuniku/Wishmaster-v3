@@ -12,8 +12,21 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_toLeftOf="@+id/drag_and_drop"
         android:layout_toStartOf="@+id/drag_and_drop"
         android:text="TextView" />
+
+    <ImageView
+        android:id="@+id/drag_and_drop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        app:srcCompat="@drawable/ic_ten_dots" />
 
 </RelativeLayout>

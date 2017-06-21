@@ -254,6 +254,7 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
                     values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
                     new String[]{boardId});
             PreferencesManager.INSTANCE.deleteFavouriteBoard(mActivity, "/" + boardId + "/");
+            mView.getFavouritesFragment().notifyOrInitBoardList();
             likeImage.setImageResource(R.drawable.ic_favorite_unchecked);
         } else {
             ContentValues values = new ContentValues();
@@ -263,8 +264,11 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
                     values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
                     new String[]{boardId});
             PreferencesManager.INSTANCE.addNewFavouriteBoard(mActivity, "/" + boardId + "/");
+            mView.getFavouritesFragment().notifyOrInitBoardList();
             likeImage.setImageResource(R.drawable.ic_favorite_checked);
         }
+
+
     }
 
     public int getPreferredValue(String boardId) {

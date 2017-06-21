@@ -10,4 +10,6 @@ interface ExpandableListViewView {
 
     fun onBoardsSelected(boardId: String, boardName: String)
 
+    fun getFavouritesFragment(): FavouritesFragment
+
 }

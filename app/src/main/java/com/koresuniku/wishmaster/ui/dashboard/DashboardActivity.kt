@@ -34,11 +34,15 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     var mDataLoader: DataLoader? = null
     var mPreferencesManager: PreferencesManager? = null
 
+    var mMenu: Menu? = null
+
     var mSchema: BoardsJsonSchema? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
+
+
         mPreferencesManager = PreferencesManager
         mDataLoader = DataLoader(this)
 
@@ -68,6 +72,22 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.dashboard_menu, menu)
+        mMenu = menu
+
+        when (mActionBarUnit!!.getTabPosition()) {
+            0 -> {
+                mMenu!!.findItem(R.id.action_add_board).isVisible = true
+                mMenu!!.findItem(R.id.action_refresh_boards).isVisible = false
+            }
+            1 -> {
+                mMenu!!.findItem(R.id.action_add_board).isVisible = false
+                mMenu!!.findItem(R.id.action_refresh_boards).isVisible = true
+            }
+            2 -> {
+                mMenu!!.findItem(R.id.action_add_board).isVisible = false
+                mMenu!!.findItem(R.id.action_refresh_boards).isVisible = false
+            }
+        }
         return true
     }
 
@@ -124,19 +144,6 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         this.mSchema = schema[0] as BoardsJsonSchema
 
-        var techList: ArrayList<Tech> = mSchema!!.tech!! as ArrayList
-//        var test: Tech = Tech()
-//        test.id = "test 2"
-//        test.name = "test board"
-//        techList.add(test)
-//        var test2: Tech = Tech()
-//        test2.id = "test 3"
-//        test2.name = "test board"
-//        techList.add(test2)
-
-        this.mSchema!!.tech = techList
-
-
         val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
                 BoardsUtils.mBoardsProjection, null, null, null)
 
@@ -168,10 +175,8 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
                 Log.d(LOG_TAG, "some boards deleted")
                 BoardsUtils.deleteOldBoards(this.mSchema, this)
             }
-
         } else {
             Log.d(LOG_TAG, "no new boards: cursor " + cursor.count + ", schema " + totalBoardsCount)
-            Log.d(LOG_TAG, "tech count: " + mSchema!!.tech!!.count())
         }
         cursor.close()
 
@@ -181,7 +186,6 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     override fun showProgressBar() {
 
     }
-
 
     override fun getBoardListFragment(): BoardListFragment {
         return this.mBoardListFragment!!
@@ -197,5 +201,9 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
     override fun getPreferencesManager(): PreferencesManager {
         return this.mPreferencesManager!!
+    }
+
+    override fun getMenu(): Menu? {
+        return this.mMenu
     }
 }

@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster.ui.view
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.widget.FrameLayout
 import com.koresuniku.wishmaster.system.PreferencesManager
 import com.koresuniku.wishmaster.ui.dashboard.BoardListFragment
@@ -27,5 +28,7 @@ interface ActionBarView {
     fun getHistoryFragment(): HistoryFragment
 
     fun getPreferencesManager(): PreferencesManager
+
+    fun getMenu(): Menu?
 
 }

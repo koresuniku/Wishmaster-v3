@@ -1,7 +1,9 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
+import android.database.Cursor
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -10,9 +12,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.database.BoardsUtils
+import com.koresuniku.wishmaster.database.DatabaseContract
+import com.koresuniku.wishmaster.http.boards_api.model.BaseBoardSchema
 import com.koresuniku.wishmaster.system.PreferencesManager
+import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleDividerItemDecoration
@@ -20,68 +27,92 @@ import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleItem
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener {
-
-
+class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener{
     val LOG_TAG: String = FavouritesFragment::class.java.simpleName!!
 
     var mRootView: View = mView.layoutInflater.inflate(R.layout.favourites_fragment, null, false)
 
     var mNoBoardsContainer: View? = null
     var mRecyclerView: RecyclerView? = null
-    var mRecyclerViewAdaper: RecyclerViewAdapter? = null
+    var mRecyclerViewAdapter: RecyclerViewAdapter? = null
     var mItemTouchHelper: ItemTouchHelper? = null
 
-    var favouriteBoardsList: ArrayList<String>? = ArrayList()
-
-
+    var favouriteBoardsList: ArrayList<BaseBoardSchema>? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mNoBoardsContainer = mRootView.findViewById(R.id.no_boards_container)
         mRecyclerView = mRootView.findViewById(R.id.favourites_recycler_view) as RecyclerView?
 
-
-        getFavouriteBoardsList()
-        initRecyclerView()
-
-
+        notifyOrInitBoardList()
 
         return mRootView
     }
 
-//    fun fillTestData() {
-//        dummyData = ArrayList()
-//        (0..10).map { "test board ${it + 1}" }.forEach { dummyData!!.add(it) }
-//    }
-
-    fun initRecyclerView() {
-//        mNoBoardsContainer!!.visibility = View.GONE
-
-        mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.resources))
-        mRecyclerView!!.layoutManager = LinearLayoutManager(mView) as RecyclerView.LayoutManager?
-        mRecyclerViewAdaper = RecyclerViewAdapter(this)
-        mRecyclerView!!.adapter = mRecyclerViewAdaper
-
-        val callback = SimpleItemTouchItemCallback(mRecyclerViewAdaper!!)
-        mItemTouchHelper = ItemTouchHelper(callback)
-        mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
+    fun notifyOrInitBoardList() {
+        if (getFavouriteBoardsList()) setupRecyclerView()
+        else {
+            mRecyclerView!!.visibility = View.GONE
+            mNoBoardsContainer!!.visibility = View.VISIBLE
+        }
     }
 
-    fun getFavouriteBoardsList() {
+    fun setupRecyclerView() {
+        mNoBoardsContainer!!.visibility = View.GONE
+        mRecyclerView!!.visibility = View.VISIBLE
+
+        if (mRecyclerViewAdapter != null) mRecyclerViewAdapter!!.notifyDataSetChanged()
+        else {
+            mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.resources))
+            mRecyclerView!!.layoutManager = LinearLayoutManager(mView) as RecyclerView.LayoutManager?
+            mRecyclerViewAdapter = RecyclerViewAdapter(this)
+            mRecyclerView!!.adapter = mRecyclerViewAdapter
+
+            val callback = SimpleItemTouchItemCallback(mRecyclerViewAdapter!!)
+            mItemTouchHelper = ItemTouchHelper(callback)
+            mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
+        }
+    }
+
+    fun getFavouriteBoardsList(): Boolean {
         val rawQueue = PreferencesManager.getFavouriteBoardsQueue(mView)
-        if (rawQueue.isEmpty()) return
+        if (rawQueue.isEmpty()) return false
 
-        val rawBoardsList: List<String> = rawQueue.substring(1, rawQueue.length).split(Regex("\\s"))
+        val rawBoardsList: List<String> = rawQueue.substring(1, rawQueue.length).split(Regex(pattern = "\\s"))
         val boardsList: ArrayList<String> = ArrayList()
-
-        Log.d(LOG_TAG, "raw boards: " + rawBoardsList)
-
         rawBoardsList.filterNot { it.isEmpty() }.mapTo(boardsList) { it.replace("/", "") }
 
-        Log.d(LOG_TAG, "boards received: " + boardsList)
-        favouriteBoardsList = boardsList
+        favouriteBoardsList = ArrayList()
+        var cursor: Cursor = mView.contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
+                BoardsUtils.mBoardsProjection, null, null, null, null)
+        val boardNameIndex: Int = cursor.getColumnIndex(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME)
+        var boardName: String
+        for (boardId: String in boardsList) {
+            val boardObject: BaseBoardSchema = BaseBoardSchema()
 
+            cursor = BoardsUtils.queryABoard(mView, boardId)
+            cursor.moveToFirst()
+            boardName = cursor.getString(boardNameIndex)
+
+            boardObject.id = boardId
+            boardObject.name = boardName
+            favouriteBoardsList!!.add(boardObject)
+        }
+        cursor.close()
+        return true
     }
+
+    fun rewriteBoardsQueue() {
+        var newQueue: String = ""
+        for (board: BaseBoardSchema in favouriteBoardsList!!) {
+            newQueue += " /"
+            newQueue += board.id
+            newQueue += "/"
+        }
+
+        Log.d(LOG_TAG, "rewritten queue: " + newQueue)
+        PreferencesManager.writeInFavouriteBoardsQueue(mView, newQueue)
+    }
+
 
     inner class RecyclerViewAdapter(val mOnStartDragListener: OnStartDragListener) :
             RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>(),
@@ -105,13 +136,19 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener 
         }
 
         override fun onSelectedChanged(actionState: Int) {
-
+            if (actionState == 0) {
+                rewriteBoardsQueue()
+                Handler().postDelayed({this.notifyDataSetChanged()}, 250)
+            }
         }
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            holder!!.boardNameTextView.text = favouriteBoardsList!![position]
-            holder!!.itemContainer.setOnLongClickListener(View.OnLongClickListener {
-                mOnStartDragListener!!.onStartDrag(holder); false
+
+            holder!!.boardNameTextView.text = getTextForTextView(position)
+
+            UIUtils.setImageViewColorFilter(holder.dragAndDropDots, android.R.color.darker_gray)
+            holder.dragAndDropDots.setOnLongClickListener({
+                mOnStartDragListener.onStartDrag(holder); false
             })
 
         }
@@ -127,6 +164,16 @@ class FavouritesFragment(val mView: Activity) : Fragment(), OnStartDragListener 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val boardNameTextView: TextView = itemView.findViewById(R.id.board_name) as TextView
             val itemContainer: View = itemView.findViewById(R.id.item_container) as View
+            val dragAndDropDots: ImageView = itemView.findViewById(R.id.drag_and_drop) as ImageView
+        }
+
+        fun getTextForTextView(position: Int): String {
+            var text: String = "/"
+            text += favouriteBoardsList!![position].id
+            text += "/ - "
+            text += favouriteBoardsList!![position].name
+
+            return text
         }
     }
 

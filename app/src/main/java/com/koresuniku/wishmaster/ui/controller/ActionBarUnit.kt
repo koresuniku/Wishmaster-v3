@@ -54,7 +54,6 @@ class ActionBarUnit(val mView: ActionBarView) {
     }
 
     fun addTabs() {
-
         setupViewPager()
         setupTabsIcons()
 
@@ -62,6 +61,7 @@ class ActionBarUnit(val mView: ActionBarView) {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 Log.d(LOG_TAG, "tab: " + tab.position)
                 mTabPosition = tab.position
+                if (mView.getMenu() != null) setupMenuItems(mTabPosition)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -96,11 +96,32 @@ class ActionBarUnit(val mView: ActionBarView) {
     fun setupViewPager() {
         mViewPager = mView.getViewPager()
         mViewPagerAdapter = PagerAdapter(mView.getAppCompatActivity().supportFragmentManager)
-        mViewPagerAdapter!!.addFragment(FavouritesFragment(mView.getAppCompatActivity()))
+        mViewPagerAdapter!!.addFragment(mView.getFavouritesFragment())
         mViewPagerAdapter!!.addFragment(mView.getBoardListFragment())
         mViewPagerAdapter!!.addFragment(HistoryFragment())
         mViewPager!!.adapter = mViewPagerAdapter
 
+    }
+
+    fun setupMenuItems(tabPosition: Int) {
+        when (tabPosition) {
+            0 -> {
+                mView.getMenu()!!.findItem(R.id.action_add_board).isVisible = true
+                mView.getMenu()!!.findItem(R.id.action_refresh_boards).isVisible = false
+            }
+            1 -> {
+                mView.getMenu()!!.findItem(R.id.action_add_board).isVisible = false
+                mView.getMenu()!!.findItem(R.id.action_refresh_boards).isVisible = true
+            }
+            2 -> {
+                mView.getMenu()!!.findItem(R.id.action_add_board).isVisible = false
+                mView.getMenu()!!.findItem(R.id.action_refresh_boards).isVisible = false
+            }
+        }
+    }
+
+    fun getTabPosition(): Int {
+        return mTabPosition
     }
 
     class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

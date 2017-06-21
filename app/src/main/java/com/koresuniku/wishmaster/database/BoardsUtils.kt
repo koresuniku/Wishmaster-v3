@@ -44,11 +44,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             adults = Adults()
             adults.id = boardId
             adults.name = boardName
-            adults.isPreferred = boardPreferredPosition >= 0
             adultsList.add(adults)
             cursor.moveToNext()
         }
@@ -65,11 +63,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             creativity = Creativity()
             creativity.id = boardId
             creativity.name = boardName
-            creativity.isPreferred = boardPreferredPosition >= 0
             creativityList.add(creativity)
 
             cursor.moveToNext()
@@ -87,11 +83,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             games = Games()
             games.id = boardId
             games.name = boardName
-            games.isPreferred = boardPreferredPosition >= 0
             gamesList.add(games)
 
             cursor.moveToNext()
@@ -110,11 +104,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             japanese = Japanese()
             japanese.id = boardId
             japanese.name = boardName
-            japanese.isPreferred = boardPreferredPosition >= 0
             japaneseList.add(japanese)
 
             cursor.moveToNext()
@@ -133,11 +125,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             other = Other()
             other.id = boardId
             other.name = boardName
-            other.isPreferred = boardPreferredPosition >= 0
             otherList.add(other)
 
             cursor.moveToNext()
@@ -156,11 +146,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             politics = Politics()
             politics.id = boardId
             politics.name = boardName
-            politics.isPreferred = boardPreferredPosition >= 0
             politicsList.add(politics)
 
             cursor.moveToNext()
@@ -179,11 +167,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             subjects = Subjects()
             subjects.id = boardId
             subjects.name = boardName
-            subjects.isPreferred = boardPreferredPosition >= 0
             subjectsList.add(subjects)
 
             cursor.moveToNext()
@@ -202,11 +188,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             tech = Tech()
             tech.id = boardId
             tech.name = boardName
-            tech.isPreferred = boardPreferredPosition >= 0
             techList.add(tech)
 
             cursor.moveToNext()
@@ -225,11 +209,9 @@ object BoardsUtils {
         for (i in 0..cursor.count - 1) {
             boardId = cursor.getString(columnBoardId)
             boardName = cursor.getString(columnBoardName)
-            boardPreferredPosition = cursor.getInt(columnBoardPreferredPosition)
             users = Users()
             users.id = boardId
             users.name = boardName
-            users.isPreferred = boardPreferredPosition >= 0
             usersList.add(users)
 
             cursor.moveToNext()
@@ -470,52 +452,6 @@ object BoardsUtils {
         for (boardId: String? in resultSet) {
             deleteABoard(boardId!!, activity)
         }
-//
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.adults!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.creativity!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.games!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.japanese!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.other!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.politics!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.subject!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.tech!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
-//        for (newBoardId: String? in resultSet) {
-//            mSchema!!.users!!.filter { it.id!! == newBoardId }.forEach {
-//                deleteFavouriteBoard(it.id!!, activity)
-//            }
-//        }
     }
 
     fun deleteABoard(boardId: String, activity: Activity) {
