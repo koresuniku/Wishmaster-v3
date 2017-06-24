@@ -126,17 +126,6 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
             }
         }
         mRecyclerViewAdapter!!.onItemRemoved(position)
-//        getFavouriteBoardsList()
-//        if (mRecyclerView!= null) {
-//        mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.getActivity().resources))
-//        mRecyclerView!!.layoutManager = LinearLayoutManager(mView.getActivity()) as RecyclerView.LayoutManager?
-//        mRecyclerViewAdapter = RecyclerViewAdapter(this)
-//        mRecyclerView!!.adapter = mRecyclerViewAdapter
-//
-//        val callback = SimpleItemTouchItemCallback(mRecyclerViewAdapter!!)
-//        mItemTouchHelper = ItemTouchHelper(callback)
-//        mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
-//        }
     }
 
     inner class RecyclerViewAdapter(val mOnStartDragListener: OnStartDragListener) :

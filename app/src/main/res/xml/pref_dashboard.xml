@@ -1,0 +1,12 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="@string/pref_dashboard_tab_position_key"
+        android:title="@string/settings_dashboard_tab_position_text"
+        android:entries="@array/settings_dashboard_tab_position_entries"
+        android:entryValues="@array/settings_dashboard_tab_position_entry_values"
+        android:negativeButtonText="@string/negative_button_text">
+
+    </ListPreference>
+
+</PreferenceScreen>

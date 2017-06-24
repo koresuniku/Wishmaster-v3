@@ -215,17 +215,10 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
         }
         boardNameTextView.setText("/" + boardId + "/ - " + boardName);
 
-        final FrameLayout favouriteContainer = (FrameLayout) view.findViewById(R.id.favourite_icon_container);
-        if (getPreferredValue(boardId) == DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_FALSE()) {
-            ((ImageView) favouriteContainer.findViewById(R.id.favourite_icon)).setImageResource(R.drawable.ic_favorite_unchecked);
-        } else {
-            ((ImageView) favouriteContainer.findViewById(R.id.favourite_icon)).setImageResource(R.drawable.ic_favorite_checked);
-        }
-
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                likeClicked(((ImageView)favouriteContainer.findViewById(R.id.favourite_icon)), boardId);
+                likeClicked(boardId);
                 return false;
             }
         });
@@ -242,7 +235,7 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
         return view;
     }
 
-    public void likeClicked(ImageView likeImage, String boardId) {
+    public void likeClicked(String boardId) {
 
         int ifPreferredValue = getPreferredValue(boardId);
 

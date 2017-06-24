@@ -17,6 +17,7 @@
     <string name="more_boards_text">Нужно больше любимых борд!</string>
     <string name="there_is_nothing_text">Здесь ничего нет.\nВпрочем, как и смысла в твоей жизни.</string>
     <string name="action_add_board">Добавить борду</string>
+    <string name="loading_boards_text">Загрузка борд… \nЭто может занять несколько секунд.</string>
 
     <string-array name="on_board_clicked_choice_remove">
         <item name="action_open_board">Открыть</item>
@@ -28,6 +29,31 @@
         <item name="action_copy_link">Копировать ссылку</item>
         <item name="action_add_to_favourites">Добавить в избранное</item>
     </string-array>
+
+
+    <string name="settings_text">Настройки</string>
+    <string name="dashboard_text">Начальная страница</string>
+
+    <string name="pref_dashboard_tab_position_key">choose_tab_position</string>
+    <string name="pref_dashboard_tab_position_favourites">0</string>
+    <string name="pref_dashboard_tab_position_board_list_default">1</string>
+    <string name="pref_dashboard_tab_position_history">2</string>
+
+    <string name="settings_dashboard_tab_position_text">Выбрать главную вкладку</string>
+    <string name="pref_choose_tab_position_favourites">Избранные борды</string>
+    <string name="pref_choose_tab_position_list">Список всех борд</string>
+    <string name="pref_choose_tab_position_history">История посещенных тредов</string>
+    <string-array name="settings_dashboard_tab_position_entries">
+        <item name="pref_choose_tab_position_favourites_entry">@string/pref_choose_tab_position_favourites</item>
+        <item name="pref_choose_tab_position_list_entry">@string/pref_choose_tab_position_list</item>
+        <item name="pref_choose_tab_position_history_entry">@string/pref_choose_tab_position_history</item>
+    </string-array>
+    <string-array name="settings_dashboard_tab_position_entry_values">
+        <item>@string/pref_dashboard_tab_position_favourites</item>
+        <item>@string/pref_dashboard_tab_position_board_list_default</item>
+        <item>@string/pref_dashboard_tab_position_history</item>
+    </string-array>
+    <string name="negative_button_text">Отмена</string>
 
 </resources>
 

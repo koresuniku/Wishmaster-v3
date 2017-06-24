@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.ui.controller
 
 import android.content.res.Configuration
+import android.preference.PreferenceManager
 import android.support.design.widget.TabLayout
 import android.support.v4.app.*
 import android.support.v4.view.ViewPager
@@ -75,12 +76,21 @@ class ActionBarUnit(val mView: ActionBarView) {
 
         if (mTabPosition == -1) {
             mTabPosition = mView.getPreferencesManager().getSharedPreferences(
-                    mView.getAppCompatActivity()).getInt(
-                    PreferencesManager.DASHBOARD_TAB_POSITION_KEY,
-                    PreferencesManager.DASHBOARD_TAB_POSITION_BOARD_LIST_DEFAULT)
+                    mView.getAppCompatActivity()).getString(
+                    mView.getAppCompatActivity().getString(R.string.pref_dashboard_tab_position_key),
+                    mView.getAppCompatActivity().getString(R.string.pref_dashboard_tab_position_board_list_default)).toInt()
         }
 
         mTabLayout!!.getTabAt(mTabPosition)!!.select()
+    }
+
+    fun setTabPosition() {
+        val pos = PreferenceManager.getDefaultSharedPreferences(mView.getAppCompatActivity()).getString(
+                mView.getAppCompatActivity().getString(R.string.pref_dashboard_tab_position_key),
+                mView.getAppCompatActivity().getString(R.string.pref_dashboard_tab_position_board_list_default))
+        mTabPosition = pos.toInt()
+        Log.d(LOG_TAG, "tab position: " + pos)
+        mTabLayout!!.getTabAt(mTabPosition )!!.select()
     }
 
     fun setupTabsIcons() {
@@ -106,15 +116,12 @@ class ActionBarUnit(val mView: ActionBarView) {
     fun setupMenuItems(tabPosition: Int) {
         when (tabPosition) {
             0 -> {
-                mView.getMenu()!!.findItem(R.id.action_add_board).isVisible = true
                 mView.getMenu()!!.findItem(R.id.action_refresh_boards).isVisible = false
             }
             1 -> {
-                mView.getMenu()!!.findItem(R.id.action_add_board).isVisible = false
                 mView.getMenu()!!.findItem(R.id.action_refresh_boards).isVisible = true
             }
             2 -> {
-                mView.getMenu()!!.findItem(R.id.action_add_board).isVisible = false
                 mView.getMenu()!!.findItem(R.id.action_refresh_boards).isVisible = false
             }
         }

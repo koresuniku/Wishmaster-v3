@@ -19,26 +19,4 @@
         android:textColor="@color/colorAccent"
         android:layout_toLeftOf="@+id/favourite_icon_container" />
 
-    <FrameLayout
-        android:id="@+id/favourite_icon_container"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/favourite_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_favorite_unchecked" />
-    </FrameLayout>
-
 </RelativeLayout>
