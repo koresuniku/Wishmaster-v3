@@ -1,7 +1,8 @@
-package com.koresuniku.wishmaster.ui.settings
+package com.koresuniku.wishmaster.system
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.PreferencesManager
 
 
 class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -50,7 +50,7 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
             mToolbar!!.elevation = 4.0f
         }
 
-        listView.setBackgroundColor(resources.getColor(R.color.general_background_color))
+        listView.setBackgroundColor(resources.getColor(R.color.colorBackground))
 
         mToolbar!!.title = getString(R.string.settings_text)
     }
@@ -82,11 +82,10 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
                 false }
             }
 
-            chooseTabPref.onPreferenceChangeListener.onPreferenceChange(chooseTabPref,
-                    PreferenceManager.getDefaultSharedPreferences(chooseTabPref.context)
-                            .getString(chooseTabPref.key, getString(R.string.pref_dashboard_tab_position_board_list_default)))
-
-
+            setChooseTabSummaryAndValue(chooseTabPref,
+                    PreferenceManager.getDefaultSharedPreferences(chooseTabPref.context).getString(
+                            chooseTabPref.key,
+                            getString(R.string.pref_dashboard_tab_position_board_list_default)))
         }
 
         fun setChooseTabSummaryAndValue(chooseTabPref: ListPreference, value: String) {
@@ -108,8 +107,10 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
 
         override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
             addPreferencesFromResource(R.xml.pref_dashboard)
+            view!!.setBackgroundColor(resources.getColor(R.color.colorBackground))
             initChooseTabPreference()
         }
+
 
 
 

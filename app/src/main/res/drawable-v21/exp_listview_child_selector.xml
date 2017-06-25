@@ -1,4 +1,4 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/material_gray_middle">
-    <item android:drawable="@color/general_background_color" />
+    <item android:drawable="@color/colorBackground" />
 </ripple>

@@ -7,5 +7,7 @@ interface FavouritesFragmentView {
 
     fun updateBoardListFragment()
 
-    fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String)
+    fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String, boardName: String)
+
+    fun openBoard(boardId: String, boardName: String)
 }

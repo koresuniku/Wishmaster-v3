@@ -10,4 +10,6 @@ interface LoadDataView {
     fun getActivity(): Activity
 
     fun showProgressBar()
+
+    fun getBoardId(): String?
 }

@@ -8,10 +8,10 @@ interface ExpandableListViewView {
 
     fun getSchema(): BoardsJsonSchema
 
-    fun onBoardsSelected(boardId: String, boardName: String)
+    fun openBoard(boardId: String, boardName: String)
 
     fun getFavouritesFragment(): FavouritesFragment
 
-    fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String)
+    fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String, boardName: String)
 
 }

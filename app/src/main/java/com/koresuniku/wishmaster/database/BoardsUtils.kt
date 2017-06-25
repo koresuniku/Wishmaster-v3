@@ -15,6 +15,10 @@ object BoardsUtils {
             DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME,
             DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED)
 
+    interface BoardsWrittenToDatabaseCallBack {
+        fun onBoardsWritten()
+    }
+
     fun getSchema(mActivity: Activity): BoardsJsonSchema {
         var mSchema: BoardsJsonSchema = BoardsJsonSchema()
 
@@ -231,7 +235,9 @@ object BoardsUtils {
         return cursor
     }
 
-    fun writeInAllTheBoardsIntoDatabase(mSchema: BoardsJsonSchema?, activity: Activity) {
+    fun writeInAllTheBoardsIntoDatabase(mSchema: BoardsJsonSchema?,
+                                        activity: Activity,
+                                        callBack: BoardsWrittenToDatabaseCallBack) {
         var values: ContentValues = ContentValues()
 
         for (board in mSchema!!.adults!!) {
@@ -305,6 +311,8 @@ object BoardsUtils {
             activity.contentResolver.insert(DatabaseContract.BoardsEntry.CONTENT_URI, values)
             values = ContentValues()
         }
+
+        callBack.onBoardsWritten()
     }
 
     fun insertNewBoards(mSchema: BoardsJsonSchema?, activity: Activity) {

@@ -1,6 +1,5 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
-import android.app.Activity
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Bundle
@@ -19,12 +18,13 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.database.BoardsUtils
 import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.boards_api.model.BaseBoardSchema
-import com.koresuniku.wishmaster.system.PreferencesManager
+import com.koresuniku.wishmaster.system.PreferenceManagerUtils
 import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleDividerItemDecoration
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
+import org.jetbrains.anko.backgroundColor
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -75,7 +75,7 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
     }
 
     fun getFavouriteBoardsList(): Boolean {
-        val rawQueue = PreferencesManager.getFavouriteBoardsQueue(mView.getActivity())
+        val rawQueue = PreferenceManagerUtils.getFavouriteBoardsQueue(mView.getActivity())
         if (rawQueue.isEmpty()) return false
 
         val rawBoardsList: List<String> = rawQueue.substring(1, rawQueue.length).split(Regex(pattern = "\\s"))
@@ -112,7 +112,7 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
         }
 
         Log.d(LOG_TAG, "rewritten queue: " + newQueue)
-        PreferencesManager.writeInFavouriteBoardsQueue(mView.getActivity(), newQueue)
+        PreferenceManagerUtils.writeInFavouriteBoardsQueue(mView.getActivity(), newQueue)
     }
 
     fun onBoardRemoved(boardId: String) {
@@ -188,7 +188,18 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
             Log.d(LOG_TAG, "setting long click listener for board: " + favouriteBoardsList!![position].id!!)
             holder.itemContainer.setOnLongClickListener {
                 Log.d(LOG_TAG, "sending board: " + favouriteBoardsList!![position].id!!)
-                mView.showChoiceDialog(true, favouriteBoardsList!![position].id!!); false
+                mView.showChoiceDialog(true,
+                        favouriteBoardsList!![position].id!!,
+                        favouriteBoardsList!![position].name!!); false
+            }
+
+            holder.itemContainer.background =
+                    mView.getActivity().resources.getDrawable(R.drawable.exp_listview_child_selector)
+
+            holder.itemContainer.setOnClickListener {
+                mView.openBoard(
+                        boardId = favouriteBoardsList!![position].id!!,
+                        boardName = favouriteBoardsList!![position].name!!)
             }
 
         }

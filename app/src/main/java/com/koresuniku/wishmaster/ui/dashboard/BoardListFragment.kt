@@ -36,6 +36,7 @@ class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
 
     fun setupExpandableListView() {
         mExpandableListView = mRootView.findViewById(R.id.board_list) as ExpandableListView
+        mExpandableListView!!.visibility = View.VISIBLE
         mExpandableListViewAdapter = BoardsExpandableListViewAdapter(mView)
         mExpandableListView!!.setGroupIndicator(null)
         mExpandableListView!!.setAdapter(mExpandableListViewAdapter)
@@ -56,7 +57,6 @@ class BoardListFragment(var mView: ExpandableListViewView) : Fragment() {
     }
 
     fun hideProgressYoba() {
-        Log.d(LOG_TAG, "hideProgressYoba:")
         mRootView.findViewById(R.id.progress_yoba_container).post {
             mRootView.findViewById(R.id.progress_yoba_container).visibility = View.GONE
         }

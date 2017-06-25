@@ -2,6 +2,8 @@ package com.koresuniku.wishmaster.http
 
 import android.util.Log
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
+import com.koresuniku.wishmaster.http.thread_list_api.ThreadListForPagesAsyncTask
+import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.ui.view.LoadDataView
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,25 +27,25 @@ class DataLoader(private val view: LoadDataView) {
         })
     }
 
-//    fun loadData(boardId: String) {
-//        view.showProgressBar()
-//        if (boardId == "d" || boardId == "d") {
-//            ThreadsForPagesAsyncTask(view.getActivity() as ThreadsActivity, boardId).execute()
-//        } else {
-//            val call = HttpClient.threadsService.getThreads(boardId)
-//            call.enqueue(object : Callback<ThreadsJsonSchema> {
-//                override fun onResponse(call: Call<ThreadsJsonSchema>,
-//                                        response: Response<ThreadsJsonSchema>) {
-//                    view.onDataLoaded(listOf(response.body()))
-//                }
-//
-//                override fun onFailure(call: Call<ThreadsJsonSchema>, t: Throwable) {
-//                    Log.d(LOG_TAG, "onFailure: ")
-//                    t.printStackTrace()
-//                }
-//            })
-//        }
-//    }
+    fun loadData(boardId: String) {
+        view.showProgressBar()
+        if (Dvach.threadForPagesBoards.contains(boardId)) {
+            ThreadListForPagesAsyncTask(view).execute()
+        } else {
+            val call = HttpClient.threadsService.getThreads(boardId)
+            call.enqueue(object : Callback<ThreadListJsonSchema> {
+                override fun onResponse(call: Call<ThreadListJsonSchema>,
+                                        response: Response<ThreadListJsonSchema>) {
+                    view.onDataLoaded(listOf(response.body()))
+                }
+
+                override fun onFailure(call: Call<ThreadListJsonSchema>, t: Throwable) {
+                    Log.d(LOG_TAG, "onFailure: ")
+                    t.printStackTrace()
+                }
+            })
+        }
+    }
 //
 //    fun loadData(boardId: String, threadNumber: String) {
 //        Log.d(LOG_TAG, "loadSingleThreadData:")

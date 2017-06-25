@@ -1,22 +1,18 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentValues
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.database.Cursor
-import android.opengl.Visibility
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.animation.Animation
 import android.widget.FrameLayout
 
 import com.koresuniku.wishmaster.R
@@ -25,34 +21,35 @@ import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
-import com.koresuniku.wishmaster.system.PreferencesManager
-import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
+import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.system.IntentUtils
+import com.koresuniku.wishmaster.system.PreferenceManagerUtils
+import com.koresuniku.wishmaster.ui.controller.ActionBarWithTabsUnit
 import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_ID_KEY
+import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_NAME_KEY
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_DASHBOARD_ID
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_REMOVE_FROM_FAVOURITES_KEY
-import com.koresuniku.wishmaster.ui.view.ActionBarView
+import com.koresuniku.wishmaster.ui.view.ActionBarWithTabsView
 import com.koresuniku.wishmaster.ui.view.LoadDataView
-import android.view.animation.LinearInterpolator
-import android.view.animation.Animation.RELATIVE_TO_SELF
-import android.view.animation.RotateAnimation
-import com.koresuniku.wishmaster.ui.settings.SettingsActivity
-import kotlinx.coroutines.experimental.async
+import com.koresuniku.wishmaster.system.SettingsActivity
+import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
 import org.jetbrains.anko.custom.async
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.doAsync
 
 
-class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListViewView,
-        LoadDataView, FavouritesFragmentView, DialogManager.DashBoardActivityCallback {
+class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, ExpandableListViewView,
+        LoadDataView, FavouritesFragmentView, DialogManager.DashBoardActivityCallback,
+        BoardsUtils.BoardsWrittenToDatabaseCallBack {
     val LOG_TAG: String = DashboardActivity::class.java.simpleName
-
 
     var mBoardListFragment: BoardListFragment? = null
     var mFavouritesFragment: FavouritesFragment? = null
 
-    var mActionBarUnit: ActionBarUnit? = null
+    var mActionBarWithTabsUnit: ActionBarWithTabsUnit? = null
     var mDataLoader: DataLoader? = null
-    var mPreferencesManager: PreferencesManager? = null
+    var mPreferencesManager: PreferenceManagerUtils? = null
 
     var mMenu: Menu? = null
 
@@ -63,22 +60,16 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         Log.d(LOG_TAG, "onCreate:")
         setContentView(R.layout.activity_dashboard_drawer)
 
-        mPreferencesManager = PreferencesManager
+        UIVisibilityManager.showSystemUI(this)
+
+        mPreferencesManager = PreferenceManagerUtils
         mDataLoader = DataLoader(this)
 
         mBoardListFragment = BoardListFragment(this)
         mFavouritesFragment = FavouritesFragment(this)
-        mActionBarUnit = ActionBarUnit(this)
+        mActionBarWithTabsUnit = ActionBarWithTabsUnit(this)
 
         initBoardList()
-
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(LOG_TAG, "onStart:")
-        mActionBarUnit!!.setTabPosition()
     }
 
     fun initBoardList() {
@@ -97,14 +88,14 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+        mActionBarWithTabsUnit!!.onConfigurationChanged(newConfig!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.dashboard_menu, menu)
         mMenu = menu
 
-        when (mActionBarUnit!!.getTabPosition()) {
+        when (mActionBarWithTabsUnit!!.getTabPosition()) {
             0 -> {
                 mMenu!!.findItem(R.id.action_refresh_boards).isVisible = false
             }
@@ -121,7 +112,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_refresh_boards -> {
-                async { mDataLoader!!.loadData() }
+                doAsync { mDataLoader!!.loadData() }
             }
             R.id.action_settings -> {
                 val intent: Intent = Intent(getActivity(), SettingsActivity::class.java)
@@ -161,35 +152,31 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     }
 
     override fun onCreateDialog(id: Int, args: Bundle?): Dialog {
-        return DialogManager.createDashBoardDialog(this, id, args)
+        return DialogManager.createDashBoardDialog(this, args)
     }
 
+    override fun onBoardsWritten() {
+        Log.d(LOG_TAG, "onBoardsWritten:")
+        Log.d(LOG_TAG, "mSchema: " + (mSchema == null))
+        runOnUiThread { mBoardListFragment!!.onDataLoaded() }
 
-    override fun onBoardsSelected(boardId: String, boardName: String) {
-//        val intent = Intent(this, ThreadListActivity::class.java)
-//
-//        intent.putExtra(Dvach.BOARD_ID, boardId)
-//        intent.putExtra(Dvach.BOARD_NAME, boardName)
-//
-//        if (DeviceUtils.sdkIsLollipopOrHigher()) {
-//            mActivity.startActivity(intent)
-//            mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
-//        } else mActivity.startActivity(intent)
+    }
+
+    fun getBoardsWrittenToDatabaseCallBack(): BoardsUtils.BoardsWrittenToDatabaseCallBack {
+        return this
     }
 
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         this.mSchema = schema[0] as BoardsJsonSchema
-
-        mBoardListFragment!!.hideProgressYoba()
 
         val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
                 BoardsUtils.mBoardsProjection, null, null, null)
 
         if (cursor.count == 0) {
             Log.d(LOG_TAG, "there are no rows in boards table, loading new boards...")
-            async {BoardsUtils.writeInAllTheBoardsIntoDatabase(getSchema(), getActivity())}
+            doAsync { BoardsUtils.writeInAllTheBoardsIntoDatabase(getSchema(),
+                    getActivity(), getBoardsWrittenToDatabaseCallBack()) }
             cursor.close()
-            this.mBoardListFragment!!.onDataLoaded()
             return
         }
 
@@ -238,7 +225,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         return HistoryFragment()
     }
 
-    override fun getPreferencesManager(): PreferencesManager {
+    override fun getPreferencesManager(): PreferenceManagerUtils {
         return this.mPreferencesManager!!
     }
 
@@ -254,17 +241,18 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
         this.mBoardListFragment!!.onDataLoaded()
     }
 
-    override fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String) {
+    override fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String, boardName: String) {
         Log.d(LOG_TAG, "showChoiceDialog, received board: " + boardId)
         var bundle: Bundle = Bundle()
         bundle.putBoolean(DIALOG_REMOVE_FROM_FAVOURITES_KEY, removeFromFavourites)
         bundle.putString(DIALOG_BOARD_ID_KEY, boardId)
+        bundle.putString(DIALOG_BOARD_NAME_KEY, boardName)
         removeDialog(DIALOG_DASHBOARD_ID)
         showDialog(DIALOG_DASHBOARD_ID, bundle)
     }
 
     override fun removeFromFavourites(boardId: String) {
-        PreferencesManager.deleteFavouriteBoard(
+        PreferenceManagerUtils.deleteFavouriteBoard(
                 getActivity(), "/$boardId/")
         val values = ContentValues()
         values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,
@@ -276,14 +264,30 @@ class DashboardActivity : AppCompatActivity(), ActionBarView, ExpandableListView
     }
 
     override fun addNewFavouriteBoard(boardId: String) {
-        PreferencesManager.addNewFavouriteBoard(
+        PreferenceManagerUtils.addNewFavouriteBoard(
                 getActivity(), "/$boardId/")
         val values = ContentValues()
         values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,
                 DatabaseContract.BoardsEntry.BOARD_PREFERRED_TRUE)
         contentResolver.update(DatabaseContract.BoardsEntry.CONTENT_URI,
                 values, DatabaseContract.BoardsEntry.COLUMN_BOARD_ID + " =? ",
-                arrayOf<String>(boardId))
+                arrayOf(boardId))
         mFavouritesFragment!!.notifyOrInitBoardList()
+    }
+
+    override fun openBoard(boardId: String, boardName: String) {
+        val intent = Intent(this, ThreadListActivity::class.java)
+
+        intent.putExtra(IntentUtils.BOARD_ID_CODE, boardId)
+        intent.putExtra(IntentUtils.BOARD_NAME_CODE, boardName)
+
+        if (DeviceUtils.sdkIsLollipopOrHigher()) {
+            this.startActivity(intent)
+            //this.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+        } else this.startActivity(intent)
+    }
+
+    override fun getBoardId(): String? {
+        return null
     }
 }

@@ -1,12 +1,11 @@
 package com.koresuniku.wishmaster.ui.dashboard;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +13,6 @@ import com.koresuniku.wishmaster.R;
 import com.koresuniku.wishmaster.database.BoardsUtils;
 import com.koresuniku.wishmaster.database.DatabaseContract;
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema;
-import com.koresuniku.wishmaster.system.PreferencesManager;
 
 import java.util.List;
 
@@ -28,6 +26,7 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
 
 
     public BoardsExpandableListViewAdapter(ExpandableListViewView view) {
+        Log.d(LOG_TAG, "BoardsExpandableListViewAdapter");
         this.mView = view;
         mActivity = view.getActivity();
         mSchema = BoardsUtils.INSTANCE.getSchema(mActivity);
@@ -218,7 +217,7 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                likeClicked(boardId);
+                likeClicked(boardId, boardName);
                 return false;
             }
         });
@@ -228,39 +227,21 @@ public class BoardsExpandableListViewAdapter extends BaseExpandableListAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mView.onBoardsSelected(boardId, boardName);
+                mView.openBoard(boardId, boardName);
             }
         });
 
         return view;
     }
 
-    public void likeClicked(String boardId) {
+    public void likeClicked(String boardId, String boardName) {
 
         int ifPreferredValue = getPreferredValue(boardId);
 
         if (ifPreferredValue > DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_FALSE()) {
-//            ContentValues values = new ContentValues();
-//            values.put(DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED(),
-//                    DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_FALSE());
-//            mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
-//                    values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
-//                    new String[]{boardId});
-//            PreferencesManager.INSTANCE.deleteFavouriteBoard(mActivity, "/" + boardId + "/");
-//            mView.getFavouritesFragment().notifyOrInitBoardList();
-//            likeImage.setImageResource(R.drawable.ic_favorite_unchecked);
-            mView.showChoiceDialog(true, boardId);
+            mView.showChoiceDialog(true, boardId, boardName);
         } else {
-//            ContentValues values = new ContentValues();
-//            values.put(DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_PREFERRED(),
-//                    DatabaseContract.BoardsEntry.INSTANCE.getBOARD_PREFERRED_TRUE());
-//            mActivity.getContentResolver().update(DatabaseContract.BoardsEntry.INSTANCE.getCONTENT_URI(),
-//                    values, DatabaseContract.BoardsEntry.INSTANCE.getCOLUMN_BOARD_ID() + " =? ",
-//                    new String[]{boardId});
-//            PreferencesManager.INSTANCE.addNewFavouriteBoard(mActivity, "/" + boardId + "/");
-//            mView.getFavouritesFragment().notifyOrInitBoardList();
-//            likeImage.setImageResource(R.drawable.ic_favorite_checked);
-            mView.showChoiceDialog(false, boardId);
+            mView.showChoiceDialog(false, boardId, boardName);
         }
 
 

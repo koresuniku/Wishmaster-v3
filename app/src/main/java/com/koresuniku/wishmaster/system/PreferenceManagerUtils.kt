@@ -1,19 +1,15 @@
 package com.koresuniku.wishmaster.system
 
 import android.app.Activity
-import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Log
-import org.jetbrains.anko.defaultSharedPreferences
 
-object PreferencesManager {
-    val LOG_TAG: String = PreferencesManager::class.java.simpleName
-
+object PreferenceManagerUtils {
+    val LOG_TAG: String = PreferenceManagerUtils::class.java.simpleName
 
     val FAVOURITE_BOARDS_QUEUE_KEY: String = "favourite_boards_queue_key"
     val FAVOURITE_BOARDS_QUEUE_EMPTY_DEFAULT: String = ""
-
 
     fun getSharedPreferences(context: Activity): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)

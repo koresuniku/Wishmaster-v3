@@ -22,7 +22,7 @@
     <string-array name="on_board_clicked_choice_remove">
         <item name="action_open_board">Открыть</item>
         <item name="action_copy_link">Копировать ссылку</item>
-        <item name="action_remove_from_favourites">Убрать из избранных</item>
+        <item name="action_remove_from_favourites">Убрать из избранного</item>
     </string-array>
     <string-array name="on_board_clicked_choice_add">
         <item name="action_open_board">Открыть</item>

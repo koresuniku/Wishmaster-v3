@@ -5,5 +5,5 @@
         android:drawable="@color/material_gray_middle" />
 
     <item android:state_pressed="false"
-        android:drawable="@color/general_background_color"/>
+        android:drawable="@color/colorBackground"/>
 </selector>
