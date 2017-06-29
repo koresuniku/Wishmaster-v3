@@ -1,108 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/thread_item_container"
+    android:id="@+id/thread_item_container_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:clipToPadding="false"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
-    <RelativeLayout
-        android:id="@+id/thread_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/thread_item_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/post_item_ripple_makaba"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/post_item_up_under_padding"
+        android:paddingLeft="@dimen/post_item_side_padding"
+        android:paddingRight="@dimen/post_item_side_padding"
+        android:paddingTop="@dimen/post_item_side_padding">
 
-        <TextView
-            android:id="@+id/thread_number_and_time_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/thread_subject"
-            android:text="number and time"
-            android:visibility="gone" />
+        <RelativeLayout
+            android:id="@+id/thread_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:id="@+id/image_container_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/thread_number_and_time_info">
-
-            <ImageView
-                android:id="@+id/thread_image"
+            <TextView
+                android:id="@+id/thread_number_and_time_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                />
-
-            <ImageView
-                android:id="@+id/webm_imageview"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/thread_subject"
+                android:text="number and time"
                 android:visibility="gone" />
 
-        </FrameLayout>
+            <RelativeLayout
+                android:id="@+id/image_and_summary_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/thread_subject">
+
+                <FrameLayout
+                    android:id="@+id/image_container_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/thread_number_and_time_info">
+
+                    <ImageView
+                        android:id="@+id/thread_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true" />
+
+                    <ImageView
+                        android:id="@+id/webm_imageview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:padding="2dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/webm" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/image_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_container_1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:text="summary"
+                    android:textSize="10sp" />
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/thread_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="subject"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+                android:id="@+id/thread_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/thread_subject"
+                android:layout_marginLeft="@dimen/post_item_side_padding"
+                android:layout_toEndOf="@+id/image_and_summary_container"
+                android:layout_toRightOf="@+id/image_and_summary_container"
+                android:maxLines="6"
+                android:text="TextView"
+                android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/image_summary"
+            android:id="@+id/posts_and_files_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/image_container_1"
-            android:layout_gravity="top"
-            android:layout_toLeftOf="@+id/thread_comment"
-            android:gravity="top|center"
-            android:text="summary"
-            android:textSize="10sp" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/thread_content"
+            android:text="posts and files info"
+            android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/thread_subject"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="subject"
-            android:textSize="16sp"
-            android:textStyle="bold" />
 
-        <com.koresuniku.wishmaster.ui.widget.NoScrollTextView
-            android:id="@+id/thread_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/thread_number_and_time_info"
-            android:layout_toEndOf="@+id/image_container_1"
-            android:layout_toRightOf="@+id/image_container_1"
-            android:maxLines="6"
-            android:text="comment"
-            android:textAppearance="@style/TextAppearance.AppCompat" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/posts_and_files_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/thread_content"
-        android:text="posts and files info"
-        android:textSize="12sp" />
-
-
-    <FrameLayout
-        android:id="@+id/page_indicator_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/posts_and_files_info">
-
-        <include
-            android:id="@+id/threads_page_indicator_view"
-            layout="@layout/threads_page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"></include>
-    </FrameLayout>
-
-</RelativeLayout>
+</android.support.v7.widget.CardView>

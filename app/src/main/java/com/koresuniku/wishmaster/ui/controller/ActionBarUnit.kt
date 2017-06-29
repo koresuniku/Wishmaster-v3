@@ -1,12 +1,15 @@
 package com.koresuniku.wishmaster.ui.controller
 
 import android.content.res.Configuration
+import android.os.Build
+import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.ui.view.ActionBarView
 
@@ -34,15 +37,18 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
         } else {
             height = mView.getAppCompatActivity().resources.getDimension(R.dimen.action_bar_height_landscape).toInt()
         }
-
         mToolbar!!.layoutParams!!.height = height
         mToolbar!!.layoutParams!!.width = Toolbar.LayoutParams.MATCH_PARENT
         if (createTopMargin) setProperDimensForToolbarContainer()
 
-
         mActivityToolbarContainer.addView(mLocalToolbarContainer)
 
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)
+        if (DeviceUtils.sdkIsLollipopOrHigher()) {
+            //mView.getAppCompatActivity().supportActionBar!!.elevation = 2f
+            //mToolbar!!.elevation = 2f
+        }
+
         mView.setupActionBarTitle()
     }
 

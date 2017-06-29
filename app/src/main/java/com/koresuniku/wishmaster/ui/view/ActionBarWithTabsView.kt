@@ -1,10 +1,11 @@
 package com.koresuniku.wishmaster.ui.view
 
+import android.support.design.widget.AppBarLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.FrameLayout
-import com.koresuniku.wishmaster.system.PreferenceManagerUtils
+import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.dashboard.BoardListFragment
 import com.koresuniku.wishmaster.ui.dashboard.FavouritesFragment
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
@@ -26,7 +27,7 @@ interface ActionBarWithTabsView {
 
     fun getHistoryFragment(): HistoryFragment
 
-    fun getPreferencesManager(): PreferenceManagerUtils
+    fun getPreferencesManager(): PreferenceUtils
 
     fun getMenu(): Menu?
 

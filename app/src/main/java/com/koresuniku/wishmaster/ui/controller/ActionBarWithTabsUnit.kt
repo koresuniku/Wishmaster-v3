@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.ui.controller
 
 import android.content.res.Configuration
 import android.preference.PreferenceManager
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.*
 import android.support.v4.view.ViewPager
@@ -11,6 +12,7 @@ import android.util.Log
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
 import com.koresuniku.wishmaster.ui.view.ActionBarView
 import com.koresuniku.wishmaster.ui.view.ActionBarWithTabsView
@@ -80,9 +82,14 @@ class ActionBarWithTabsUnit(val mView: ActionBarWithTabsView) : ActionBarView {
         mActionBarUnit!!.showTabLayout()
         mTabLayout!!.setupWithViewPager(mView.getViewPager())
 
-        mTabLayout!!.getTabAt(0)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_favorite_black)
-        mTabLayout!!.getTabAt(1)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_list_black)
-        mTabLayout!!.getTabAt(2)!!.icon = mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_history_black)
+        if (DeviceUtils.sdkIsLollipopOrHigher()) {
+            mTabLayout!!.getTabAt(0)!!.icon =
+                    mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_favorite_black)
+            mTabLayout!!.getTabAt(1)!!.icon =
+                    mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_list_black)
+            mTabLayout!!.getTabAt(2)!!.icon =
+                    mView.getAppCompatActivity().resources.getDrawable(R.drawable.ic_history_black)
+        }
         mTabLayout!!.offsetLeftAndRight(1)
     }
 

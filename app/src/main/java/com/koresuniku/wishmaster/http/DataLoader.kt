@@ -2,7 +2,7 @@ package com.koresuniku.wishmaster.http
 
 import android.util.Log
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
-import com.koresuniku.wishmaster.http.thread_list_api.ThreadListForPagesAsyncTask
+import com.koresuniku.wishmaster.http.thread_list_api.ThreadListForPagesAsync
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.ui.view.LoadDataView
 import retrofit2.Call
@@ -30,7 +30,7 @@ class DataLoader(private val view: LoadDataView) {
     fun loadData(boardId: String) {
         view.showProgressBar()
         if (Dvach.threadForPagesBoards.contains(boardId)) {
-            ThreadListForPagesAsyncTask(view).execute()
+            ThreadListForPagesAsync(view).getThreadList()
         } else {
             val call = HttpClient.threadsService.getThreads(boardId)
             call.enqueue(object : Callback<ThreadListJsonSchema> {

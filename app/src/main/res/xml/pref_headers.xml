@@ -2,7 +2,10 @@
 
     <header
         android:fragment="com.koresuniku.wishmaster.system.SettingsActivity$DashboardPreferenceFragment"
-        android:title="@string/dashboard_text" />
+        android:title="@string/header_dashboard_text" />
+
+    <header android:fragment="com.koresuniku.wishmaster.system.SettingsActivity$InterfacePreferenceFragment"
+        android:title="@string/header_interface_text" />
 
 
 </preference-headers>

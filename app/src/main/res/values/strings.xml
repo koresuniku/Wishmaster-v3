@@ -32,13 +32,12 @@
 
 
     <string name="settings_text">Настройки</string>
-    <string name="dashboard_text">Начальная страница</string>
+    <string name="header_dashboard_text">Начальная страница</string>
 
     <string name="pref_dashboard_tab_position_key">choose_tab_position</string>
     <string name="pref_dashboard_tab_position_favourites">0</string>
     <string name="pref_dashboard_tab_position_board_list_default">1</string>
     <string name="pref_dashboard_tab_position_history">2</string>
-
     <string name="settings_dashboard_tab_position_text">Выбрать главную вкладку</string>
     <string name="pref_choose_tab_position_favourites">Избранные борды</string>
     <string name="pref_choose_tab_position_list">Список всех борд</string>
@@ -54,6 +53,31 @@
         <item>@string/pref_dashboard_tab_position_history</item>
     </string-array>
     <string name="negative_button_text">Отмена</string>
+
+    <string name="pref_images_height_key">image_height_key</string>
+    <string name="pref_images_height_default">150</string>
+
+    <string name="header_interface_text">Интерфейс</string>
+    <string name="pref_category_other">Другое</string>
+    
+    <string name="pref_loading_view_key">loading_view_key</string>
+    <string name="pref_loading_yoba_default">0</string>
+    <string name="pref_loading_spinner">1</string>
+    <string name="pref_loading_android_progress_bar">2</string>
+    <string name="settings_interface_loading_view_text">Анимация загрузки</string>
+    <string name="pref_choose_loading_view_yoba">Йоба</string>
+    <string name="pref_choose_loading_view_spinner">Спиннер</string>
+    <string name="pref_choose_loading_view_android_progress_bar">Ведроид прогресс бар материальный</string>
+    <string-array name="settings_interface_loading_view_entries">
+        <item name="pref_choose_loading_view_yoba_entry">@string/pref_choose_loading_view_yoba</item>
+        <item name="pref_choose_loading_view_spinner_entry">@string/pref_choose_loading_view_spinner</item>
+        <item name="pref_choose_loading_view_android_pregress_bar_entry">@string/pref_choose_loading_view_android_progress_bar</item>
+    </string-array>
+    <string-array name="settings_interface_loading_view_entry_values">
+        <item>@string/pref_loading_yoba_default</item>
+        <item>@string/pref_loading_spinner</item>
+        <item>@string/pref_loading_android_progress_bar</item>
+    </string-array>
 
 </resources>
 

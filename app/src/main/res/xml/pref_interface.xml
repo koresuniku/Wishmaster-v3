@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_category_other">
+
+        <ListPreference
+            android:key="@string/pref_loading_view_key"
+            android:title="@string/settings_interface_loading_view_text"
+            android:entries="@array/settings_interface_loading_view_entries"
+            android:entryValues="@array/settings_interface_loading_view_entry_values"
+            android:negativeButtonText="@string/negative_button_text">
+
+        </ListPreference>
+
+    </PreferenceCategory>
+</PreferenceScreen>

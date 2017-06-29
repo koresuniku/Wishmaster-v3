@@ -8,11 +8,12 @@ import android.content.res.Configuration
 import android.database.Cursor
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
+import android.support.design.widget.AppBarLayout
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.FrameLayout
 
 import com.koresuniku.wishmaster.R
@@ -23,7 +24,7 @@ import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.system.IntentUtils
-import com.koresuniku.wishmaster.system.PreferenceManagerUtils
+import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.controller.ActionBarWithTabsUnit
 import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_ID_KEY
@@ -34,9 +35,11 @@ import com.koresuniku.wishmaster.ui.view.ActionBarWithTabsView
 import com.koresuniku.wishmaster.ui.view.LoadDataView
 import com.koresuniku.wishmaster.system.SettingsActivity
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.controller.ImageManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
 import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.find
 
 
 class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, ExpandableListViewView,
@@ -49,7 +52,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
 
     var mActionBarWithTabsUnit: ActionBarWithTabsUnit? = null
     var mDataLoader: DataLoader? = null
-    var mPreferencesManager: PreferenceManagerUtils? = null
+    var mPreferencesManager: PreferenceUtils? = null
 
     var mMenu: Menu? = null
 
@@ -62,7 +65,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
 
         UIVisibilityManager.showSystemUI(this)
 
-        mPreferencesManager = PreferenceManagerUtils
+        mPreferencesManager = PreferenceUtils
         mDataLoader = DataLoader(this)
 
         mBoardListFragment = BoardListFragment(this)
@@ -80,7 +83,6 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
             showProgressBar()
             async { mDataLoader!!.loadData() }
         } else {
-
             this.mBoardListFragment!!.onDataLoaded()
         }
         cursor.close()
@@ -89,6 +91,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarWithTabsUnit!!.onConfigurationChanged(newConfig!!)
+        Log.d(LOG_TAG, ImageManager.computeImageWidthInDp(this).toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -169,6 +172,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         this.mSchema = schema[0] as BoardsJsonSchema
 
+
         val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
                 BoardsUtils.mBoardsProjection, null, null, null)
 
@@ -209,8 +213,8 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun showProgressBar() {
+        mBoardListFragment!!.mRootView.find<View>(R.id.progress_container_container).visibility = View.VISIBLE
         mBoardListFragment!!.showProgressYoba()
-
     }
 
     override fun getBoardListFragment(): BoardListFragment {
@@ -225,7 +229,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
         return HistoryFragment()
     }
 
-    override fun getPreferencesManager(): PreferenceManagerUtils {
+    override fun getPreferencesManager(): PreferenceUtils {
         return this.mPreferencesManager!!
     }
 
@@ -252,7 +256,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun removeFromFavourites(boardId: String) {
-        PreferenceManagerUtils.deleteFavouriteBoard(
+        PreferenceUtils.deleteFavouriteBoard(
                 getActivity(), "/$boardId/")
         val values = ContentValues()
         values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,
@@ -264,7 +268,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun addNewFavouriteBoard(boardId: String) {
-        PreferenceManagerUtils.addNewFavouriteBoard(
+        PreferenceUtils.addNewFavouriteBoard(
                 getActivity(), "/$boardId/")
         val values = ContentValues()
         values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_PREFERRED,

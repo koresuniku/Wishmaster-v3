@@ -18,13 +18,12 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.database.BoardsUtils
 import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.boards_api.model.BaseBoardSchema
-import com.koresuniku.wishmaster.system.PreferenceManagerUtils
+import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleDividerItemDecoration
 import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
-import org.jetbrains.anko.backgroundColor
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -75,7 +74,7 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
     }
 
     fun getFavouriteBoardsList(): Boolean {
-        val rawQueue = PreferenceManagerUtils.getFavouriteBoardsQueue(mView.getActivity())
+        val rawQueue = PreferenceUtils.getFavouriteBoardsQueue(mView.getActivity())
         if (rawQueue.isEmpty()) return false
 
         val rawBoardsList: List<String> = rawQueue.substring(1, rawQueue.length).split(Regex(pattern = "\\s"))
@@ -112,7 +111,7 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
         }
 
         Log.d(LOG_TAG, "rewritten queue: " + newQueue)
-        PreferenceManagerUtils.writeInFavouriteBoardsQueue(mView.getActivity(), newQueue)
+        PreferenceUtils.writeInFavouriteBoardsQueue(mView.getActivity(), newQueue)
     }
 
     fun onBoardRemoved(boardId: String) {

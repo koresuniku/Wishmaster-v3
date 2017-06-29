@@ -2,7 +2,6 @@ package com.koresuniku.wishmaster.system
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -94,7 +93,7 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
                     chooseTabPref.summary = getString(R.string.pref_choose_tab_position_favourites)
                     chooseTabPref.setValueIndex(getString(R.string.pref_dashboard_tab_position_favourites).toInt())
                 }
-                getString(R.string.pref_dashboard_tab_position_board_list_default)-> {
+                getString(R.string.pref_dashboard_tab_position_board_list_default) -> {
                     chooseTabPref.summary = getString(R.string.pref_choose_tab_position_list)
                     chooseTabPref.setValueIndex(getString(R.string.pref_dashboard_tab_position_board_list_default).toInt())
                 }
@@ -111,9 +110,49 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
             initChooseTabPreference()
         }
 
+    }
 
+    @SuppressLint("ValidFragment")
+    class InterfacePreferenceFragment : PreferenceFragment() {
+        val LOG_TAG: String = InterfacePreferenceFragment::class.java.simpleName
 
+        override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+            addPreferencesFromResource(R.xml.pref_interface)
+            view!!.setBackgroundColor(resources.getColor(R.color.colorBackground))
+            initChooseLoadingViewPreference()
+        }
 
+        fun initChooseLoadingViewPreference() {
+            val chooseLoadingViewPreference =
+                    findPreference(getString(R.string.pref_loading_view_key)) as ListPreference
+            chooseLoadingViewPreference.setOnPreferenceChangeListener { preference, newValue -> run {
+                setChooseLoadingViewSummaryToValue(chooseLoadingViewPreference, newValue.toString())
+                false }
+            }
+
+            setChooseLoadingViewSummaryToValue(chooseLoadingViewPreference,
+                    PreferenceManager.getDefaultSharedPreferences(chooseLoadingViewPreference.context)
+                            .getString(chooseLoadingViewPreference.key,
+                            getString(R.string.pref_loading_yoba_default)))
+
+        }
+
+        fun setChooseLoadingViewSummaryToValue(chooseLoadingViewPref: ListPreference, value: String) {
+            when (value) {
+                getString(R.string.pref_loading_yoba_default) -> {
+                    chooseLoadingViewPref.summary = getString(R.string.pref_choose_loading_view_yoba)
+                    chooseLoadingViewPref.setValueIndex(getString(R.string.pref_loading_yoba_default).toInt())
+                }
+                getString(R.string.pref_loading_spinner) -> {
+                    chooseLoadingViewPref.summary = getString(R.string.pref_choose_loading_view_spinner)
+                    chooseLoadingViewPref.setValueIndex(getString(R.string.pref_loading_spinner).toInt())
+                }
+                getString(R.string.pref_loading_android_progress_bar) -> {
+                    chooseLoadingViewPref.summary = getString(R.string.pref_choose_loading_view_android_progress_bar)
+                    chooseLoadingViewPref.setValueIndex(getString(R.string.pref_loading_android_progress_bar).toInt())
+                }
+            }
+        }
     }
 
 

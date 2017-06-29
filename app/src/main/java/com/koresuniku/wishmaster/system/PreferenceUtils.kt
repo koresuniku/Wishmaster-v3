@@ -1,17 +1,19 @@
 package com.koresuniku.wishmaster.system
 
 import android.app.Activity
+import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Log
+import com.koresuniku.wishmaster.R
 
-object PreferenceManagerUtils {
-    val LOG_TAG: String = PreferenceManagerUtils::class.java.simpleName
+object PreferenceUtils {
+    val LOG_TAG: String = PreferenceUtils::class.java.simpleName
 
     val FAVOURITE_BOARDS_QUEUE_KEY: String = "favourite_boards_queue_key"
     val FAVOURITE_BOARDS_QUEUE_EMPTY_DEFAULT: String = ""
 
-    fun getSharedPreferences(context: Activity): SharedPreferences {
+    fun getSharedPreferences(context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
@@ -55,5 +57,12 @@ object PreferenceManagerUtils {
         val editor: SharedPreferences.Editor = getSharedPreferences(activity).edit()
         editor.putString(FAVOURITE_BOARDS_QUEUE_KEY, queue)
         editor.commit()
+    }
+
+    fun getPreferredMaximumImageHeightInDp(activity: Activity): Float {
+        val value = getSharedPreferences(activity).getString(
+                activity.getString(R.string.pref_images_height_key),
+                activity.getString(R.string.pref_images_height_default))
+        return value.toFloat()
     }
 }
