@@ -4,7 +4,18 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.ui.view.IActivityView
+import android.view.WindowManager
+import android.view.Gravity
+
+
+
+//import netscape.javascript.JSObject.getWindow
+//import com.sun.xml.internal.ws.streaming.XMLStreamReaderUtil.getAttributes
+
+
 
 object DialogManager {
     val DIALOG_DASHBOARD_ID = 0
@@ -16,11 +27,19 @@ object DialogManager {
     val DIALOG_BOARD_ID_KEY: String = "dialog_board_id_key"
     val DIALOG_BOARD_NAME_KEY: String = "dialog_board_name_key"
 
-    interface DashBoardActivityCallback {
+    val DIALOG_THREAD_ITEM_POSITION_KEY = "thread_item_position_key"
+    val DIALOG_THREAD_ITEM_OPEN_POST = 0
+    val DIALOG_THREAD_ITEM_COPY_LINK_CODE: Int = 1
+
+
+    interface DashBoardActivityCallback : IActivityView {
         fun removeFromFavourites(boardId: String)
         fun addNewFavouriteBoard(boardId: String)
         fun openBoard(boardId: String, boardName: String)
-        fun getActivity(): Activity
+    }
+
+    interface PostCallBack : IActivityView {
+        fun openFullPost(position: Int)
     }
 
     fun createDashBoardDialog(view: DashBoardActivityCallback, args: Bundle?): Dialog {
@@ -54,5 +73,45 @@ object DialogManager {
 
         return builder.create()
     }
+
+    fun createPostDialog(view: PostCallBack, args: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(view.getActivity())
+        builder.setItems(R.array.on_thread_item_clicked, {
+            dialog, which -> run {
+            when (which) {
+                DIALOG_THREAD_ITEM_OPEN_POST -> {
+                    view.openFullPost(args!!.getInt(DIALOG_THREAD_ITEM_POSITION_KEY))
+                }
+                DIALOG_THREAD_ITEM_COPY_LINK_CODE -> {
+                    
+                }
+            }
+
+        }
+        })
+
+        builder.setCancelable(true)
+        return builder.create()
+    }
+
+//    fun createFullPostDialog(activity: Activity, view: View): Dialog {
+//        val builder = AlertDialog.Builder(activity)
+//        builder.setCancelable(true)
+//        builder.setView(view)
+//
+//
+//        val dialog = builder.create()
+//
+//        val lp = WindowManager.LayoutParams()
+//        lp.copyFrom(dialog.window.attributes)
+//        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+//        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+//        lp.gravity = Gravity.CENTER
+//
+//        dialog.window.attributes = lp
+//
+//        //return builder.create()
+//        return dialog
+//    }
 
 }

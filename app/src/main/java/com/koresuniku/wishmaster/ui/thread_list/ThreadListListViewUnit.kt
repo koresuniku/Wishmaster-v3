@@ -16,8 +16,8 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) {
 
     init {
         mListView = mView.getThreadListView()
-        mListView!!.addHeaderView(createHeaderView())
-        mListView!!.addFooterView(createHeaderView())
+        //mListView!!.addHeaderView(createHeaderView())
+        //mListView!!.addFooterView(createHeaderView())
     }
 
     fun createListViewAdapter() {

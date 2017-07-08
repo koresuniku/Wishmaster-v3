@@ -19,15 +19,22 @@
     <string name="action_add_board">Добавить борду</string>
     <string name="loading_boards_text">Загрузка борд… \nЭто может занять несколько секунд.</string>
 
+    <string name="action_copy_link">Копировать ссылку"</string>
+
     <string-array name="on_board_clicked_choice_remove">
         <item name="action_open_board">Открыть</item>
-        <item name="action_copy_link">Копировать ссылку</item>
+        <item name="action_copy_link">@string/action_copy_link</item>
         <item name="action_remove_from_favourites">Убрать из избранного</item>
     </string-array>
     <string-array name="on_board_clicked_choice_add">
         <item name="action_open_board">Открыть</item>
-        <item name="action_copy_link">Копировать ссылку</item>
+        <item name="action_copy_link">@string/action_copy_link</item>
         <item name="action_add_to_favourites">Добавить в избранное</item>
+    </string-array>
+
+    <string-array name="on_thread_item_clicked">
+        <item name="action_open_full">Открыть пост полностью</item>
+        <item name="action_copy_link">@string/action_copy_link</item>
     </string-array>
 
 

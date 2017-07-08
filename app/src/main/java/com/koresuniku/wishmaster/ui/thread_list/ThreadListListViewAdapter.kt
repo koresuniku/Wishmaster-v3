@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Handler
 import android.support.v7.widget.CardView
 import android.text.Html
+import android.util.Log
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,8 @@ import com.koresuniku.wishmaster.ui.controller.ImageManager
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.koresuniku.wishmaster.util.Formats
+import org.jetbrains.anko.lines
+import org.jetbrains.anko.sdk25.coroutines.onLongClick
 
 class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter() {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
@@ -29,10 +32,12 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     val ITEM_SINGLE_IMAGE: Int = 1
     val ITEM_MULTIPLE_IMAGES: Int = 2
 
+    var viewModeIsDialog: Boolean = false
+
     val mHandler = Handler()
 
     inner class ViewHolder {
-        var mItemContainerCardView: CardView? = null
+        var mItemContainer: FrameLayout? = null
         var mSubjectTextView: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
         var mPostsAndFilesInfo: TextView? = null
@@ -117,7 +122,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         val holder: ViewHolder = ViewHolder()
         holder.viewType = viewType
 
-        holder.mItemContainerCardView = itemView.findViewById(R.id.thread_item_container_container) as CardView
+        holder.mItemContainer = itemView.findViewById(R.id.thread_item_container_container) as FrameLayout
         holder.mSubjectTextView = itemView.findViewById(R.id.thread_subject) as TextView
         holder.mCommentTextView = itemView.findViewById(R.id.thread_comment) as NoScrollTextView
         holder.mPostsAndFilesInfo = itemView.findViewById(R.id.posts_and_files_info) as TextView
@@ -181,10 +186,10 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             }
         }
 
-        //mHandler.post { holder.mItemContainerCardView!!.elevation = 2.0f  }
-        //holder.mItemContainerCardView!!.post { holder.mItemContainerCardView!!.elevation = 2.0f }
-
-
+        holder.mItemContainer!!.setOnLongClickListener {
+            Log.d(LOG_TAG, "onLongClick:")
+            mView.showPostDialog(position); false
+        }
         val thread: Thread = mView.getSchema().getThreads()[position]
 
         if (Dvach.disableSubject.contains(mView.getBoardId())) {
@@ -216,6 +221,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             }
         }
 
+        if (viewModeIsDialog) holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
         holder.mCommentTextView!!.text = Html.fromHtml(thread.getComment())
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
@@ -387,6 +393,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         }
     }
 
+
     fun setupImageContainer(image: ImageView, webmImage: ImageView, summary: TextView, file: Files) {
         val path: String = file.getPath()
 
@@ -404,7 +411,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
     fun setCorrectImageSize(image: ImageView, file: Files) {
         val width: Int = UIUtils.convertDpToPixel(
-                ImageManager.computeImageWidthInDp(mView.getActivity())).toInt()
+                ImageManager.computeImageWidthInDp(mView.getActivity(), viewModeIsDialog)).toInt()
         val maxHeight: Int = UIUtils.convertDpToPixel(
                 ImageManager.getPreferredMaximumImageHeightInDp(mView.getActivity())).toInt()
 

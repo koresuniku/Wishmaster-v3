@@ -49,13 +49,25 @@ object TextUtils {
         val width = file.getWidth()
         val height = file.getHeight()
         val builder = StringBuilder()
+        var format: String = ""
 
-        builder.append(size)
-        builder.append("Кб")
-        builder.append(", ")
+        var tempChar: String
+        for (i in file.getPath().length - 1 downTo 0) {
+            tempChar = file.getPath().substring(i, i + 1)
+            if (tempChar != ".") format += tempChar
+            else break
+        }
+
         builder.append(width)
         builder.append("x")
         builder.append(height)
+        builder.append("\n")
+        builder.append(size)
+        builder.append("Кб")
+        builder.append(", ")
+        builder.append(format.reversed().toUpperCase())
+
+
 
         return builder.toString()
     }

@@ -91,7 +91,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarWithTabsUnit!!.onConfigurationChanged(newConfig!!)
-        Log.d(LOG_TAG, ImageManager.computeImageWidthInDp(this).toString())
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -246,7 +246,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun showChoiceDialog(removeFromFavourites: Boolean, boardId: String, boardName: String) {
-        Log.d(LOG_TAG, "showChoiceDialog, received board: " + boardId)
+        Log.d(LOG_TAG, "showPostDialog, received board: " + boardId)
         var bundle: Bundle = Bundle()
         bundle.putBoolean(DIALOG_REMOVE_FROM_FAVOURITES_KEY, removeFromFavourites)
         bundle.putString(DIALOG_BOARD_ID_KEY, boardId)

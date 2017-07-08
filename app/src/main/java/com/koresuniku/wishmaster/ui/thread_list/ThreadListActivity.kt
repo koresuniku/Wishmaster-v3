@@ -1,11 +1,14 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ListView
 import com.koresuniku.wishmaster.R
@@ -16,16 +19,22 @@ import com.koresuniku.wishmaster.system.IntentUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit
+import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.ProgressUnit
-import com.koresuniku.wishmaster.ui.view.ActionBarView
-import com.koresuniku.wishmaster.ui.view.AppBarLayoutView
-import com.koresuniku.wishmaster.ui.view.LoadDataView
-import com.koresuniku.wishmaster.ui.view.ProgressView
+import com.koresuniku.wishmaster.ui.view.*
 import org.jetbrains.anko.find
+import com.koresuniku.wishmaster.system.DeviceUtils
+import android.view.ViewGroup.LayoutParams.FILL_PARENT
+import android.widget.ScrollView
+
 
 class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
-        LoadDataView, ThreadListListViewView, ProgressView {
+        LoadDataView, ThreadListListViewView, ProgressView, FullPostView,
+        DialogManager.PostCallBack, IActivityView {
     val LOG_TAG: String = ThreadListActivity::class.java.simpleName
+
+    val DIALOG_POST_ID = 0
+    val DIALOG_FULL_POST_ID = 1
 
     private var boardId: String? = null
     var boardName: String? = null
@@ -35,6 +44,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     var mActionBarUnit: ActionBarUnit? = null
     var mProgressUnit: ProgressUnit? = null
     var mThreadListListViewUnit: ThreadListListViewUnit? = null
+    var mFullPostUnit: FullPostUnit? = null
     var mDataLoader: DataLoader? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +60,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         mActionBarUnit = ActionBarUnit(this, false)
         mProgressUnit = ProgressUnit(this)
         mThreadListListViewUnit = ThreadListListViewUnit(this)
+        mFullPostUnit = FullPostUnit(this)
 
         mDataLoader = DataLoader(this)
 
@@ -115,5 +126,46 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun getActivity(): Activity {
         return this
+    }
+
+    override fun showPostDialog(position: Int) {
+        val args: Bundle = Bundle()
+        args.putInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY, position)
+        removeDialog(DIALOG_POST_ID)
+        showDialog(DIALOG_POST_ID, args)
+    }
+
+    override fun onCreateDialog(id: Int, args: Bundle?): Dialog {
+        when (id) {
+            DIALOG_POST_ID -> {
+                return DialogManager.createPostDialog(this, args)
+            }
+
+        }
+        return AlertDialog.Builder(this).create()
+    }
+
+    override fun openFullPost(position: Int) {
+        val args: Bundle = Bundle()
+        args.putInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY, position)
+        removeDialog(DIALOG_FULL_POST_ID)
+
+        val dialog: Dialog = Dialog(this)
+        val scrollView = ScrollView(this)
+        mThreadListListViewUnit!!.mListViewAdapter!!.viewModeIsDialog = true
+        val itemView: View = mThreadListListViewUnit!!.mListViewAdapter!!.getView(
+                args.getInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY),
+                null, scrollView)
+        scrollView.addView(itemView)
+        dialog.setContentView(scrollView)
+        dialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
+
+        dialog.setOnDismissListener {
+            Log.d(LOG_TAG, "on dismiss")
+            mThreadListListViewUnit!!.mListViewAdapter!!.viewModeIsDialog = false
+        }
+
+        dialog.show()
+
     }
 }
