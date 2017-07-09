@@ -17,20 +17,18 @@ import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.system.IntentUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
-import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
-import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit
-import com.koresuniku.wishmaster.ui.controller.DialogManager
-import com.koresuniku.wishmaster.ui.controller.ProgressUnit
 import com.koresuniku.wishmaster.ui.view.*
 import org.jetbrains.anko.find
 import com.koresuniku.wishmaster.system.DeviceUtils
 import android.view.ViewGroup.LayoutParams.FILL_PARENT
 import android.widget.ScrollView
+import com.koresuniku.wishmaster.ui.controller.*
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 
 
 class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
-        LoadDataView, ThreadListListViewView, ProgressView, FullPostView,
-        DialogManager.PostCallBack, IActivityView {
+        LoadDataView, ThreadListListViewView, ProgressView,
+        DialogManager.PostCallBack, IActivityView, SwipyRefreshLayoutView {
     val LOG_TAG: String = ThreadListActivity::class.java.simpleName
 
     val DIALOG_POST_ID = 0
@@ -44,7 +42,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     var mActionBarUnit: ActionBarUnit? = null
     var mProgressUnit: ProgressUnit? = null
     var mThreadListListViewUnit: ThreadListListViewUnit? = null
-    var mFullPostUnit: FullPostUnit? = null
+    var mSwipyRefreshLayoutUnit: SwipyRefreshLayoutUnit? = null
     var mDataLoader: DataLoader? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,12 +54,11 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
         UIVisibilityManager.showSystemUI(this)
 
-        //mAppBarLayoutUnit = AppBarLayoutUnit(this)
+        mAppBarLayoutUnit = AppBarLayoutUnit(this)
         mActionBarUnit = ActionBarUnit(this, false)
         mProgressUnit = ProgressUnit(this)
         mThreadListListViewUnit = ThreadListListViewUnit(this)
-        mFullPostUnit = FullPostUnit(this)
-
+        mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
         mDataLoader = DataLoader(this)
 
         mProgressUnit!!.showProgressYoba()
@@ -76,6 +73,14 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun getAppBarLayout(): AppBarLayout {
         return findViewById(R.id.app_bar_layout) as AppBarLayout
+    }
+
+    override fun getAppBarLayoutUnit(): AppBarLayoutUnit {
+        return mAppBarLayoutUnit!!
+    }
+
+    override fun getSwipyRefreshLayoutUnit(): SwipyRefreshLayoutUnit {
+        return mSwipyRefreshLayoutUnit!!
     }
 
     override fun getToolbarContainer(): FrameLayout {
@@ -167,5 +172,13 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
         dialog.show()
 
+    }
+
+    override fun getRefreshLayout(): SwipyRefreshLayout {
+        return find(R.id.srl)
+    }
+
+    override fun getListView(): ListView {
+        return mThreadListListViewUnit!!.mListView!!
     }
 }

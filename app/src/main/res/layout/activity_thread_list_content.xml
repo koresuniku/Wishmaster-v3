@@ -21,11 +21,7 @@
                 android:id="@+id/toolbar_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                app:layout_scrollFlags="scroll|enterAlways"
-
-
-                >
+                app:layout_scrollFlags="scroll|enterAlways">
 
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
@@ -38,12 +34,11 @@
 
         <!--</com.koresuniku.wishmaster.ui.widget.FixedRecyclerView>-->
 
-        <!--<com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout-->
-        <!--android:id="@+id/srl"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-        <!--app:srl_direction="top">-->
+        <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:id="@+id/srl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <ListView
@@ -64,7 +59,7 @@
         </ListView>
 
 
-        <!--</com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>-->
+        </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
 
     </android.support.design.widget.CoordinatorLayout>

@@ -16,6 +16,9 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) {
 
     init {
         mListView = mView.getThreadListView()
+        mListView!!.setOnTouchListener { v, event ->
+            mView.getSwipyRefreshLayoutUnit().checkRefreshAvailability(); false
+        }
         //mListView!!.addHeaderView(createHeaderView())
         //mListView!!.addFooterView(createHeaderView())
     }
