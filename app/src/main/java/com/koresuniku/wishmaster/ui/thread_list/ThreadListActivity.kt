@@ -68,7 +68,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun getRefreshLayout(): SwipyRefreshLayout {
-        return mSwipyRefreshLayoutUnit!!.mRefreshLayout!!
+        return find(R.id.srl)
     }
 
     override fun getAppBarLayoutUnit(): AppBarLayoutUnit {
@@ -119,7 +119,8 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
         Log.d(LOG_TAG, "mSchema count: " + mSchema!!.getThreads().size)
 
-        mThreadListListViewUnit!!.createListViewAdapter()
+        if (!mThreadListListViewUnit!!.adapterIsCreated()) mThreadListListViewUnit!!.createListViewAdapter()
+        else mSwipyRefreshLayoutUnit!!.onDataLoaded()
     }
 
     override fun getActivityOverridden(): Activity {

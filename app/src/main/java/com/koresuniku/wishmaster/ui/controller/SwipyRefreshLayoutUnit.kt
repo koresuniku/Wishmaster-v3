@@ -22,8 +22,6 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
 
         mRefreshLayout!!.setOnRefreshListener { mView.loadData() }
 
-        mRefreshLayout!!.setOnRefreshListener {  }
-
     }
 
     fun disableRefreshLayout() {
@@ -77,7 +75,6 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
 
         if (!readyToRefreshTop && !readyToRefreshBottom) this.disableRefreshLayout()
     }
-
 
     fun onDataLoaded() {
         mRefreshLayout!!.isRefreshing = false
