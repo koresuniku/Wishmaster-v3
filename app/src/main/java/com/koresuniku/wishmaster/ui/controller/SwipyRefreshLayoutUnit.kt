@@ -20,11 +20,10 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
         mRefreshLayout!!.setDistanceToTriggerSync(75)
         mRefreshLayout!!.isEnabled = true
 
-<<<<<<< HEAD
         mRefreshLayout!!.setOnRefreshListener { mView.loadData() }
-=======
+
         mRefreshLayout!!.setOnRefreshListener {  }
->>>>>>> origin/master
+
     }
 
     fun disableRefreshLayout() {
@@ -34,10 +33,7 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
     fun enableTop() {
         mRefreshLayout!!.direction = SwipyRefreshLayoutDirection.TOP
         mRefreshLayout!!.isEnabled = true
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
     }
 
     fun enableBottom() {
@@ -58,11 +54,11 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
                 && mView.getAppBarLayoutUnit().appBarVerticalOffset == 0
         val readyToRefreshBottom: Boolean = !mView.getListView().canScrollVertically(1)
                 && Math.abs(mView.getAppBarLayoutUnit().appBarVerticalOffset) ==
-<<<<<<< HEAD
+
                 mView.getAppBarLayoutUnit().mAppBarLayout.totalScrollRange
-=======
+
                 mView.getAppBarLayoutUnit().appBarLayoutExpandedValue
->>>>>>> origin/master
+
 
         if (readyToRefreshTop) {
             this.enableTop()
@@ -73,16 +69,15 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
             Log.d(LOG_TAG, "readyToRefreshBottom")
         }
 
-<<<<<<< HEAD
+
         Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().mAppBarLayout.totalScrollRange)
-=======
         Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().appBarLayoutExpandedValue)
->>>>>>> origin/master
+
         Log.d(LOG_TAG, "offset: " + mView.getAppBarLayoutUnit().appBarVerticalOffset)
 
         if (!readyToRefreshTop && !readyToRefreshBottom) this.disableRefreshLayout()
     }
-<<<<<<< HEAD
+
 
     fun onDataLoaded() {
         mRefreshLayout!!.isRefreshing = false
@@ -90,6 +85,5 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
         mView.getAppBarLayoutUnit().mAppBarLayout.setExpanded(true)
         mView.getListViewAdapter().iNotifyDataSetChanged()
     }
-=======
->>>>>>> origin/master
+
 }
