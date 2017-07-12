@@ -20,12 +20,13 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.controller.ImageManager
 import com.koresuniku.wishmaster.ui.text.TextUtils
+import com.koresuniku.wishmaster.ui.view.INotifyableLisViewAdapter
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.koresuniku.wishmaster.util.Formats
 import org.jetbrains.anko.lines
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
 
-class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter() {
+class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(), INotifyableLisViewAdapter {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -35,6 +36,12 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     var viewModeIsDialog: Boolean = false
 
     val mHandler = Handler()
+
+    override fun iNotifyDataSetChanged() {
+        this.notifyDataSetChanged()
+    }
+
+
 
     inner class ViewHolder {
         var mItemContainer: FrameLayout? = null

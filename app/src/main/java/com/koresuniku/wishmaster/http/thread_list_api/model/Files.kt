@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.http.thread_list_api.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import javax.xml.datatype.Duration
 
 class Files {
     @SerializedName("height")
@@ -22,6 +23,9 @@ class Files {
     @SerializedName("displayname")
     @Expose
     private var displayName: String? = null
+    @SerializedName("duration")
+    @Expose
+    private var duration: String? = null
 
     fun getDisplayName(): String {
         return displayName!!
@@ -69,5 +73,13 @@ class Files {
 
     fun setSize(size: String) {
         this.size = size
+    }
+
+    fun getDuration(): String {
+        return this.duration!!
+    }
+
+    fun setDuration(duration: String) {
+        this.duration = duration
     }
 }

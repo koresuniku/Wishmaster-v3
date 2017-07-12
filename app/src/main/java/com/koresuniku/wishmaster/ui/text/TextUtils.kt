@@ -3,6 +3,7 @@ package com.koresuniku.wishmaster.ui.text
 import android.content.Context
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.util.Formats
 
 object TextUtils {
 
@@ -57,17 +58,25 @@ object TextUtils {
             if (tempChar != ".") format += tempChar
             else break
         }
+        format = format.reversed()
 
         builder.append(width)
         builder.append("x")
         builder.append(height)
+//        if (format == Formats.WEBM_FORMAT) {
+//            builder.append(", ")
+//            builder.append(file.getDuration())
+//        }
         builder.append("\n")
         builder.append(size)
         builder.append("Кб")
         builder.append(", ")
-        builder.append(format.reversed().toUpperCase())
+        builder.append(format.toUpperCase())
 
-
+        if (format == Formats.WEBM_FORMAT) {
+            builder.append("\n")
+            builder.append(file.getDuration())
+        }
 
         return builder.toString()
     }

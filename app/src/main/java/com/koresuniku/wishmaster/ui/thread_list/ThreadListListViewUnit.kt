@@ -14,13 +14,24 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) {
     var mListView: ListView? = null
     var mListViewAdapter: ThreadListListViewAdapter? = null
 
+    var adapterIsCreated: Boolean? = null
+
     init {
+        adapterIsCreated = false
         mListView = mView.getThreadListView()
+        mListView!!.setOnTouchListener { v, event ->
+            mView.getSwipyRefreshLayoutUnit().checkRefreshAvailability(); false
+        }
         //mListView!!.addHeaderView(createHeaderView())
         //mListView!!.addFooterView(createHeaderView())
     }
 
+    fun adapterIsCreated(): Boolean {
+        return adapterIsCreated!!
+    }
+
     fun createListViewAdapter() {
+        adapterIsCreated = true
         mListViewAdapter = ThreadListListViewAdapter(mView)
         mListView!!.adapter = mListViewAdapter
         mListView!!.setOnScrollListener(object : AbsListView.OnScrollListener {

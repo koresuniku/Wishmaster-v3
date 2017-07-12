@@ -81,7 +81,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
         if (cursor.count == 0) {
             Log.d(LOG_TAG, "there are no rows in boards table, loading boards for the first time...")
             showProgressBar()
-            async { mDataLoader!!.loadData() }
+            loadData()
         } else {
             this.mBoardListFragment!!.onDataLoaded()
         }
@@ -92,6 +92,10 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
         super.onConfigurationChanged(newConfig)
         mActionBarWithTabsUnit!!.onConfigurationChanged(newConfig!!)
 
+    }
+
+    override fun loadData() {
+        async { mDataLoader!!.loadData() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

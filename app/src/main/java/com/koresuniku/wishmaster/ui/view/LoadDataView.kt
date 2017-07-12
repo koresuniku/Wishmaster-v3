@@ -4,6 +4,7 @@ import android.app.Activity
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 
 interface LoadDataView {
+    fun loadData()
 
     fun onDataLoaded(schema: List<IBaseJsonSchema>)
 
