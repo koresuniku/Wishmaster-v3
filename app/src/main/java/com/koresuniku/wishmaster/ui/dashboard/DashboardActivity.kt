@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.database.Cursor
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.Menu
@@ -33,9 +32,8 @@ import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_DASHBOARD_ID
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_REMOVE_FROM_FAVOURITES_KEY
 import com.koresuniku.wishmaster.ui.view.ActionBarWithTabsView
 import com.koresuniku.wishmaster.ui.view.LoadDataView
-import com.koresuniku.wishmaster.system.SettingsActivity
+import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
-import com.koresuniku.wishmaster.ui.controller.ImageManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
 import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.doAsync
@@ -119,7 +117,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_refresh_boards -> {
-                doAsync { mDataLoader!!.loadData() }
+               loadData()
             }
             R.id.action_settings -> {
                 val intent: Intent = Intent(getActivity(), SettingsActivity::class.java)

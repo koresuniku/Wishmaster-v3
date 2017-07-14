@@ -3,7 +3,7 @@ package com.koresuniku.wishmaster.ui.thread_list
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.graphics.PorterDuff
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
@@ -19,9 +19,9 @@ import com.koresuniku.wishmaster.system.IntentUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.view.*
 import org.jetbrains.anko.find
-import com.koresuniku.wishmaster.system.DeviceUtils
-import android.view.ViewGroup.LayoutParams.FILL_PARENT
 import android.widget.ScrollView
+import com.koresuniku.wishmaster.system.settings.ResultCodes
+import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
@@ -90,6 +90,32 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun loadData() {
         doAsync {  mDataLoader!!.loadData(boardId!!) }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.thread_list_menu, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.action_refresh -> {
+                mSwipyRefreshLayoutUnit!!.setRefreshing(true)
+                loadData(); Log.d(LOG_TAG, "action_refresh:")
+            }
+            R.id.action_settings -> {
+                val intent: Intent = Intent(getActivity(), SettingsActivity::class.java)
+                startActivityForResult(intent, ResultCodes.THREAD_LIST_RESULT_CODE)
+            }
+        }
+
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ResultCodes.THREAD_LIST_RESULT_CODE)
+            mThreadListListViewUnit!!.notifyItemTextViewChanged()
     }
 
     override fun getSwipyRefreshLayoutUnit(): SwipyRefreshLayoutUnit {
@@ -175,18 +201,11 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
         val dialog: Dialog = Dialog(this)
         val scrollView = ScrollView(this)
-        mThreadListListViewUnit!!.mListViewAdapter!!.viewModeIsDialog = true
-        val itemView: View = mThreadListListViewUnit!!.mListViewAdapter!!.getView(
-                args.getInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY),
-                null, scrollView)
+        val itemView: View = mThreadListListViewUnit!!.mListViewAdapter!!.getViewForDialog(
+                args.getInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY), null, scrollView)
         scrollView.addView(itemView)
         dialog.setContentView(scrollView)
         dialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
-
-        dialog.setOnDismissListener {
-            Log.d(LOG_TAG, "on dismiss")
-            mThreadListListViewUnit!!.mListViewAdapter!!.viewModeIsDialog = false
-        }
 
         dialog.show()
 

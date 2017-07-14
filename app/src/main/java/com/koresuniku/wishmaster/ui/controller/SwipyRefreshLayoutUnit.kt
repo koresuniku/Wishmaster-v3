@@ -21,6 +21,7 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
         mRefreshLayout!!.isEnabled = true
 
         mRefreshLayout!!.setOnRefreshListener { mView.loadData() }
+        enableTop()
 
     }
 
@@ -60,27 +61,31 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
 
         if (readyToRefreshTop) {
             this.enableTop()
-            Log.d(LOG_TAG, "readyToRefreshTop")
+            //Log.d(LOG_TAG, "readyToRefreshTop")
         }
         if (readyToRefreshBottom){
             this.enableBottom()
-            Log.d(LOG_TAG, "readyToRefreshBottom")
+           // Log.d(LOG_TAG, "readyToRefreshBottom")
         }
 
 
-        Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().mAppBarLayout.totalScrollRange)
-        Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().appBarLayoutExpandedValue)
+        //Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().mAppBarLayout.totalScrollRange)
+        //Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().appBarLayoutExpandedValue)
 
-        Log.d(LOG_TAG, "offset: " + mView.getAppBarLayoutUnit().appBarVerticalOffset)
+        //Log.d(LOG_TAG, "offset: " + mView.getAppBarLayoutUnit().appBarVerticalOffset)
 
         if (!readyToRefreshTop && !readyToRefreshBottom) this.disableRefreshLayout()
     }
 
     fun onDataLoaded() {
+        Log.d(LOG_TAG, "onDataLoaded:")
         mRefreshLayout!!.isRefreshing = false
+        disableRefreshLayout()
         mView.getListView().post {  mView.getListView().setSelectionAfterHeaderView() }
         mView.getAppBarLayoutUnit().mAppBarLayout.setExpanded(true)
         mView.getListViewAdapter().iNotifyDataSetChanged()
     }
+
+
 
 }

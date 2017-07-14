@@ -65,4 +65,6 @@ object PreferenceUtils {
                 activity.getString(R.string.pref_images_height_default))
         return value.toFloat()
     }
+
+
 }

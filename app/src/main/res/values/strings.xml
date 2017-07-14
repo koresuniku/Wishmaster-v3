@@ -13,6 +13,7 @@
     <string name="japanese_boards">Японская культура</string>
 
     <string name="action_refresh_boards">Обновить список борд</string>
+    <string name="action_refresh">Обновить</string>
 
     <string name="more_boards_text">Нужно больше любимых борд!</string>
     <string name="there_is_nothing_text">Здесь ничего нет.\nВпрочем, как и смысла в твоей жизни.</string>
@@ -60,6 +61,7 @@
         <item>@string/pref_dashboard_tab_position_history</item>
     </string-array>
     <string name="negative_button_text">Отмена</string>
+    <string name="positive_button_text">Применить</string>
 
     <string name="pref_images_height_key">image_height_key</string>
     <string name="pref_images_height_default">150</string>
@@ -85,6 +87,16 @@
         <item>@string/pref_loading_spinner</item>
         <item>@string/pref_loading_android_progress_bar</item>
     </string-array>
+
+    <string name="pref_category_text">Текст</string>
+
+    <string name="settings_interface_lines_count_text">Ограничить количество строк в списке тредов</string>
+    <string name="pref_lines_count_key">lines_count_key</string>
+    <string name="pref_lines_count_default">6</string>
+    <string name="pref_lines_count_max">20</string>
+    <string name="pref_lines_count_hint">0 - неограничено</string>
+    <string name="pref_lines_count_indefinite">Неограничено</string>
+
 
 </resources>
 

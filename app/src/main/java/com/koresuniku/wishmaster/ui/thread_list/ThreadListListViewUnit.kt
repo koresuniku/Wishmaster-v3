@@ -30,6 +30,10 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) {
         return adapterIsCreated!!
     }
 
+    fun notifyItemTextViewChanged() {
+        if (mListViewAdapter != null) mListViewAdapter!!.notifyItemTextViewChanged()
+    }
+
     fun createListViewAdapter() {
         adapterIsCreated = true
         mListViewAdapter = ThreadListListViewAdapter(mView)

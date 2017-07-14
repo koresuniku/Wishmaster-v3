@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/pref_category_text">
+
+        <com.koresuniku.wishmaster.system.settings.SeekBarDialogPreference
+            android:title="@string/settings_interface_lines_count_text"
+            android:key="@string/pref_lines_count_key"
+            android:negativeButtonText="@string/negative_button_text"
+            >
+
+        </com.koresuniku.wishmaster.system.settings.SeekBarDialogPreference>
+
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_category_other">
 
         <ListPreference
