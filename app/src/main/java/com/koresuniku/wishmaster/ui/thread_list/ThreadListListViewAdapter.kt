@@ -24,6 +24,7 @@ import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.view.INotifyableLisViewAdapter
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.koresuniku.wishmaster.util.Formats
+import org.jetbrains.anko.dimen
 import org.jetbrains.anko.lines
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
 
@@ -495,7 +496,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         if (path.substring(path.length - 4, path.length) == Formats.WEBM_FORMAT) {
             webmImage.visibility = View.VISIBLE
-            setCorrectImageSize(webmImage, file, viewModeIsDialog)
+            setCorrectVideoImageSize(webmImage, viewModeIsDialog)
         } else {
             webmImage.visibility = View.GONE
         }
@@ -523,7 +524,13 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         image.requestLayout()
     }
 
-
+    fun setCorrectVideoImageSize(image: ImageView, viewModeIsDialog: Boolean) {
+        val imageWidth = UIUtils.convertDpToPixel(
+                ImageManager.computeImageWidthInDp(mView.getActivity(), viewModeIsDialog)).toInt()
+        val size = imageWidth / 2
+        image.layoutParams.width = size
+        image.layoutParams.height = size
+    }
 
     fun loadImageThumbnail(image: ImageView, file: Files) {
         image.setImageBitmap(null)

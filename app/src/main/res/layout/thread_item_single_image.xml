@@ -63,7 +63,7 @@
                         android:layout_gravity="center"
                         android:padding="2dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/webm" />
+                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
 
                 </FrameLayout>
 

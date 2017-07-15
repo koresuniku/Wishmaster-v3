@@ -9,4 +9,5 @@
     <dimen name="post_item_dialog_side_padding">16dp</dimen>
     <dimen name="post_item_up_under_padding">6dp</dimen>
     <dimen name="list_divider_height">10dp</dimen>
+    <dimen name="post_item_video_thumbnail_size">26dp</dimen>
 </resources>
