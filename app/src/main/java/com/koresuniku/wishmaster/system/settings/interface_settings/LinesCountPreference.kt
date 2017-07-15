@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system.settings
+package com.koresuniku.wishmaster.system.settings.interface_settings
 
 import android.content.Context
 import android.content.DialogInterface
@@ -10,12 +10,11 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.system.PreferenceUtils
-import com.koresuniku.wishmaster.system.settings.interface_settings.ChooseLinesCountUnit
 import org.jetbrains.anko.find
 
-class SeekBarDialogPreference(context: Context, attributeSet: AttributeSet) :
+class LinesCountPreference(context: Context, attributeSet: AttributeSet) :
         DialogPreference(context, attributeSet) {
-    val LOG_TAG: String = SeekBarDialogPreference::class.java.simpleName
+    val LOG_TAG: String = LinesCountPreference::class.java.simpleName
 
     var mCurrentLinesCount: TextView? = null
     var mLinesCountSeekBar: SeekBar? = null
@@ -37,9 +36,9 @@ class SeekBarDialogPreference(context: Context, attributeSet: AttributeSet) :
     override fun onBindDialogView(view: View?) {
         super.onBindDialogView(view)
 
-        mCurrentLinesCount = view!!.find(R.id.lines_count_current)
-        mLinesCountSeekBar = view!!.find(R.id.lines_count_seekbar)
-        mMaxLinesCount = view!!.find(R.id.lines_count_max)
+        mCurrentLinesCount = view!!.find(R.id.min_height_current)
+        mLinesCountSeekBar = view!!.find(R.id.min_height_seekbar)
+        mMaxLinesCount = view!!.find(R.id.min_height_max)
         mHintTextView = view!!.find(R.id.lines_count_hint)
 
         mCurrentLinesCount!!.text = PreferenceUtils.getSharedPreferences(this.context).getString(

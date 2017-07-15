@@ -2,7 +2,6 @@ package com.koresuniku.wishmaster.ui.thread_list
 
 import android.net.Uri
 import android.os.Handler
-import android.support.v7.widget.CardView
 import android.text.Html
 import android.util.Log
 
@@ -21,14 +20,13 @@ import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.controller.ImageManager
 import com.koresuniku.wishmaster.ui.text.TextUtils
+import com.koresuniku.wishmaster.ui.view.INotifyableItemImageSizeChangedView
 import com.koresuniku.wishmaster.ui.view.INotifyableLisViewAdapter
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.koresuniku.wishmaster.util.Formats
-import org.jetbrains.anko.dimen
-import org.jetbrains.anko.lines
-import org.jetbrains.anko.sdk25.coroutines.onLongClick
 
-class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(), INotifyableLisViewAdapter {
+class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(),
+        INotifyableLisViewAdapter, INotifyableItemImageSizeChangedView {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -86,6 +84,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         var viewType: Int? = null
         var code: Int = -1
+        var files: List<Files> = ArrayList()
     }
 
     override fun getCount(): Int {
@@ -180,11 +179,14 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         var holder: ViewHolder
+        val thread: Thread = mView.getSchema().getThreads()[position]
+        val files: List<Files> = thread.getFiles()
 
         if (convertView == null) {
             convertView = inflateCorrectConvertView(position, parent)
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.code = holdersCounter++
+            holder.files = files
             holders.add(holder)
             convertView.tag = holders[holders.size - 1]
         } else {
@@ -196,6 +198,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
                 holder = getViewHolderInstance(convertView, getItemViewType(position))
                 holder.code = code
+                holder.files = files
                 holders.add(holder)
                 convertView.tag = holders[holders.size - 1]
             }
@@ -209,7 +212,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 return false
             }
         })
-        val thread: Thread = mView.getSchema().getThreads()[position]
 
         if (Dvach.disableSubject.contains(mView.getBoardId())) {
             holder.mSubjectTextView!!.visibility = View.GONE
@@ -217,28 +219,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             holder.mSubjectTextView!!.text = Html.fromHtml(thread.getSubject())
         }
 
-        val files: List<Files> = thread.getFiles()
-        val filesSize = files.size
-        switchImagesVisibility(holder, filesSize)
-
-        if (filesSize == 0) return convertView
-        for (file in files) {
-            if (filesSize == 1) {
-                setupImageContainer(holder.image!!, holder.webmImageView!!, holder.summary!!, file, false)
-            }
-            if (filesSize > 1) {
-                when (files.indexOf(file)) {
-                    0 -> setupImageContainer(holder.image1!!, holder.webmImageView1!!, holder.summary1!!, file, false)
-                    1 -> setupImageContainer(holder.image2!!, holder.webmImageView2!!, holder.summary2!!, file, false)
-                    2 -> setupImageContainer(holder.image3!!, holder.webmImageView3!!, holder.summary3!!, file, false)
-                    3 -> setupImageContainer(holder.image4!!, holder.webmImageView4!!, holder.summary4!!, file, false)
-                    4 -> setupImageContainer(holder.image5!!, holder.webmImageView5!!, holder.summary5!!, file, false)
-                    5 -> setupImageContainer(holder.image6!!, holder.webmImageView6!!, holder.summary6!!, file, false)
-                    6 -> setupImageContainer(holder.image7!!, holder.webmImageView7!!, holder.summary7!!, file, false)
-                    7 -> setupImageContainer(holder.image8!!, holder.webmImageView8!!, holder.summary8!!, file, false)
-                }
-            }
-        }
+        setupImages(holder, true)
 
         val maxLines = PreferenceUtils.getSharedPreferences(mView.getActivity()).getString(
                 mView.getActivity().getString(R.string.pref_lines_count_key),
@@ -256,11 +237,14 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         var holder: ViewHolder
+        val thread: Thread = mView.getSchema().getThreads()[position]
+        val files: List<Files> = thread.getFiles()
 
         if (convertView == null) {
             convertView = inflateCorrectConvertView(position, parent)
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.code = holdersCounter++
+            holder.files = files
             holders.add(holder)
             convertView.tag = holders[holders.size - 1]
         } else {
@@ -272,6 +256,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
                 holder = getViewHolderInstance(convertView, getItemViewType(position))
                 holder.code = code
+                holder.files = files
                 holders.add(holder)
                 convertView.tag = holders[holders.size - 1]
             }
@@ -285,7 +270,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 return false
             }
         })
-        val thread: Thread = mView.getSchema().getThreads()[position]
+
 
         if (Dvach.disableSubject.contains(mView.getBoardId())) {
             holder.mSubjectTextView!!.visibility = View.GONE
@@ -293,28 +278,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             holder.mSubjectTextView!!.text = Html.fromHtml(thread.getSubject())
         }
 
-        val files: List<Files> = thread.getFiles()
-        val filesSize = files.size
-        switchImagesVisibility(holder, filesSize)
-
-        if (filesSize == 0) return convertView
-        for (file in files) {
-            if (filesSize == 1) {
-                setupImageContainer(holder.image!!, holder.webmImageView!!, holder.summary!!, file, true)
-            }
-            if (filesSize > 1) {
-                when (files.indexOf(file)) {
-                    0 -> setupImageContainer(holder.image1!!, holder.webmImageView1!!, holder.summary1!!, file, true)
-                    1 -> setupImageContainer(holder.image2!!, holder.webmImageView2!!, holder.summary2!!, file, true)
-                    2 -> setupImageContainer(holder.image3!!, holder.webmImageView3!!, holder.summary3!!, file, true)
-                    3 -> setupImageContainer(holder.image4!!, holder.webmImageView4!!, holder.summary4!!, file, true)
-                    4 -> setupImageContainer(holder.image5!!, holder.webmImageView5!!, holder.summary5!!, file, true)
-                    5 -> setupImageContainer(holder.image6!!, holder.webmImageView6!!, holder.summary6!!, file, true)
-                    6 -> setupImageContainer(holder.image7!!, holder.webmImageView7!!, holder.summary7!!, file, true)
-                    7 -> setupImageContainer(holder.image8!!, holder.webmImageView8!!, holder.summary8!!, file, true)
-                }
-            }
-        }
+        setupImages(holder, true)
 
         holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
 
@@ -323,6 +287,40 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
         return convertView
+    }
+
+    fun setupImages(holder: ViewHolder, reloadImages: Boolean) {
+        val filesSize = holder.files.size
+        switchImagesVisibility(holder, filesSize)
+
+        if (filesSize != 0) {
+            for (file in holder.files) {
+                if (filesSize == 1) {
+                    setupImageContainer(holder.image!!, holder.webmImageView!!,
+                            holder.summary!!, file, true, reloadImages)
+                }
+                if (filesSize > 1) {
+                    when (holder.files.indexOf(file)) {
+                        0 -> setupImageContainer(holder.image1!!, holder.webmImageView1!!,
+                                holder.summary1!!, file, true, reloadImages)
+                        1 -> setupImageContainer(holder.image2!!, holder.webmImageView2!!,
+                                holder.summary2!!, file, true, reloadImages)
+                        2 -> setupImageContainer(holder.image3!!, holder.webmImageView3!!,
+                                holder.summary3!!, file, true, reloadImages)
+                        3 -> setupImageContainer(holder.image4!!, holder.webmImageView4!!,
+                                holder.summary4!!, file, true, reloadImages)
+                        4 -> setupImageContainer(holder.image5!!, holder.webmImageView5!!,
+                                holder.summary5!!, file, true, reloadImages)
+                        5 -> setupImageContainer(holder.image6!!, holder.webmImageView6!!,
+                                holder.summary6!!, file, true, reloadImages)
+                        6 -> setupImageContainer(holder.image7!!, holder.webmImageView7!!,
+                                holder.summary7!!, file, true, reloadImages)
+                        7 -> setupImageContainer(holder.image8!!, holder.webmImageView8!!,
+                                holder.summary8!!, file, true, reloadImages)
+                    }
+                }
+            }
+        }
     }
 
 
@@ -491,7 +489,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
 
     fun setupImageContainer(image: ImageView, webmImage: ImageView, summary: TextView,
-                            file: Files, viewModeIsDialog: Boolean) {
+                            file: Files, viewModeIsDialog: Boolean, reloadImages: Boolean) {
         val path: String = file.getPath()
 
         if (path.substring(path.length - 4, path.length) == Formats.WEBM_FORMAT) {
@@ -503,12 +501,14 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         setCorrectImageSize(image, file, viewModeIsDialog)
         summary.text = TextUtils.getSummaryString(mView.getActivity(), file)
-        loadImageThumbnail(image, file)
+        if (reloadImages) loadImageThumbnail(image, file)
     }
 
     fun setCorrectImageSize(image: ImageView, file: Files, viewModeIsDialog: Boolean) {
         val width: Int = UIUtils.convertDpToPixel(
                 ImageManager.computeImageWidthInDp(mView.getActivity(), viewModeIsDialog)).toInt()
+        val minHeight: Int = UIUtils.convertDpToPixel(
+                ImageManager.getPreferredMinimumImageHeightInDp(mView.getActivity())).toInt()
         val maxHeight: Int = UIUtils.convertDpToPixel(
                 ImageManager.getPreferredMaximumImageHeightInDp(mView.getActivity())).toInt()
 
@@ -517,9 +517,15 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         val aspectRatio = widthInt.toFloat() / heightInt.toFloat()
         val finalHeight = Math.round(width / aspectRatio)
 
+        image.contentDescription = finalHeight.toString()
+
         image.layoutParams.width = width
-        if (finalHeight > maxHeight) image.layoutParams.height = maxHeight
-        else image.layoutParams.height = finalHeight
+
+        if (finalHeight < minHeight || finalHeight > maxHeight) {
+            if (finalHeight < minHeight) image.layoutParams.height = minHeight
+            if (finalHeight > maxHeight) image.layoutParams.height = maxHeight
+        } else image.layoutParams.height = finalHeight
+        image.minimumHeight = minHeight
         image.maxHeight = maxHeight
         image.requestLayout()
     }
@@ -542,7 +548,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 .diskCacheStrategy(DiskCacheStrategy.NONE).into(image)
     }
 
-    fun notifyItemTextViewChanged() {
+    fun notifyItemCommentTextViewChanged() {
         val value = PreferenceUtils.getSharedPreferences(mView.getActivity()).getString(
                 mView.getActivity().getString(R.string.pref_lines_count_key),
                 mView.getActivity().getString(R.string.pref_lines_count_default)).toInt()
@@ -550,5 +556,9 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             if (value == 0) it.mCommentTextView!!.maxLines = Int.MAX_VALUE
             else it.mCommentTextView!!.maxLines = value
         }
+    }
+
+    override fun notifyItemImageSizeChanged() {
+        holders.forEach { setupImages(it, false) }
     }
 }

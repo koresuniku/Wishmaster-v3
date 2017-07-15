@@ -97,6 +97,23 @@
     <string name="pref_lines_count_hint">0 - неограничено</string>
     <string name="pref_lines_count_indefinite">Неограничено</string>
 
+    <string name="pref_category_images">Изображения</string>
+    <string name="settings_interface_image_height_text">Высота превью-картинки</string>
+
+    <string name="pref_image_height_key">image_height_key</string>
+    <string name="pref_image_height_min_key">image_height_min_key</string>
+    <string name="pref_image_height_min_default">20</string>
+    <string name="pref_image_height_min_limit_min">0</string>
+    <string name="pref_image_height_min_limit_max">100</string>
+    <string name="pref_image_height_max_key">image_height_max_key</string>
+    <string name="pref_image_height_max_default">150</string>
+    <string name="pref_image_height_max_limit_min">100</string>
+    <string name="pref_image_height_max_limit_max">300</string>
+    <string name="pref_image_height_min_height_hint">Минимальная высота в dp</string>
+    <string name="pref_image_height_max_height_hint">Максимальная высота в dp</string>
+    <string name="pref_image_height_min_height_text">Минимальная — </string>
+    <string name="pref_image_height_max_height_text">максимальная — </string>
+
 
 </resources>
 

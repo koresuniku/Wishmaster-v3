@@ -6,7 +6,6 @@ import android.widget.AbsListView
 import android.widget.ListView
 import com.bumptech.glide.Glide
 import com.koresuniku.wishmaster.R
-import org.jetbrains.anko.sdk25.coroutines.onScrollListener
 
 class ThreadListListViewUnit(val mView: ThreadListListViewView) {
     val LOG_TAG: String = ThreadListListViewUnit::class.java.simpleName
@@ -30,8 +29,12 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) {
         return adapterIsCreated!!
     }
 
-    fun notifyItemTextViewChanged() {
-        if (mListViewAdapter != null) mListViewAdapter!!.notifyItemTextViewChanged()
+    fun notifyItemCommentTextViewChanged() {
+        if (mListViewAdapter != null) mListViewAdapter!!.notifyItemCommentTextViewChanged()
+    }
+
+    fun notifyItemImageSizeChanged() {
+        if (mListViewAdapter != null) mListViewAdapter!!.notifyItemImageSizeChanged()
     }
 
     fun createListViewAdapter() {

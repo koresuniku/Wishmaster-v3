@@ -61,8 +61,15 @@ object PreferenceUtils {
 
     fun getPreferredMaximumImageHeightInDp(activity: Activity): Float {
         val value = getSharedPreferences(activity).getString(
-                activity.getString(R.string.pref_images_height_key),
-                activity.getString(R.string.pref_images_height_default))
+                activity.getString(R.string.pref_image_height_max_key),
+                activity.getString(R.string.pref_image_height_max_default))
+        return value.toFloat()
+    }
+
+    fun getPreferredMinimumImageHeightInDp(activity: Activity): Float {
+        val value = getSharedPreferences(activity).getString(
+                activity.getString(R.string.pref_image_height_min_key),
+                activity.getString(R.string.pref_image_height_min_default))
         return value.toFloat()
     }
 

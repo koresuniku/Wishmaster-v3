@@ -10,6 +10,7 @@ import com.koresuniku.wishmaster.R
 class InterfacePreferenceFragment : PreferenceFragment() {
     val LOG_TAG: String = InterfacePreferenceFragment::class.java.simpleName
 
+    val mChooseImagesHeightUnit = ChooseImageHeightUnit(this)
     val mChooseLinesCountUnit = ChooseLinesCountUnit(this)
     val mChooseLoadingViewUnit = ChooseLoadingViewUnit(this)
 
@@ -17,6 +18,7 @@ class InterfacePreferenceFragment : PreferenceFragment() {
         addPreferencesFromResource(R.xml.pref_interface)
         view!!.setBackgroundColor(resources.getColor(R.color.colorBackground))
 
+        mChooseImagesHeightUnit.initChooseImageHeight()
         mChooseLinesCountUnit.initChooseLinesCount()
         mChooseLoadingViewUnit.initChooseLoadingViewPreference()
     }

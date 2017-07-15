@@ -30,4 +30,8 @@ object ImageManager {
     fun getPreferredMaximumImageHeightInDp(activity: Activity): Float {
         return PreferenceUtils.getPreferredMaximumImageHeightInDp(activity)
     }
+
+    fun getPreferredMinimumImageHeightInDp(activity: Activity): Float {
+        return PreferenceUtils.getPreferredMinimumImageHeightInDp(activity)
+    }
 }

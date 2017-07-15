@@ -114,8 +114,10 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == ResultCodes.THREAD_LIST_RESULT_CODE)
-            mThreadListListViewUnit!!.notifyItemTextViewChanged()
+        if (requestCode == ResultCodes.THREAD_LIST_RESULT_CODE) {
+            mThreadListListViewUnit!!.notifyItemCommentTextViewChanged()
+            mThreadListListViewUnit!!.notifyItemImageSizeChanged()
+        }
     }
 
     override fun getSwipyRefreshLayoutUnit(): SwipyRefreshLayoutUnit {
