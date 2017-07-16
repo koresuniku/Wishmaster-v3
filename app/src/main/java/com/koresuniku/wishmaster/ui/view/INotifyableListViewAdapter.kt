@@ -1,5 +1,5 @@
 package com.koresuniku.wishmaster.ui.view
 
-interface INotifyableLisViewAdapter {
+interface INotifyableListViewAdapter {
     fun iNotifyDataSetChanged()
 }

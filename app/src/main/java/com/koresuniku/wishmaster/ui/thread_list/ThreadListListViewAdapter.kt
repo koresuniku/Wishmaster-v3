@@ -18,15 +18,20 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ImageManager
+import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.view.INotifyableItemImageSizeChangedView
-import com.koresuniku.wishmaster.ui.view.INotifyableLisViewAdapter
+import com.koresuniku.wishmaster.ui.view.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.koresuniku.wishmaster.util.Formats
+import org.jetbrains.anko.dimen
+import org.jetbrains.anko.rightPadding
+import org.jetbrains.anko.topPadding
 
 class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(),
-        INotifyableLisViewAdapter, INotifyableItemImageSizeChangedView {
+        INotifyableListViewAdapter, INotifyableItemImageSizeChangedView {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -41,50 +46,18 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         this.notifyDataSetChanged()
     }
 
-    inner class ViewHolder {
-        var mItemContainer: FrameLayout? = null
+    inner class ViewHolder : FilesListViewViewHolder() {
+        var mItemContainer: RelativeLayout? = null
         var mSubjectTextView: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
         var mPostsAndFilesInfo: TextView? = null
-        var imageAndSummaryContainer1: RelativeLayout? = null
-        var imageAndSummaryContainer2: RelativeLayout? = null
-        var imageAndSummaryContainer3: RelativeLayout? = null
-        var imageAndSummaryContainer4: RelativeLayout? = null
-        var imageAndSummaryContainer5: RelativeLayout? = null
-        var imageAndSummaryContainer6: RelativeLayout? = null
-        var imageAndSummaryContainer7: RelativeLayout? = null
-        var imageAndSummaryContainer8: RelativeLayout? = null
-        var image: ImageView? = null
-        var image1: ImageView? = null
-        var image2: ImageView? = null
-        var image3: ImageView? = null
-        var image4: ImageView? = null
-        var image5: ImageView? = null
-        var image6: ImageView? = null
-        var image7: ImageView? = null
-        var image8: ImageView? = null
-        var webmImageView: ImageView? = null
-        var webmImageView1: ImageView? = null
-        var webmImageView2: ImageView? = null
-        var webmImageView3: ImageView? = null
-        var webmImageView4: ImageView? = null
-        var webmImageView5: ImageView? = null
-        var webmImageView6: ImageView? = null
-        var webmImageView7: ImageView? = null
-        var webmImageView8: ImageView? = null
-        var summary: TextView? = null
-        var summary1: TextView? = null
-        var summary2: TextView? = null
-        var summary3: TextView? = null
-        var summary4: TextView? = null
-        var summary5: TextView? = null
-        var summary6: TextView? = null
-        var summary7: TextView? = null
-        var summary8: TextView? = null
 
         var viewType: Int? = null
         var code: Int = -1
-        var files: List<Files> = ArrayList()
+
+        init {
+            files = ArrayList()
+        }
     }
 
     override fun getCount(): Int {
@@ -129,7 +102,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         val holder: ViewHolder = ViewHolder()
         holder.viewType = viewType
 
-        holder.mItemContainer = itemView.findViewById(R.id.thread_item_container_container) as FrameLayout
+        holder.mItemContainer = itemView.findViewById(R.id.thread_item_container) as RelativeLayout
         holder.mSubjectTextView = itemView.findViewById(R.id.thread_subject) as TextView
         holder.mCommentTextView = itemView.findViewById(R.id.thread_comment) as NoScrollTextView
         holder.mPostsAndFilesInfo = itemView.findViewById(R.id.posts_and_files_info) as TextView
@@ -187,8 +160,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.code = holdersCounter++
             holder.files = files
-            holders.add(holder)
-            convertView.tag = holders[holders.size - 1]
+            convertView.tag = holder
         } else {
             holder = convertView.tag as ViewHolder
             if (holder.viewType != getItemViewType(position)) {
@@ -199,8 +171,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 holder = getViewHolderInstance(convertView, getItemViewType(position))
                 holder.code = code
                 holder.files = files
-                holders.add(holder)
-                convertView.tag = holders[holders.size - 1]
+                convertView.tag = holder
             }
         }
 
@@ -213,13 +184,19 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             }
         })
 
-        if (Dvach.disableSubject.contains(mView.getBoardId())) {
+        if (Dvach.disableSubject.contains(mView.getBoardId()) || thread.getSubject().isEmpty()) {
             holder.mSubjectTextView!!.visibility = View.GONE
+            holder.mItemContainer!!.topPadding =
+                    mView.getActivity().dimen(R.dimen.post_item_side_padding)
         } else {
             holder.mSubjectTextView!!.text = Html.fromHtml(thread.getSubject())
+            holder.mItemContainer!!.topPadding =
+                    mView.getActivity().dimen(R.dimen.post_item_side_padding) / 2
         }
 
-        setupImages(holder, true)
+        holder.files = thread.getFiles()
+
+        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
 
         val maxLines = PreferenceUtils.getSharedPreferences(mView.getActivity()).getString(
                 mView.getActivity().getString(R.string.pref_lines_count_key),
@@ -231,6 +208,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
+        holders.add(holder)
         return convertView
     }
 
@@ -245,8 +223,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.code = holdersCounter++
             holder.files = files
-            holders.add(holder)
-            convertView.tag = holders[holders.size - 1]
+            convertView.tag = holder
         } else {
             holder = convertView.tag as ViewHolder
             if (holder.viewType != getItemViewType(position)) {
@@ -257,8 +234,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 holder = getViewHolderInstance(convertView, getItemViewType(position))
                 holder.code = code
                 holder.files = files
-                holders.add(holder)
-                convertView.tag = holders[holders.size - 1]
+                convertView.tag = holder
             }
         }
 
@@ -278,7 +254,9 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             holder.mSubjectTextView!!.text = Html.fromHtml(thread.getSubject())
         }
 
-        setupImages(holder, true)
+        holder.files = thread.getFiles()
+
+        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
 
         holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
 
@@ -286,266 +264,8 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
+        holders.add(holder)
         return convertView
-    }
-
-    fun setupImages(holder: ViewHolder, reloadImages: Boolean) {
-        val filesSize = holder.files.size
-        switchImagesVisibility(holder, filesSize)
-
-        if (filesSize != 0) {
-            for (file in holder.files) {
-                if (filesSize == 1) {
-                    setupImageContainer(holder.image!!, holder.webmImageView!!,
-                            holder.summary!!, file, true, reloadImages)
-                }
-                if (filesSize > 1) {
-                    when (holder.files.indexOf(file)) {
-                        0 -> setupImageContainer(holder.image1!!, holder.webmImageView1!!,
-                                holder.summary1!!, file, true, reloadImages)
-                        1 -> setupImageContainer(holder.image2!!, holder.webmImageView2!!,
-                                holder.summary2!!, file, true, reloadImages)
-                        2 -> setupImageContainer(holder.image3!!, holder.webmImageView3!!,
-                                holder.summary3!!, file, true, reloadImages)
-                        3 -> setupImageContainer(holder.image4!!, holder.webmImageView4!!,
-                                holder.summary4!!, file, true, reloadImages)
-                        4 -> setupImageContainer(holder.image5!!, holder.webmImageView5!!,
-                                holder.summary5!!, file, true, reloadImages)
-                        5 -> setupImageContainer(holder.image6!!, holder.webmImageView6!!,
-                                holder.summary6!!, file, true, reloadImages)
-                        6 -> setupImageContainer(holder.image7!!, holder.webmImageView7!!,
-                                holder.summary7!!, file, true, reloadImages)
-                        7 -> setupImageContainer(holder.image8!!, holder.webmImageView8!!,
-                                holder.summary8!!, file, true, reloadImages)
-                    }
-                }
-            }
-        }
-    }
-
-
-    private fun switchImagesVisibility(holder: ViewHolder, filesSize: Int) {
-        switchImagesVisibility(
-                holder.imageAndSummaryContainer1, holder.imageAndSummaryContainer2,
-                holder.imageAndSummaryContainer3, holder.imageAndSummaryContainer4,
-                holder.imageAndSummaryContainer5, holder.imageAndSummaryContainer6,
-                holder.imageAndSummaryContainer7, holder.imageAndSummaryContainer8,
-                filesSize)
-    }
-
-    private fun switchImagesVisibility(
-            imageAndSummaryContainer1: View?, imageAndSummaryContainer2: View?,
-            imageAndSummaryContainer3: View?, imageAndSummaryContainer4: View?,
-            imageAndSummaryContainer5: View?, imageAndSummaryContainer6: View?,
-            imageAndSummaryContainer7: View?, imageAndSummaryContainer8: View?,
-            filesSize: Int) {
-        when (filesSize) {
-            1 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.GONE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.GONE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.GONE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.GONE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.GONE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.GONE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            2 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.GONE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.GONE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.GONE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.GONE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.GONE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            3 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.VISIBLE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.GONE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.GONE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.GONE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.GONE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            4 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.VISIBLE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.VISIBLE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.GONE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.GONE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.GONE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            5 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.VISIBLE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.VISIBLE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.VISIBLE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.GONE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.GONE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            6 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.VISIBLE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.VISIBLE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.VISIBLE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.VISIBLE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.GONE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            7 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.VISIBLE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.VISIBLE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.VISIBLE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.VISIBLE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.VISIBLE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.GONE
-            }
-            8 -> {
-                if (imageAndSummaryContainer1 != null)
-                    imageAndSummaryContainer1.visibility = View.VISIBLE
-                if (imageAndSummaryContainer2 != null)
-                    imageAndSummaryContainer2.visibility = View.VISIBLE
-                if (imageAndSummaryContainer3 != null)
-                    imageAndSummaryContainer3.visibility = View.VISIBLE
-                if (imageAndSummaryContainer4 != null)
-                    imageAndSummaryContainer4.visibility = View.VISIBLE
-                if (imageAndSummaryContainer5 != null)
-                    imageAndSummaryContainer5.visibility = View.VISIBLE
-                if (imageAndSummaryContainer6 != null)
-                    imageAndSummaryContainer6.visibility = View.VISIBLE
-                if (imageAndSummaryContainer7 != null)
-                    imageAndSummaryContainer7.visibility = View.VISIBLE
-                if (imageAndSummaryContainer8 != null)
-                    imageAndSummaryContainer8.visibility = View.VISIBLE
-            }
-        }
-    }
-
-
-    fun setupImageContainer(image: ImageView, webmImage: ImageView, summary: TextView,
-                            file: Files, viewModeIsDialog: Boolean, reloadImages: Boolean) {
-        val path: String = file.getPath()
-
-        if (path.substring(path.length - 4, path.length) == Formats.WEBM_FORMAT) {
-            webmImage.visibility = View.VISIBLE
-            setCorrectVideoImageSize(webmImage, viewModeIsDialog)
-        } else {
-            webmImage.visibility = View.GONE
-        }
-
-        setCorrectImageSize(image, file, viewModeIsDialog)
-        summary.text = TextUtils.getSummaryString(mView.getActivity(), file)
-        if (reloadImages) loadImageThumbnail(image, file)
-    }
-
-    fun setCorrectImageSize(image: ImageView, file: Files, viewModeIsDialog: Boolean) {
-        val width: Int = UIUtils.convertDpToPixel(
-                ImageManager.computeImageWidthInDp(mView.getActivity(), viewModeIsDialog)).toInt()
-        val minHeight: Int = UIUtils.convertDpToPixel(
-                ImageManager.getPreferredMinimumImageHeightInDp(mView.getActivity())).toInt()
-        val maxHeight: Int = UIUtils.convertDpToPixel(
-                ImageManager.getPreferredMaximumImageHeightInDp(mView.getActivity())).toInt()
-
-        val widthInt = Integer.parseInt(file.getWidth())
-        val heightInt = Integer.parseInt(file.getHeight())
-        val aspectRatio = widthInt.toFloat() / heightInt.toFloat()
-        val finalHeight = Math.round(width / aspectRatio)
-
-        image.contentDescription = finalHeight.toString()
-
-        image.layoutParams.width = width
-
-        if (finalHeight < minHeight || finalHeight > maxHeight) {
-            if (finalHeight < minHeight) image.layoutParams.height = minHeight
-            if (finalHeight > maxHeight) image.layoutParams.height = maxHeight
-        } else image.layoutParams.height = finalHeight
-        image.minimumHeight = minHeight
-        image.maxHeight = maxHeight
-        image.requestLayout()
-    }
-
-    fun setCorrectVideoImageSize(image: ImageView, viewModeIsDialog: Boolean) {
-        val imageWidth = UIUtils.convertDpToPixel(
-                ImageManager.computeImageWidthInDp(mView.getActivity(), viewModeIsDialog)).toInt()
-        val size = imageWidth / 2
-        image.layoutParams.width = size
-        image.layoutParams.height = size
-    }
-
-    fun loadImageThumbnail(image: ImageView, file: Files) {
-        image.setImageBitmap(null)
-        if (image.animation != null) image.animation.cancel()
-        image.setBackgroundColor(mView.getActivity().resources.getColor(R.color.colorBackgroundDark))
-
-        Glide.with(mView.getActivity()).load(Uri.parse(Dvach.DVACH_BASE_URL + file.getThumbnail()))
-                .crossFade(200).placeholder(image.drawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE).into(image)
     }
 
     fun notifyItemCommentTextViewChanged() {
@@ -559,6 +279,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     }
 
     override fun notifyItemImageSizeChanged() {
-        holders.forEach { setupImages(it, false) }
+        holders.forEach { ListViewAdapterUtils.setupImages(mView.getActivity(), it, false, false) }
     }
 }

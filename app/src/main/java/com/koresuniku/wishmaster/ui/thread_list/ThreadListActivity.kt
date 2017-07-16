@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
@@ -20,6 +21,8 @@ import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.view.*
 import org.jetbrains.anko.find
 import android.widget.ScrollView
+import com.koresuniku.wishmaster.database.BoardsUtils
+import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.system.settings.ResultCodes
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
@@ -79,7 +82,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         return mThreadListListViewUnit!!.mListView!!
     }
 
-    override fun getListViewAdapter(): INotifyableLisViewAdapter {
+    override fun getListViewAdapter(): INotifyableListViewAdapter {
         return mThreadListListViewUnit!!.mListViewAdapter!!
     }
 
@@ -108,6 +111,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
                 val intent: Intent = Intent(getActivity(), SettingsActivity::class.java)
                 startActivityForResult(intent, ResultCodes.THREAD_LIST_RESULT_CODE)
             }
+            android.R.id.home -> onBackPressed()
         }
 
         return true
@@ -137,7 +141,9 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun setupActionBarTitle() {
-
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.title = "/$boardId/ - $boardName"
     }
 
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {

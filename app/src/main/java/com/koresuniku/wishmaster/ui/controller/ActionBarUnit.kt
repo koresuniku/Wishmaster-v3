@@ -44,10 +44,7 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
         mActivityToolbarContainer.addView(mLocalToolbarContainer)
 
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)
-        if (DeviceUtils.sdkIsLollipopOrHigher()) {
-            //mView.getAppCompatActivity().supportActionBar!!.elevation = 2f
-            //mToolbar!!.elevation = 2f
-        }
+
 
         mView.setupActionBarTitle()
     }

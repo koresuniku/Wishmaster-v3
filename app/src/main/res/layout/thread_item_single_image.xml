@@ -84,7 +84,9 @@
                 android:id="@+id/thread_subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
                 android:text="subject"
+                android:textColor="@color/colorSubject"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

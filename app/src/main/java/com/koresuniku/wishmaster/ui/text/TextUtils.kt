@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.ui.text
 
 import android.content.Context
+import android.view.View
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.util.Formats
@@ -79,5 +80,12 @@ object TextUtils {
         }
 
         return builder.toString()
+    }
+
+    fun getSubstringAfterDot(input: String): String {
+        return (input.length - 1 downTo 0)
+                .firstOrNull { input.substring(it, it + 1) == "." }
+                ?.let { input.substring(it + 1, input.length) }
+                ?: ""
     }
 }
