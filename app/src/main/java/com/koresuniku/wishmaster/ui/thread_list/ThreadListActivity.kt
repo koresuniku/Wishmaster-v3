@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
@@ -18,14 +17,14 @@ import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.system.IntentUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
-import com.koresuniku.wishmaster.ui.view.*
+import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import org.jetbrains.anko.find
 import android.widget.ScrollView
-import com.koresuniku.wishmaster.database.BoardsUtils
-import com.koresuniku.wishmaster.database.DatabaseContract
+import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.system.settings.ResultCodes
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
+import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
 
@@ -217,5 +216,18 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
         dialog.show()
 
+    }
+
+    override fun openThread(threadNumber: String) {
+        val intent = Intent(this, SingleThreadActivity::class.java)
+
+        intent.putExtra(IntentUtils.BOARD_ID_CODE, boardId)
+        intent.putExtra(IntentUtils.BOARD_NAME_CODE, boardName)
+        intent.putExtra(IntentUtils.THREAD_NUMBER_CODE, threadNumber)
+
+        if (DeviceUtils.sdkIsLollipopOrHigher()) {
+            this.startActivity(intent)
+            //this.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+        } else this.startActivity(intent)
     }
 }

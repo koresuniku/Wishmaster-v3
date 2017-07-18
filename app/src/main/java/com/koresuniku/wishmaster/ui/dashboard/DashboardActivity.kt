@@ -30,8 +30,8 @@ import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_ID_KEY
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_NAME_KEY
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_DASHBOARD_ID
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_REMOVE_FROM_FAVOURITES_KEY
-import com.koresuniku.wishmaster.ui.view.ActionBarWithTabsView
-import com.koresuniku.wishmaster.ui.view.LoadDataView
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarWithTabsView
+import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity

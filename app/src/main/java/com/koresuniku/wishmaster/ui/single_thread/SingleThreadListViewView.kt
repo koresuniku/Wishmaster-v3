@@ -1,15 +1,17 @@
-package com.koresuniku.wishmaster.ui.thread_list
+package com.koresuniku.wishmaster.ui.single_thread
 
 import android.widget.ListView
+import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.ui.controller.SwipyRefreshLayoutUnit
 import com.koresuniku.wishmaster.ui.controller.view_interface.FilesAdapterView
+import com.koresuniku.wishmaster.ui.controller.view_interface.IListViewAdapterCreatable
 
-interface ThreadListListViewView : FilesAdapterView {
+interface SingleThreadListViewView : FilesAdapterView {
 
-    fun getSchema(): ThreadListJsonSchema
+    fun getSchema(): IBaseJsonSchemaImpl
 
-    fun getThreadListView(): ListView
+    fun getSingleThreadListView(): ListView
 
     fun getBoardId(): String?
 
@@ -17,5 +19,4 @@ interface ThreadListListViewView : FilesAdapterView {
 
     fun getSwipyRefreshLayoutUnit(): SwipyRefreshLayoutUnit
 
-    fun openThread(threadName: String)
 }

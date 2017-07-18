@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view
+package com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view
 
 import android.content.res.Resources
 import android.graphics.Canvas

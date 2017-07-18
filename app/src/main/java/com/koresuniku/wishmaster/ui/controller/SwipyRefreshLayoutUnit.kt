@@ -1,7 +1,7 @@
 package com.koresuniku.wishmaster.ui.controller
 
 import android.util.Log
-import com.koresuniku.wishmaster.ui.view.SwipyRefreshLayoutView
+import com.koresuniku.wishmaster.ui.controller.view_interface.SwipyRefreshLayoutView
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 

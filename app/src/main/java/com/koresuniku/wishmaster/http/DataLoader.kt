@@ -2,9 +2,10 @@ package com.koresuniku.wishmaster.http
 
 import android.util.Log
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
+import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.ThreadListForPagesAsync
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
-import com.koresuniku.wishmaster.ui.view.LoadDataView
+import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,25 +47,28 @@ class DataLoader(private val view: LoadDataView) {
             })
         }
     }
-//
-//    fun loadData(boardId: String, threadNumber: String) {
-//        Log.d(LOG_TAG, "loadSingleThreadData:")
-//        view.showProgressBar()
-//
-//        val call = HttpClient.singleThreadService.getPosts("get_thread", boardId, threadNumber, 0)
-//        call.enqueue(object : Callback<List<Post>> {
-//            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-//                view.onDataLoaded(response.body())
-//                Log.d(LOG_TAG, "data loaded:")
-//
-//            }
-//
-//            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-//                Log.d(LOG_TAG, "failure data loading")
-//                t.printStackTrace()
-//            }
-//        })
-//    }
+
+    fun loadData(boardId: String, threadNumber: String) {
+        Log.d(LOG_TAG, "loadSingleThreadData:")
+        view.showProgressBar()
+
+        val call = HttpClient.singleThreadService.getPosts("get_thread", boardId, threadNumber, 0)
+        call.enqueue(object : Callback<List<Post>> {
+            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
+                val schema: IBaseJsonSchema = IBaseJsonSchemaImpl()
+                schema.setPosts(response.body())
+                view.onDataLoaded(listOf(schema))
+
+                Log.d(LOG_TAG, "data loaded:")
+
+            }
+
+            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
+                Log.d(LOG_TAG, "failure data loading")
+                t.printStackTrace()
+            }
+        })
+    }
 
 
 }

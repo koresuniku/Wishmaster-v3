@@ -7,7 +7,7 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadForPage
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListForPagesJsonSchema
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
-import com.koresuniku.wishmaster.ui.view.LoadDataView
+import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import org.jetbrains.anko.doAsync
 import retrofit2.Response
 import java.util.ArrayList

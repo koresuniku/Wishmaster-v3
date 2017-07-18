@@ -2,7 +2,7 @@
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/thread_item_container_container"
+    android:id="@+id/post_item_container_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
@@ -10,7 +10,7 @@
     app:cardElevation="0dp">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/thread_item_container"
+        android:id="@+id/post_item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/post_item_ripple_makaba"
@@ -33,24 +33,23 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/post_subject"
                 android:text="number and time"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/image_and_summary_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/post_subject">
+                android:layout_below="@+id/post_number_and_time_info">
 
                 <FrameLayout
                     android:id="@+id/image_container_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    >
+                    android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image"
+                        android:id="@+id/post_image"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -80,21 +79,11 @@
             </RelativeLayout>
 
 
-            <TextView
-                android:id="@+id/post_subject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="subject"
-                android:textColor="@color/colorSubject"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
             <com.koresuniku.wishmaster.ui.widget.NoScrollTextView
                 android:id="@+id/post_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/post_subject"
+                android:layout_below="@+id/post_number_and_time_info"
                 android:layout_marginLeft="@dimen/post_item_side_padding"
                 android:layout_toEndOf="@+id/image_and_summary_container"
                 android:layout_toRightOf="@+id/image_and_summary_container"
@@ -108,10 +97,10 @@
             android:id="@+id/answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
             android:layout_below="@+id/post_content"
-            android:text="posts and files info"
+            android:text="answers"
             android:textSize="12sp" />
 
 

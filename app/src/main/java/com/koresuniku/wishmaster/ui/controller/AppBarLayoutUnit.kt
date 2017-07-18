@@ -1,8 +1,7 @@
 package com.koresuniku.wishmaster.ui.controller
 
 import android.support.design.widget.AppBarLayout
-import android.support.v4.view.ViewCompat
-import com.koresuniku.wishmaster.ui.view.AppBarLayoutView
+import com.koresuniku.wishmaster.ui.controller.view_interface.AppBarLayoutView
 
 class AppBarLayoutUnit(val mView: AppBarLayoutView) {
     val LOG_TAG: String = AppBarLayoutUnit::class.java.simpleName

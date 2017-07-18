@@ -1,15 +1,10 @@
 package com.koresuniku.wishmaster.ui.controller
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.view.View
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.ui.view.IActivityView
-import android.view.WindowManager
-import android.view.Gravity
-
+import com.koresuniku.wishmaster.ui.controller.view_interface.IActivityView
 
 
 //import netscape.javascript.JSObject.getWindow

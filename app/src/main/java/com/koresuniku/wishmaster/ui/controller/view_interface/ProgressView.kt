@@ -1,7 +1,6 @@
-package com.koresuniku.wishmaster.ui.view
+package com.koresuniku.wishmaster.ui.controller.view_interface
 
 import android.app.Activity
-import android.content.Context
 import android.view.View
 
 interface ProgressView {

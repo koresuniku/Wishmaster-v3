@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.http
 
 import com.google.gson.GsonBuilder
 import com.koresuniku.wishmaster.http.boards_api.BoardsApiService
+import com.koresuniku.wishmaster.http.single_thread_api.SingleThreadApiService
 import com.koresuniku.wishmaster.http.thread_list_api.ThreadListApiService
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -27,7 +28,7 @@ object HttpClient {
 
     val boardsService = retrofit.create(BoardsApiService::class.java)!!
     val threadsService = retrofit.create(ThreadListApiService::class.java)!!
-    //val singleThreadService = retrofit.create(SingleThreadApiService::class.java)!!
+    val singleThreadService = retrofit.create(SingleThreadApiService::class.java)!!
 
     fun getResponseFromUrl(url: String): ResponseBody? {
         val request = Request.Builder().url(url).build()

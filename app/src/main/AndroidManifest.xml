@@ -32,6 +32,11 @@
 
         </activity>
 
+        <activity android:name=".ui.single_thread.SingleThreadActivity"
+            android:configChanges="screenSize|orientation">
+
+        </activity>
+
         <provider
             android:name=".database.BoardsProvider"
             android:authorities="com.koresuniku.wishmaster"

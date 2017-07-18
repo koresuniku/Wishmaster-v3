@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view
+package com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view
 
 interface ItemTouchHelperAdapter {
     fun onItemMoved(fromPosition: Int, toPosition: Int)

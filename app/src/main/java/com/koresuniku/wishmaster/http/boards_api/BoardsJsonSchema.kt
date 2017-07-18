@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.boards_api.model.*
+import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 
 class BoardsJsonSchema : IBaseJsonSchema {
 
@@ -35,4 +36,11 @@ class BoardsJsonSchema : IBaseJsonSchema {
     @Expose
     var japanese: List<Japanese>? = null
 
+    override fun setPosts(posts: List<Post>?) {
+
+    }
+
+    override fun getPosts(): List<Post>? {
+        return null
+    }
 }

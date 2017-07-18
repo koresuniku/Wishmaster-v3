@@ -1,17 +1,13 @@
 package com.koresuniku.wishmaster.ui.controller
 
 import android.content.res.Configuration
-import android.os.Build
-import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.system.DeviceUtils
-import com.koresuniku.wishmaster.ui.view.ActionBarView
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 
 class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
     val LOG_TAG: String = ActionBarWithTabsUnit::class.java.simpleName

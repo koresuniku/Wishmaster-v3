@@ -1,46 +1,35 @@
-package com.koresuniku.wishmaster.ui.thread_list
+package com.koresuniku.wishmaster.ui.single_thread
 
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.AbsListView
 import android.widget.ListView
 import com.bumptech.glide.Glide
-import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.ui.controller.view_interface.IListViewAdapterCreatable
+import com.koresuniku.wishmaster.ui.thread_list.ThreadListListViewAdapter
 
-class ThreadListListViewUnit(val mView: ThreadListListViewView) : IListViewAdapterCreatable {
-    val LOG_TAG: String = ThreadListListViewUnit::class.java.simpleName
+class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewAdapterCreatable {
+    val LOG_TAG: String = SingleThreadListViewUnit::class.java.simpleName
 
     var mListView: ListView? = null
-    var mListViewAdapter: ThreadListListViewAdapter? = null
+    var mListViewAdapter: SingleThreadListViewAdapter? = null
 
     var adapterIsCreated: Boolean? = null
 
     init {
         adapterIsCreated = false
-        mListView = mView.getThreadListView()
+        mListView = mView.getSingleThreadListView()
         mListView!!.setOnTouchListener { v, event ->
             mView.getSwipyRefreshLayoutUnit().checkRefreshAvailability(); false
         }
-        //mListView!!.addHeaderView(createHeaderView())
-        //mListView!!.addFooterView(createHeaderView())
     }
+
 
     override fun adapterIsCreated(): Boolean {
         return adapterIsCreated!!
     }
 
-    fun notifyItemCommentTextViewChanged() {
-        if (mListViewAdapter != null) mListViewAdapter!!.notifyItemCommentTextViewChanged()
-    }
-
-    fun notifyItemImageSizeChanged() {
-        if (mListViewAdapter != null) mListViewAdapter!!.notifyItemImageSizeChanged()
-    }
-
     override fun createListViewAdapter() {
         adapterIsCreated = true
-        mListViewAdapter = ThreadListListViewAdapter(mView)
+        mListViewAdapter = SingleThreadListViewAdapter(mView)
         mListView!!.adapter = mListViewAdapter
         mListView!!.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
@@ -56,11 +45,5 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) : IListViewAdapt
 
             }
         })
-    }
-
-    fun createHeaderView(): View {
-        return LayoutInflater.from(
-                mView.getActivity().applicationContext)
-                .inflate(R.layout.list_header, null, false)
     }
 }

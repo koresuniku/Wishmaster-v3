@@ -20,10 +20,10 @@ import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.boards_api.model.BaseBoardSchema
 import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
-import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
-import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.OnStartDragListener
-import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleDividerItemDecoration
-import com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
+import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
+import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.OnStartDragListener
+import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.SimpleDividerItemDecoration
+import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.SimpleItemTouchItemCallback
 import java.util.*
 import kotlin.collections.ArrayList
 

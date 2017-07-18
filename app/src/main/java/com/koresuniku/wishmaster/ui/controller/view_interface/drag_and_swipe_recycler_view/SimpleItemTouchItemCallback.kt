@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.view.drag_and_swipe_recycler_view
+package com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view
 
 class SimpleItemTouchItemCallback(private val adapter: ItemTouchHelperAdapter) : android.support.v7.widget.helper.ItemTouchHelper.Callback() {
     override fun getMovementFlags(recyclerView: android.support.v7.widget.RecyclerView, viewHolder: android.support.v7.widget.RecyclerView.ViewHolder): Int {

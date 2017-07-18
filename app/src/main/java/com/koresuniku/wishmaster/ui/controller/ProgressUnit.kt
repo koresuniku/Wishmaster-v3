@@ -1,6 +1,5 @@
 package com.koresuniku.wishmaster.ui.controller
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.system.PreferenceUtils
-import com.koresuniku.wishmaster.ui.view.ProgressView
+import com.koresuniku.wishmaster.ui.controller.view_interface.ProgressView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.imageResource
 

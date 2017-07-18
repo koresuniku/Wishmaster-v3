@@ -1,6 +1,5 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
-import android.net.Uri
 import android.os.Handler
 import android.text.Html
 import android.util.Log
@@ -9,25 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.system.PreferenceUtils
-import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
-import com.koresuniku.wishmaster.ui.controller.ImageManager
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.text.TextUtils
-import com.koresuniku.wishmaster.ui.view.INotifyableItemImageSizeChangedView
-import com.koresuniku.wishmaster.ui.view.INotifyableListViewAdapter
+import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableItemImageSizeChangedView
+import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
-import com.koresuniku.wishmaster.util.Formats
 import org.jetbrains.anko.dimen
-import org.jetbrains.anko.rightPadding
 import org.jetbrains.anko.topPadding
 
 class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(),
@@ -103,9 +96,9 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.viewType = viewType
 
         holder.mItemContainer = itemView.findViewById(R.id.thread_item_container) as RelativeLayout
-        holder.mSubjectTextView = itemView.findViewById(R.id.thread_subject) as TextView
-        holder.mCommentTextView = itemView.findViewById(R.id.thread_comment) as NoScrollTextView
-        holder.mPostsAndFilesInfo = itemView.findViewById(R.id.posts_and_files_info) as TextView
+        holder.mSubjectTextView = itemView.findViewById(R.id.post_subject) as TextView
+        holder.mCommentTextView = itemView.findViewById(R.id.post_comment) as NoScrollTextView
+        holder.mPostsAndFilesInfo = itemView.findViewById(R.id.answers) as TextView
         if (viewType == ITEM_SINGLE_IMAGE) {
             holder.image = itemView.findViewById(R.id.thread_image) as ImageView
             holder.webmImageView = itemView.findViewById(R.id.webm_imageview) as ImageView
@@ -177,6 +170,8 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         Log.d(LOG_TAG, "holders.size: " + holders.size)
 
+        holder.mItemContainer!!.setOnClickListener { mView.openThread(thread.getNum()) }
+
         holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {
                 mView.showPostDialog(position)
@@ -239,6 +234,8 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         }
 
         Log.d(LOG_TAG, "holders.size: " + holders.size)
+
+        holder.mItemContainer!!.setOnClickListener { mView.openThread(thread.getNum()) }
 
         holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {

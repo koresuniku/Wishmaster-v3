@@ -2,20 +2,17 @@ package com.koresuniku.wishmaster.ui.controller
 
 import android.content.res.Configuration
 import android.preference.PreferenceManager
-import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.*
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
-import com.koresuniku.wishmaster.ui.view.ActionBarView
-import com.koresuniku.wishmaster.ui.view.ActionBarWithTabsView
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarWithTabsView
 
 class ActionBarWithTabsUnit(val mView: ActionBarWithTabsView) : ActionBarView {
     val LOG_TAG: String = ActionBarWithTabsUnit::class.java.simpleName
