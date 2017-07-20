@@ -19,17 +19,7 @@
         android:paddingBottom="@dimen/post_item_up_under_padding"
         android:paddingLeft="@dimen/post_item_side_padding"
         android:paddingRight="@dimen/post_item_side_padding"
-        android:paddingTop="@dimen/post_item_side_padding">
-
-        <TextView
-            android:id="@+id/post_subject"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-
-            android:text="subject"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+        android:paddingTop="4dp">
 
         <TextView
             android:id="@+id/post_number_and_time_info"
@@ -38,6 +28,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/post_subject"
+            android:layout_marginBottom="3dp"
             android:text="number and time"
             android:visibility="visible" />
 
@@ -209,7 +200,7 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_4"
+                        android:id="@+id/post_image_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
@@ -256,7 +247,7 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_5"
+                        android:id="@+id/post_image_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
@@ -358,7 +349,7 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/post_image_image_7"
+                        android:id="@+id/post_image_7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
@@ -452,7 +443,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/imagies_and_summaries_container"
-            android:maxLines="6"
             android:text="comment"
             android:textAppearance="@style/TextAppearance.AppCompat" />
 

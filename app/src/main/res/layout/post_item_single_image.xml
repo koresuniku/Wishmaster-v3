@@ -18,7 +18,7 @@
         android:paddingBottom="@dimen/post_item_up_under_padding"
         android:paddingLeft="@dimen/post_item_side_padding"
         android:paddingRight="@dimen/post_item_side_padding"
-        android:paddingTop="@dimen/post_item_side_padding">
+        android:paddingTop="4dp">
 
         <RelativeLayout
             android:id="@+id/post_content"
@@ -32,6 +32,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/post_subject"
+                android:layout_marginBottom="3dp"
                 android:text="number and time"
                 android:visibility="visible" />
 
@@ -87,7 +88,6 @@
                 android:layout_marginLeft="@dimen/post_item_side_padding"
                 android:layout_toEndOf="@+id/image_and_summary_container"
                 android:layout_toRightOf="@+id/image_and_summary_container"
-                android:maxLines="6"
                 android:text="TextView"
                 android:textAppearance="@style/TextAppearance.AppCompat" />
 

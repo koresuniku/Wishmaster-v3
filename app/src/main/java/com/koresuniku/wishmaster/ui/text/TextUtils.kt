@@ -1,8 +1,13 @@
 package com.koresuniku.wishmaster.ui.text
 
 import android.content.Context
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.util.Formats
 
@@ -64,10 +69,6 @@ object TextUtils {
         builder.append(width)
         builder.append("x")
         builder.append(height)
-//        if (format == Formats.WEBM_FORMAT) {
-//            builder.append(", ")
-//            builder.append(file.getDuration())
-//        }
         builder.append("\n")
         builder.append(size)
         builder.append("Кб")
@@ -87,5 +88,21 @@ object TextUtils {
                 .firstOrNull { input.substring(it, it + 1) == "." }
                 ?.let { input.substring(it + 1, input.length) }
                 ?: ""
+    }
+
+    fun getNumberAndTimeInfoSpannableString(context: Context, position: Int, post: Post): SpannableString {
+        val ss: SpannableStringBuilder = SpannableStringBuilder()
+        ss.append("#")
+        ss.append((position + 1).toString())
+        ss.append(" №")
+        ss.append(post.getNum())
+        ss.append(if (post.getName() == "") { "" } else " " + post.getName())
+        ss.append(if (post.getTrip() == "") { "" } else " " + post.getTrip())
+        ss.append(" ")
+        ss.append(post.getDate().replace(Regex("[^0-9^:^/^ ]"), "").replace(Regex(" {2,}"), " "))
+        ss.setSpan(ForegroundColorSpan(context.resources.getColor(R.color.colorNumber)),
+                0, (position + 1).toString().length + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return SpannableString(ss)
+
     }
 }
