@@ -1,10 +1,13 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ListView
@@ -14,6 +17,8 @@ import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.system.IntentUtils
+import com.koresuniku.wishmaster.system.settings.ResultCodes
+import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit
@@ -132,6 +137,27 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.single_thread_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.action_refresh -> {
+                mSwipyRefreshLayoutUnit!!.setRefreshing(true)
+                loadData(); Log.d(LOG_TAG, "action_refresh:")
+            }
+            R.id.action_settings -> {
+                val intent: Intent = Intent(getActivity(), SettingsActivity::class.java)
+                startActivityForResult(intent, ResultCodes.SINGLE_THREAD_RESULT_CODE)
+            }
+            android.R.id.home -> onBackPressed()
+        }
+
+        return true
+    }
+
     override fun loadData() {
         doAsync {  mDataLoader!!.loadData(boardId!!, threadNumber!!) }
     }
@@ -154,7 +180,5 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     override fun showPostDialog(position: Int) {
 
     }
-
-
 
 }

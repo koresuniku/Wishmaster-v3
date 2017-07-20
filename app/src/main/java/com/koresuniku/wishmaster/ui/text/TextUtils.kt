@@ -103,6 +103,5 @@ object TextUtils {
         ss.setSpan(ForegroundColorSpan(context.resources.getColor(R.color.colorNumber)),
                 0, (position + 1).toString().length + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableString(ss)
-
     }
 }
