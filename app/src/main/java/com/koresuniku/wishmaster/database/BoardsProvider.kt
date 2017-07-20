@@ -31,6 +31,7 @@ class BoardsProvider : ContentProvider() {
 
     override fun onCreate(): Boolean {
         mDatabaseHelper = DatabaseHelper(context)
+
         return true
     }
 
