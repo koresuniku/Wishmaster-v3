@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/Wishmaster-v3-master.iml" filepath="$PROJECT_DIR$/Wishmaster-v3-master.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/Wishmaster.iml" filepath="$PROJECT_DIR$/Wishmaster.iml" />
+>>>>>>> 96d8f0d1c2316b885bc358cc74d7dd7ce421eba5
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
