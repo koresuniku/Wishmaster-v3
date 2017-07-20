@@ -14,15 +14,15 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     }
 
     override fun getItem(position: Int): Any {
-        return Any()
+        return mView.getSchema().getPosts()!![position]
     }
 
     override fun getItemId(position: Int): Long {
-        return 0
+        return position.toLong()
     }
 
     override fun getCount(): Int {
-        return 0
+        return mView.getSchema().getPosts()!!.size
     }
 
     override fun iNotifyDataSetChanged() {
