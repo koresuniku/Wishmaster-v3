@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="status_bar_height">24dp</dimen>
+
+    <dimen name="action_bar_height_portrait">56dp</dimen>
+    <dimen name="action_bar_height_landscape">48dp</dimen>
+
+    <dimen name="post_item_side_padding">12dp</dimen>
+    <dimen name="post_item_dialog_side_padding">16dp</dimen>
+    <dimen name="post_item_up_under_padding">6dp</dimen>
+    <dimen name="list_divider_height">10dp</dimen>
+    <dimen name="post_item_video_thumbnail_size">26dp</dimen>
+</resources>

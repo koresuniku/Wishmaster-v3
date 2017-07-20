@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/thread_item_container_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/thread_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/post_item_ripple_makaba"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/post_item_up_under_padding"
+        android:paddingLeft="@dimen/post_item_side_padding"
+        android:paddingRight="@dimen/post_item_side_padding"
+        android:paddingTop="@dimen/post_item_side_padding">
+
+        <RelativeLayout
+            android:id="@+id/post_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/post_number_and_time_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/post_subject"
+                android:text="number and time"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/post_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="2dp"
+                android:text="subject"
+                android:textColor="@color/colorSubject"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+                android:id="@+id/post_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_number_and_time_info"
+
+                android:maxLines="6"
+                android:text="comment"
+                android:textAppearance="@style/TextAppearance.AppCompat" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/answers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/post_content"
+
+            android:text="posts and files info"
+            android:textSize="12sp" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/answers">
+
+            <include
+                android:id="@+id/threads_page_indicator_view"
+                layout="@layout/threads_page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+            </include>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

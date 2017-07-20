@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_category_images">
+
+        <com.koresuniku.wishmaster.system.settings.interface_settings.ImageHeightPreference
+            android:title="@string/settings_interface_image_height_text"
+            android:key="@string/pref_image_height_key"
+            >
+
+        </com.koresuniku.wishmaster.system.settings.interface_settings.ImageHeightPreference>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_text">
+
+        <com.koresuniku.wishmaster.system.settings.interface_settings.LinesCountPreference
+            android:title="@string/settings_interface_lines_count_text"
+            android:key="@string/pref_lines_count_key"
+            >
+
+        </com.koresuniku.wishmaster.system.settings.interface_settings.LinesCountPreference>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_other">
+
+        <ListPreference
+            android:key="@string/pref_loading_view_key"
+            android:title="@string/settings_interface_loading_view_text"
+            android:entries="@array/settings_interface_loading_view_entries"
+            android:entryValues="@array/settings_interface_loading_view_entry_values"
+            android:negativeButtonText="@string/negative_button_text">
+
+        </ListPreference>
+
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,11 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:fragment="com.koresuniku.wishmaster.system.settings.dashboard.DashboardPreferenceFragment"
+        android:title="@string/header_dashboard_text" />
+
+    <header android:fragment="com.koresuniku.wishmaster.system.settings.interface_settings.InterfacePreferenceFragment"
+        android:title="@string/header_interface_text" />
+
+
+</preference-headers>

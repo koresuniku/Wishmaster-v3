@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff9800</color>
+    <color name="colorPrimaryDark">#ff9800</color>
+    <color name="colorAccent">#ff8000</color>
+    <color name="colorBackground">#f5f5f5</color>
+    <color name="colorBackgroundDark">#e0e0e0</color>
+
+    <color name="colorSubject">#212e60</color>
+
+    <color name="material_gray_middle">#e0e0e0</color>
+
+    <color name="color_unchecked">@color/material_gray_middle</color>
+
+    <color name="color_gallery_tint">#f01d1d1d</color>
+</resources>
