@@ -91,7 +91,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:text="@string/pref_image_height_min_height_hint" />
+            android:text="@string/pref_image_height_max_height_hint" />
 
         <TextView
             android:id="@+id/max_height_current"

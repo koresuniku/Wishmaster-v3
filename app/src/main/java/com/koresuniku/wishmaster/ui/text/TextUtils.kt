@@ -109,4 +109,9 @@ object TextUtils {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableString(ss)
     }
+
+    fun getAnswersStringUpperCased(count: Int): String {
+        return getCorrectRussianEndings(count, stringForZeroOrMultiple = "ответов",
+                stringForOne = "ответ", stringForTwoOrThreeOrFour = "ответа").toUpperCase()
+    }
 }

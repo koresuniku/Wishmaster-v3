@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
@@ -22,7 +23,7 @@ import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
-        BaseAdapter(), INotifyableListViewAdapter {
+        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView {
     val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -32,6 +33,12 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     val mHandler = Handler()
     var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
+    val mAnswersHolder: AnswersHolder = AnswersHolder(this)
+
+    init {
+        mAnswersHolder.initAnswersMap()
+        mAnswersHolder.appointAnswersToPosts()
+    }
 
     inner class ViewHolder : FilesListViewViewHolder() {
         var mItemContainer: RelativeLayout? = null
@@ -41,6 +48,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
         var viewType: Int? = null
         var code: Int = -1
+        var postNumber: String? = null
 
         init {
             files = ArrayList()
@@ -118,7 +126,6 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-
         var convertView = convertView
         var holder: ViewHolder
         val post: Post = mView.getSchema().getPosts()!![position]
@@ -129,17 +136,19 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.code = holdersCounter++
             holder.files = files
+            holder.postNumber = post.getNum()
             convertView.tag = holder
         } else {
             holder = convertView.tag as ViewHolder
             if (holder.viewType != getItemViewType(position)) {
                 convertView = inflateCorrectConvertView(position, parent!!)
-                Log.d(LOG_TAG, "reusing holder: " + holder.code)
+                //Log.d(LOG_TAG, "reusing holder: " + holder.code)
                 val code = holder.code
                 holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
                 holder = getViewHolderInstance(convertView, getItemViewType(position))
                 holder.code = code
                 holder.files = files
+                holder.postNumber = post.getNum()
                 convertView.tag = holder
             }
         }
@@ -161,7 +170,14 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
         holder.mNumberAndTimeInfo!!.text =
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
-        holder.mCommentTextView!!.text = Html.fromHtml(post.getComment())
+        holder.mCommentTextView!!.text =
+                Html.fromHtml(post.getComment())
+        if (mAnswersHolder.mAnswersMap.containsKey(post.getNum())) {
+            holder.mAnswers!!.text =
+                    TextUtils.getAnswersStringUpperCased(mAnswersHolder.mAnswersMap[post.getNum()]!!.size)
+        } else {
+            Log.d(LOG_TAG, "post ${post.getNum()} doesn't exits")
+        }
 
 
         holder.files = post.getFiles()
@@ -194,5 +210,14 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun iNotifyDataSetChanged() {
         this.notifyDataSetChanged()
+    }
+
+    override fun notifyNewAnswersTextViews() {
+        holders.forEach { it.mAnswers!!.text =
+                TextUtils.getAnswersStringUpperCased(mAnswersHolder.mAnswersMap[it.postNumber]!!.size)}
+    }
+
+    override fun getSchema(): IBaseJsonSchemaImpl {
+        return mView.getSchema()
     }
 }

@@ -21,8 +21,8 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
         mRefreshLayout!!.isEnabled = true
 
         mRefreshLayout!!.setOnRefreshListener { mView.loadData() }
-        enableTop()
 
+        enableTop()
     }
 
     fun disableRefreshLayout() {
@@ -32,7 +32,6 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
     fun enableTop() {
         mRefreshLayout!!.direction = SwipyRefreshLayoutDirection.TOP
         mRefreshLayout!!.isEnabled = true
-
     }
 
     fun enableBottom() {
@@ -81,9 +80,24 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
         Log.d(LOG_TAG, "onDataLoaded:")
         mRefreshLayout!!.isRefreshing = false
         disableRefreshLayout()
-        mView.getListView().post {  mView.getListView().setSelectionAfterHeaderView() }
-        mView.getAppBarLayoutUnit().mAppBarLayout.setExpanded(true)
-        mView.getListViewAdapter().iNotifyDataSetChanged()
+        if (mRefreshLayout!!.direction != SwipyRefreshLayoutDirection.BOTTOM) {
+            mView.getListView().post { mView.getListView().setSelectionAfterHeaderView() }
+            mView.getAppBarLayoutUnit().mAppBarLayout.setExpanded(true)
+            mView.getListViewAdapter().iNotifyDataSetChanged()
+        } else {
+            val preCount = mView.getListView().count
+            mView.getListViewAdapter().iNotifyDataSetChanged()
+            val afterCount = mView.getListView().count
+            Log.d(LOG_TAG, "pre: $preCount, after: $afterCount")
+            if (preCount != afterCount) {
+                mView.getListView().post {
+                    if (afterCount - preCount < 10)
+                        mView.getListView().smoothScrollToPosition(preCount + 1)
+                    else mView.getListView().setSelection(preCount + 1)
+                }
+            }
+        }
+
     }
 
 

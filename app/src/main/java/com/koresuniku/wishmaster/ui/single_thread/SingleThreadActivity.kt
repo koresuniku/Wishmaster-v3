@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -31,7 +32,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 
 class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView, LoadDataView,
-        SingleThreadListViewView, ProgressView, SwipyRefreshLayoutView, IActivityView {
+        SingleThreadListViewView, ProgressView, SwipyRefreshLayoutView, IActivityView, NewPostsView {
     val LOG_TAG: String = SingleThreadActivity::class.java.simpleName
 
     private var boardId: String? = null
@@ -44,6 +45,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     var mProgressUnit: ProgressUnit? = null
     var mSingleThreadListViewUnit: SingleThreadListViewUnit? = null
     var mSwipyRefreshLayoutUnit: SwipyRefreshLayoutUnit? = null
+    var mNewPostsNotifier: NewPostsNotifier? = null
 
     var mDataLoader: DataLoader? = null
 
@@ -62,6 +64,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         mProgressUnit = ProgressUnit(this)
         mSingleThreadListViewUnit = SingleThreadListViewUnit(this)
         mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
+        mNewPostsNotifier = NewPostsNotifier(this)
 
         mDataLoader = DataLoader(this)
         mProgressUnit!!.showProgressYoba()
@@ -70,6 +73,10 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     }
 
     //Context getters
+
+    override fun getContext(): Context {
+        return this
+    }
 
     override fun getActivity(): Activity {
         return this
@@ -166,16 +173,29 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     }
 
     override fun loadData() {
+        if (mSchema != null) {
+            mNewPostsNotifier!!.fetchPostsCount(mSchema!!.getPosts()!!.size)
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.savePreviousSchema(mSchema!!)
+        }
         doAsync {  mDataLoader!!.loadData(boardId!!, threadNumber!!) }
     }
 
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
+        if (mSchema != null) {
+            mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
+
+        }
         this.mSchema = schema[0] as IBaseJsonSchemaImpl
+
 
         mProgressUnit!!.hideProgressYoba()
 
-        if (!mSingleThreadListViewUnit!!.adapterIsCreated()) mSingleThreadListViewUnit!!.createListViewAdapter()
-        else mSwipyRefreshLayoutUnit!!.onDataLoaded()
+        if (!mSingleThreadListViewUnit!!.adapterIsCreated()) {
+            mSingleThreadListViewUnit!!.createListViewAdapter()
+        } else {
+            mSwipyRefreshLayoutUnit!!.onDataLoaded()
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.appointAnswersToPosts()
+        }
 
         setupActionBarTitle()
     }

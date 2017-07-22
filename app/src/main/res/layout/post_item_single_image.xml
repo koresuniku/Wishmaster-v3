@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/post_item_ripple_makaba"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/post_item_up_under_padding"
         android:paddingLeft="@dimen/post_item_side_padding"
         android:paddingRight="@dimen/post_item_side_padding"
         android:paddingTop="4dp">
@@ -100,8 +99,11 @@
             android:layout_alignParentEnd="false"
             android:layout_alignParentRight="false"
             android:layout_below="@+id/post_content"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp"
             android:text="answers"
-            android:textSize="12sp" />
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
 
 
     </RelativeLayout>

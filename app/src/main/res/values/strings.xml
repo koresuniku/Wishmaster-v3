@@ -21,6 +21,8 @@
     <string name="action_add_board">Добавить борду</string>
     <string name="loading_boards_text">Загрузка борд… \nЭто может занять несколько секунд.</string>
 
+    <string name="no_new_posts">Новых постов нет</string>
+
     <string name="action_copy_link">Копировать ссылку"</string>
 
     <string-array name="on_board_clicked_choice_remove">
