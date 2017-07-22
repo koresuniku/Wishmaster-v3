@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
@@ -12,6 +13,7 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.util.Formats
 
 object TextUtils {
+    val LOG_TAG: String = TextUtils::class.java.simpleName
 
     fun getPostsAndFilesString(postCount: Int, filesCount: Int): String {
         var result: String = ""
@@ -92,8 +94,10 @@ object TextUtils {
 
     fun getNumberAndTimeInfoSpannableString(context: Context, position: Int, post: Post): SpannableString {
         val ss: SpannableStringBuilder = SpannableStringBuilder()
+        var additionalColorLength: Int = 0
         ss.append("#")
         ss.append((position + 1).toString())
+        if (post.getOp() == "1") { ss.append(" OP"); additionalColorLength = 3 }
         ss.append(" №")
         ss.append(post.getNum())
         ss.append(if (post.getName() == "") { "" } else " " + post.getName())
@@ -101,7 +105,8 @@ object TextUtils {
         ss.append(" ")
         ss.append(post.getDate().replace(Regex("[^0-9^:^/^ ]"), "").replace(Regex(" {2,}"), " "))
         ss.setSpan(ForegroundColorSpan(context.resources.getColor(R.color.colorNumber)),
-                0, (position + 1).toString().length + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                0, (position + 1).toString().length + 1 + additionalColorLength,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableString(ss)
     }
 }

@@ -16,7 +16,6 @@ class ProgressUnit(val mView: ProgressView) {
     var mLoadingLayout: ViewGroup? = null
 
     fun showProgressYoba() {
-
         val loadingPref: String = PreferenceUtils.getSharedPreferences(mView.getActivityOverridden())
                         .getString(mView.getActivityOverridden().getString(R.string.pref_loading_view_key),
                                 mView.getActivityOverridden().getString(R.string.pref_loading_yoba_default))

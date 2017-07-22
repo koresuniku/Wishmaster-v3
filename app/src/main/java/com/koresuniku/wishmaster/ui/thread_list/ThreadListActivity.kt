@@ -59,7 +59,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         UIVisibilityManager.showSystemUI(this)
 
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
-        mActionBarUnit = ActionBarUnit(this, false)
+        mActionBarUnit = ActionBarUnit(this, false, false)
         mProgressUnit = ProgressUnit(this)
         mThreadListListViewUnit = ThreadListListViewUnit(this)
         mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)

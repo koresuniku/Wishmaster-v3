@@ -19,6 +19,7 @@ import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         BaseAdapter(), INotifyableListViewAdapter {
@@ -143,7 +144,13 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             }
         }
 
-        holder.mItemContainer!!.setOnClickListener {  }
+        holder.mItemContainer!!.onClick { }
+
+//        holder.mItemContainer!!.setOnClickListener {object : View.OnClickListener {
+//            override fun onClick(p0: View?) {
+//
+//            }
+//        }}
 
         holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {

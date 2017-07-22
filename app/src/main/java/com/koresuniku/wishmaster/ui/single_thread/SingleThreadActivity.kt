@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
@@ -57,13 +58,14 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         UIVisibilityManager.showSystemUI(this)
 
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
-        mActionBarUnit = ActionBarUnit(this, false)
+        mActionBarUnit = ActionBarUnit(this, false, true)
         mProgressUnit = ProgressUnit(this)
         mSingleThreadListViewUnit = SingleThreadListViewUnit(this)
         mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
 
         mDataLoader = DataLoader(this)
         mProgressUnit!!.showProgressYoba()
+
         loadData()
     }
 
@@ -134,7 +136,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     override fun setupActionBarTitle() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-
+        if (mSchema != null) supportActionBar!!.title = mSchema!!.getPosts()!![0].getSubject()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -158,6 +160,11 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         return true
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+    }
+
     override fun loadData() {
         doAsync {  mDataLoader!!.loadData(boardId!!, threadNumber!!) }
     }
@@ -167,10 +174,10 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
 
         mProgressUnit!!.hideProgressYoba()
 
-        Log.d(LOG_TAG, "mSchema count: " + mSchema!!.getPosts()!!.size)
-
         if (!mSingleThreadListViewUnit!!.adapterIsCreated()) mSingleThreadListViewUnit!!.createListViewAdapter()
         else mSwipyRefreshLayoutUnit!!.onDataLoaded()
+
+        setupActionBarTitle()
     }
 
     override fun showProgressBar() {

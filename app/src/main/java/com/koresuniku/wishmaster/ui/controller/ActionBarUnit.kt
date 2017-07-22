@@ -9,7 +9,7 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 
-class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
+class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean, val presetupTitleLoading: Boolean) {
     val LOG_TAG: String = ActionBarWithTabsUnit::class.java.simpleName
 
     val mActivityToolbarContainer: FrameLayout = mView.getToolbarContainer()
@@ -19,6 +19,7 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
 
     init {
         setupActionBar(mView.getAppCompatActivity().resources.configuration)
+        if (presetupTitleLoading) setLoadingTitle()
     }
 
     fun setupActionBar(configuration: Configuration) {
@@ -41,7 +42,6 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
 
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)
 
-
         mView.setupActionBarTitle()
     }
 
@@ -53,14 +53,17 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean) {
         }
     }
 
-
     fun showTabLayout() {
         mLocalToolbarContainer!!.findViewById(R.id.tab_layout).visibility = View.VISIBLE
     }
 
-
     fun onConfigurationChanged(configuration: Configuration) {
         setupActionBar(configuration)
+    }
+
+    fun setLoadingTitle() {
+        mView.getAppCompatActivity().supportActionBar!!.title =
+                mView.getAppCompatActivity().getString(R.string.loading_text)
     }
 
 }

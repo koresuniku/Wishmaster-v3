@@ -26,7 +26,7 @@ class ActionBarWithTabsUnit(val mView: ActionBarWithTabsView) : ActionBarView {
     var mTabPosition: Int = -1
 
     init {
-        mActionBarUnit = ActionBarUnit(this, false)
+        mActionBarUnit = ActionBarUnit(this, false, false)
         setupActionBar(mView.getAppCompatActivity().resources.configuration)
         if (mView.addTabs()) addTabs()
     }
