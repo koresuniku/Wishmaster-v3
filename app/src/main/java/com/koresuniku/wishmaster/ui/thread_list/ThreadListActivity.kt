@@ -153,7 +153,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         Log.d(LOG_TAG, "mSchema count: " + mSchema!!.getThreads().size)
 
         if (!mThreadListListViewUnit!!.adapterIsCreated()) mThreadListListViewUnit!!.createListViewAdapter()
-        else mSwipyRefreshLayoutUnit!!.onDataLoaded()
+        else mSwipyRefreshLayoutUnit!!.onDataLoadedReturnToTop()
     }
 
     override fun getActivityOverridden(): Activity {
@@ -215,7 +215,6 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         dialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
 
         dialog.show()
-
     }
 
     override fun openThread(threadNumber: String) {

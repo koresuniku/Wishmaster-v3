@@ -95,18 +95,18 @@ object DialogManager {
 //        builder.setView(view)
 //
 //
-//        val dialog = builder.create()
+//        val dialogContentView = builder.create()
 //
 //        val lp = WindowManager.LayoutParams()
-//        lp.copyFrom(dialog.window.attributes)
+//        lp.copyFrom(dialogContentView.window.attributes)
 //        lp.width = WindowManager.LayoutParams.MATCH_PARENT
 //        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
 //        lp.gravity = Gravity.CENTER
 //
-//        dialog.window.attributes = lp
+//        dialogContentView.window.attributes = lp
 //
 //        //return builder.create()
-//        return dialog
+//        return dialogContentView
 //    }
 
 }

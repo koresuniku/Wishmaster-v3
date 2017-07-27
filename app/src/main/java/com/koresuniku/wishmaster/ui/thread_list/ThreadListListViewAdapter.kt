@@ -254,10 +254,15 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         })
 
 
-        if (Dvach.disableSubject.contains(mView.getBoardId())) {
+        if (Dvach.disableSubject.contains(mView.getBoardId()) || thread.getSubject().isEmpty()) {
             holder.mSubjectTextView!!.visibility = View.GONE
+            holder.mItemContainer!!.topPadding =
+                    mView.getActivity().dimen(R.dimen.post_item_side_padding)
         } else {
+            holder.mSubjectTextView!!.visibility = View.VISIBLE
             holder.mSubjectTextView!!.text = Html.fromHtml(thread.getSubject())
+            holder.mItemContainer!!.topPadding =
+                    mView.getActivity().dimen(R.dimen.post_item_side_padding) / 2
         }
 
         holder.files = thread.getFiles()

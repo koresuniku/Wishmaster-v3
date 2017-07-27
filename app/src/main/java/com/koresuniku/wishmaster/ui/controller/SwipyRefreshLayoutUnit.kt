@@ -97,9 +97,15 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
                 }
             }
         }
-
     }
 
-
+    fun onDataLoadedReturnToTop() {
+        Log.d(LOG_TAG, "onDataLoaded:")
+        mRefreshLayout!!.isRefreshing = false
+        disableRefreshLayout()
+        mView.getListView().post { mView.getListView().setSelectionAfterHeaderView() }
+        mView.getAppBarLayoutUnit().mAppBarLayout.setExpanded(true)
+        mView.getListViewAdapter().iNotifyDataSetChanged()
+    }
 
 }

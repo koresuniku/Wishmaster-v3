@@ -1,5 +1,7 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
+import android.app.Activity
+import android.content.Context
 import android.os.Handler
 import android.text.Html
 import android.util.Log
@@ -14,16 +16,21 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
+import com.koresuniku.wishmaster.ui.controller.view_interface.IDialogAdapter
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
+import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+import org.jetbrains.anko.bottomPadding
+import org.jetbrains.anko.dimen
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
-        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView {
+        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter {
+
+
     val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -53,6 +60,14 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         init {
             files = ArrayList()
         }
+    }
+
+    override fun getContext(): Context {
+        return mView.getActivity()
+    }
+
+    override fun getActivity(): Activity {
+        return mView.getActivity()
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
@@ -155,11 +170,58 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
         holder.mItemContainer!!.onClick { }
 
-//        holder.mItemContainer!!.setOnClickListener {object : View.OnClickListener {
-//            override fun onClick(p0: View?) {
-//
-//            }
-//        }}
+        holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
+            override fun onLongClick(v: View?): Boolean {
+                mView.showPostDialog(position)
+                return false
+            }
+        })
+
+        holder.mNumberAndTimeInfo!!.text =
+                TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
+        holder.mCommentTextView!!.text =
+                Html.fromHtml(post.getComment())
+        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mAnswersHolder)
+        holder.postNumber = post.getNum()
+        setupAnswers(holder, post)
+
+        holder.files = post.getFiles()
+        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
+
+
+        holders.add(holder)
+        return convertView
+    }
+
+    override fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
+        var convertView = convertView
+        var holder: ViewHolder
+        val post: Post = mView.getSchema().getPosts()!![position]
+        val files: List<Files> = post.getFiles()
+
+        if (convertView == null) {
+            convertView = inflateCorrectConvertView(position, parent!!)
+            holder = getViewHolderInstance(convertView, getItemViewType(position))
+            holder.code = holdersCounter++
+            holder.files = files
+            holder.postNumber = post.getNum()
+            convertView.tag = holder
+        } else {
+            holder = convertView.tag as ViewHolder
+            if (holder.viewType != getItemViewType(position)) {
+                convertView = inflateCorrectConvertView(position, parent!!)
+                //Log.d(LOG_TAG, "reusing holder: " + holder.code)
+                val code = holder.code
+                holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
+                holder = getViewHolderInstance(convertView, getItemViewType(position))
+                holder.code = code
+                holder.files = files
+                holder.postNumber = post.getNum()
+                convertView.tag = holder
+            }
+        }
+
+        holder.mItemContainer!!.onClick { }
 
         holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {
@@ -172,16 +234,12 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mCommentTextView!!.text =
                 Html.fromHtml(post.getComment())
-        if (mAnswersHolder.mAnswersMap.containsKey(post.getNum())) {
-            holder.mAnswers!!.text =
-                    TextUtils.getAnswersStringUpperCased(mAnswersHolder.mAnswersMap[post.getNum()]!!.size)
-        } else {
-            Log.d(LOG_TAG, "post ${post.getNum()} doesn't exits")
-        }
-
+        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mAnswersHolder)
+        holder.postNumber = post.getNum()
+        setupAnswers(holder, post)
 
         holder.files = post.getFiles()
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
+        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
 
 
         holders.add(holder)
@@ -219,5 +277,40 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun getSchema(): IBaseJsonSchemaImpl {
         return mView.getSchema()
+    }
+
+    fun setupAnswers(holder: ViewHolder, post: Post) {
+        if (mAnswersHolder.mAnswersMap.containsKey(post.getNum())) {
+            val answersCount = mAnswersHolder.mAnswersMap[post.getNum()]!!.size
+            if (answersCount == 0) {
+                holder.mAnswers!!.visibility = View.GONE
+                holder.mItemContainer!!.bottomPadding =
+                        mView.getActivity().dimen(R.dimen.post_item_bottom_padding_no_answers)
+            } else {
+                holder.mAnswers!!.visibility = View.VISIBLE
+                holder.mAnswers!!.text = TextUtils.getAnswersStringUpperCased(
+                        mAnswersHolder.mAnswersMap[post.getNum()]!!.size)
+                holder.mItemContainer!!.bottomPadding = 0
+            }
+
+            holder.mAnswers!!.setOnClickListener(OnAnswersClickListener(holder.postNumber!!))
+        } else {
+            Log.d(LOG_TAG, "post ${post.getNum()} doesn't exits")
+        }
+
+    }
+
+    inner class OnAnswersClickListener(val postNumber: String) : View.OnClickListener {
+        override fun onClick(p0: View?) {
+            mAnswersHolder.onAnswersClicked(postNumber)
+        }
+    }
+
+    override fun openAnswersDialog() {
+
+    }
+
+    override fun getDialogAdapter(): IDialogAdapter {
+        return this
     }
 }

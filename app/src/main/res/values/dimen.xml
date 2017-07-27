@@ -6,6 +6,7 @@
     <dimen name="action_bar_height_landscape">48dp</dimen>
 
     <dimen name="post_item_side_padding">12dp</dimen>
+    <dimen name="post_item_bottom_padding_no_answers">8dp</dimen>
     <dimen name="post_item_dialog_side_padding">16dp</dimen>
     <dimen name="post_item_up_under_padding">6dp</dimen>
     <dimen name="list_divider_height">10dp</dimen>

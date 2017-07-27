@@ -167,6 +167,11 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         return true
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        //mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressed()
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarUnit!!.onConfigurationChanged(newConfig!!)
