@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -165,11 +166,6 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         }
 
         return true
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        //mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressed()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {

@@ -1,29 +1,27 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.DialogInterface
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AlphaAnimation
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
-import com.koresuniku.wishmaster.ui.anim.DialogResizeAnimation
-import com.koresuniku.wishmaster.ui.anim.ResizeAnimation
 import org.jetbrains.anko.find
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import android.opengl.ETC1.getHeight
+import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.KeyEvent
 import android.widget.*
-import org.jetbrains.anko.doAsyncResult
+import org.jetbrains.anko.sdk25.coroutines.onScrollListener
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AnswersHolder(val mView: AnswersHolderView) {
@@ -32,6 +30,7 @@ class AnswersHolder(val mView: AnswersHolderView) {
     val mAnswersMap: HashMap<String, ArrayList<String>> = HashMap()
     var mPreviousSchema: IBaseJsonSchemaImpl? = null
     var mViews: ArrayList<ArrayList<View>>? = ArrayList()
+    var mViewsScrolls: ArrayList<ScrollsHolder>? = ArrayList()
 
     val mDialog: Dialog = Dialog(mView.getContext())
     val mStubDialog: Dialog = Dialog(mView.getContext())
@@ -101,15 +100,22 @@ class AnswersHolder(val mView: AnswersHolderView) {
                     ?.let { posts.indexOf(it) }
                     ?: -1
             view = mView.getDialogAdapter().getViewForDialog(position, null, FrameLayout(mView.getContext()))
-            spanComment(view, number)
+            doSpanComment(view, number)
             viewArray.add(view)
         }
         mViews!!.add(viewArray)
 
-        openDialog()
+        if (mAnswersListViewAdapter != null) {
+            val c = mDialogListView.getChildAt(0)
+            mViewsScrolls!!.add(mViews!!.size - 2,
+                    ScrollsHolder(mDialogListView.firstVisiblePosition, c.top))
+        } else mViewsScrolls!!.add(0, ScrollsHolder(0, 0))
+
+        openDialog(true)
     }
 
-    fun openSigleAnswer(number: String) {
+
+    fun openSingleAnswer(number: String) {
         currentPostNumber = number
         val viewArray: ArrayList<View> = ArrayList()
         val posts: List<Post> = mView.getSchema().getPosts()!!
@@ -120,26 +126,43 @@ class AnswersHolder(val mView: AnswersHolderView) {
                         posts.indexOf(post), null, FrameLayout(mView.getContext()))
                 viewArray.add(view)
                 mViews!!.add(viewArray)
+                if (mAnswersListViewAdapter != null) {
+                    val c = mDialogListView.getChildAt(0)
+                    mViewsScrolls!!.add(mViews!!.size - 2,
+                            ScrollsHolder(mDialogListView.firstVisiblePosition, c.top))
+                } else mViewsScrolls!!.add(0, ScrollsHolder(0, 0))
                 break
             }
         }
 
-        openDialog()
+        openDialog(true)
     }
 
     fun onBackPressed() {
-        if (mViews!!.size == 1) {
+        if (mViews!!.size == 1 ) {
+            Log.d(LOG_TAG, "clearing...")
             mDialog.dismiss()
             mStubDialog.dismiss()
             mViews!!.clear()
+            mViewsScrolls!!.clear()
             mAnswersListViewAdapter = null
         } else {
+            mViewsScrolls!!.removeAt(mViewsScrolls!!.size - 1)
             mViews!!.removeAt(mViews!!.size - 1)
-            openDialog()
+
+            openDialog(false)
         }
     }
 
-    fun openDialog() {
+    fun onLongBackPressed() {
+        mDialog.dismiss()
+        mStubDialog.dismiss()
+        mViews!!.clear()
+        mViewsScrolls!!.clear()
+        mAnswersListViewAdapter = null
+    }
+
+    fun openDialog(newAnswer: Boolean) {
         val viewsList: List<View> = mViews!![mViews!!.size - 1]
 
         if (mAnswersListViewAdapter == null) {
@@ -147,23 +170,30 @@ class AnswersHolder(val mView: AnswersHolderView) {
             mDialogListView.adapter = mAnswersListViewAdapter
             mDialog.setContentView(mDialogListViewContainer)
             mDialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
-            mDialog.setOnCancelListener({
-                onBackPressed()
-            })
+            mDialog.setOnCancelListener({ onBackPressed() })
+            mDialog.setOnKeyListener(OnLongKeyListener())
             mStubDialog.show()
         } else {
             mDialog.dismiss()
             mAnswersListViewAdapter!!.setViewsList(viewsList)
             mDialog.show()
+            if (!newAnswer) {
+                Log.d(LOG_TAG, "setting scroll to: ${mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition}")
+                //mDialogListView.scrollTo(0, mViewsScrolls!![mViewsScrolls!!.size - 1])
+                //mDialogListView.smoothScrollToPositionFromTop(1, 100, 0)
+                mDialogListView.setSelectionFromTop(
+                        mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition,
+                        mViewsScrolls!![mViewsScrolls!!.size - 1].top)
+
+            }
+
         }
 
-        Log.d(LOG_TAG, "adapter count: " + mDialogListView.adapter.count)
-
         if (!mDialog.isShowing) mDialog.show()
-        else Log.d(LOG_TAG, "dialogContentView is already showing")
+        //else Log.d(LOG_TAG, "dialogContentView is already showing")
     }
 
-    fun spanComment(view: View, number: String) {
+    fun doSpanComment(view: View, number: String) {
         val comment: SpannableString = SpannableString(
                 view.find<TextView>(R.id.post_comment).text)
         val pattern: Pattern = Pattern.compile(">>$number")
@@ -178,6 +208,27 @@ class AnswersHolder(val mView: AnswersHolderView) {
             comment.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
                     start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             view.find<TextView>(R.id.post_comment).text = comment
+        }
+    }
+
+    inner class OnLongKeyListener : DialogInterface.OnKeyListener {
+        var times: Int = 0
+
+        var runnableForOnBackPress: Runnable = Runnable {
+            //Log.d(LOG_TAG, "times: $times")
+            if (times >= 2) { onBackPressed(); times = 0 }
+            else Handler().postDelayed({ onLongBackPressed(); times = 0 }, 500)
+        }
+
+        override fun onKey(p0: DialogInterface?, p1: Int, p2: KeyEvent?): Boolean {
+            if (p1 == KeyEvent.KEYCODE_BACK) {
+                //Log.d(LOG_TAG, "keycode back")
+                if (times == 0) Handler().postDelayed(runnableForOnBackPress, 100)
+                times++
+                return true
+            }
+
+            return false
         }
     }
 

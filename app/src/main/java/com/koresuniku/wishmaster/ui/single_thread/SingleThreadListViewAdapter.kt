@@ -181,6 +181,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mCommentTextView!!.text =
                 Html.fromHtml(post.getComment())
+        holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mAnswersHolder)
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
@@ -234,6 +235,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mCommentTextView!!.text =
                 Html.fromHtml(post.getComment())
+        holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mAnswersHolder)
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
@@ -298,6 +300,10 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             Log.d(LOG_TAG, "post ${post.getNum()} doesn't exits")
         }
 
+    }
+
+    fun onLongBackPressed() {
+        mAnswersHolder.onLongBackPressed()
     }
 
     inner class OnAnswersClickListener(val postNumber: String) : View.OnClickListener {
