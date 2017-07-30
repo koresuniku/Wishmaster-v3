@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.util.DisplayMetrics
+import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 
 object UIUtils {
@@ -26,4 +28,5 @@ object UIUtils {
         val px = dp * (metrics.densityDpi / 160f)
         return Math.round(px).toFloat()
     }
+
 }

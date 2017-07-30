@@ -8,17 +8,13 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ListView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
-import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.system.IntentUtils
 import com.koresuniku.wishmaster.system.settings.ResultCodes
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
@@ -113,6 +109,10 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         return findViewById(R.id.single_thread_list_view) as ListView
     }
 
+    override fun getGalleryLayoutContainer(): ViewGroup {
+        return find(R.id.gallery_layout_container)
+    }
+
     //Field getters
 
     override fun getBoardId(): String? {
@@ -142,9 +142,14 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     //Activity methods
 
     override fun setupActionBarTitle() {
+        Log.d(LOG_TAG, "setupActionBarTitle:")
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        if (mSchema != null) supportActionBar!!.title = mSchema!!.getPosts()!![0].getSubject()
+        if (mSchema != null) {
+            supportActionBar!!.title = mSchema!!.getPosts()!![0].getSubject()
+            Log.d(LOG_TAG, "title: ${supportActionBar!!.title}")
+        }
+        else Log.d(LOG_TAG, "mSchema is null")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -171,6 +176,17 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+        mSingleThreadListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
+    }
+
+    override fun onBackPressed() {
+        if (mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+
+        super.onBackPressed()
+    }
+
+    override fun onBackPressedOverridden(): Boolean {
+        return false
     }
 
     override fun loadData() {
@@ -178,16 +194,15 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
             mNewPostsNotifier!!.fetchPostsCount(mSchema!!.getPosts()!!.size)
             mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.savePreviousSchema(mSchema!!)
         }
-        doAsync {  mDataLoader!!.loadData(boardId!!, threadNumber!!) }
+        doAsync { mDataLoader!!.loadData(boardId!!, threadNumber!!) }
     }
 
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
-        if (mSchema != null) {
-            mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
+        Log.d(LOG_TAG, "onDataLoaded:")
 
-        }
+        if (mSchema != null) mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
+
         this.mSchema = schema[0] as IBaseJsonSchemaImpl
-
 
         mProgressUnit!!.hideProgressYoba()
 

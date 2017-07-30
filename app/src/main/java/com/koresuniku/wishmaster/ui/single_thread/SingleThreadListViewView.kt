@@ -1,5 +1,7 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
+import android.support.v7.app.AppCompatActivity
+import android.view.ViewGroup
 import android.widget.ListView
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
@@ -18,5 +20,9 @@ interface SingleThreadListViewView : FilesAdapterView {
     fun showPostDialog(position: Int)
 
     fun getSwipyRefreshLayoutUnit(): SwipyRefreshLayoutUnit
+
+    fun getAppCompatActivity(): AppCompatActivity
+
+    fun getGalleryLayoutContainer(): ViewGroup
 
 }

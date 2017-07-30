@@ -1,5 +1,7 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
+import android.support.v7.app.AppCompatActivity
+import android.view.ViewGroup
 import android.widget.ListView
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.ui.controller.SwipyRefreshLayoutUnit
@@ -18,4 +20,8 @@ interface ThreadListListViewView : FilesAdapterView {
     fun getSwipyRefreshLayoutUnit(): SwipyRefreshLayoutUnit
 
     fun openThread(threadName: String)
+
+    fun getAppCompatActivity(): AppCompatActivity
+
+    fun getGalleryLayoutContainer(): ViewGroup
 }

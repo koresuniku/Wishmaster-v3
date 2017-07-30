@@ -65,6 +65,10 @@ class ActionBarWithTabsUnit(val mView: ActionBarWithTabsView) : ActionBarView {
         mTabLayout!!.getTabAt(mTabPosition)!!.select()
     }
 
+    override fun onBackPressedOverridden(): Boolean {
+        return false
+    }
+
     fun setTabPosition() {
         val pos = PreferenceManager.getDefaultSharedPreferences(mView.getAppCompatActivity()).getString(
                 mView.getAppCompatActivity().getString(R.string.pref_dashboard_tab_position_key),

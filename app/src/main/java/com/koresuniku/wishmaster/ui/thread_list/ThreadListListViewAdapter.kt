@@ -1,6 +1,8 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
+import android.content.res.Configuration
 import android.os.Handler
+import android.support.v7.app.AppCompatActivity
 import android.text.Html
 import android.util.Log
 
@@ -15,18 +17,22 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableItemImageSizeChangedView
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
+import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.jetbrains.anko.dimen
+import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.topPadding
 
 class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(),
-        INotifyableListViewAdapter, INotifyableItemImageSizeChangedView {
+        INotifyableListViewAdapter, INotifyableItemImageSizeChangedView, ActionBarView {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -36,6 +42,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     val mHandler = Handler()
     var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
+    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
 
     override fun iNotifyDataSetChanged() {
         this.notifyDataSetChanged()
@@ -50,9 +57,41 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         var viewType: Int? = null
         var code: Int = -1
 
+        override fun showImageOrVideo(file: Files) {
+            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
+            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
+        }
+
         init {
             files = ArrayList()
         }
+    }
+
+    override fun getToolbarContainer(): FrameLayout {
+        return mView.getActivity().find<FrameLayout>(R.id.gallery_toolbar_container)
+    }
+
+    override fun getAppCompatActivity(): AppCompatActivity {
+        return mView.getAppCompatActivity()
+    }
+
+    override fun setupActionBarTitle() {
+
+    }
+
+    fun onConfigurationChanged(configuration: Configuration) {
+        mGalleryActionBarUnit.onConfigurationChanged(configuration)
+    }
+
+    override fun onBackPressedOverridden(): Boolean {
+        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
+            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
+            mView.getGalleryLayoutContainer().visibility = View.GONE
+            return true
+        }
+
+
+        return false
     }
 
     override fun getCount(): Int {

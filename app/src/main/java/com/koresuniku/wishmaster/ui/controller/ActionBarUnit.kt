@@ -9,8 +9,8 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 
-class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean, val presetupTitleLoading: Boolean) {
-    val LOG_TAG: String = ActionBarWithTabsUnit::class.java.simpleName
+open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean, val presetupTitleLoading: Boolean) {
+    open var LOG_TAG: String = ActionBarWithTabsUnit::class.java.simpleName
 
     val mActivityToolbarContainer: FrameLayout = mView.getToolbarContainer()
 
@@ -26,7 +26,7 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean, val 
         mActivityToolbarContainer.removeAllViews()
 
         mLocalToolbarContainer = mView.getAppCompatActivity().layoutInflater
-                .inflate(R.layout.action_bar_layout, null, false) as RelativeLayout
+                .inflate(getIdRes(), null, false) as RelativeLayout
         mToolbar = mLocalToolbarContainer!!.findViewById(R.id.toolbar) as Toolbar?
         val height: Int
         if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -40,9 +40,21 @@ class ActionBarUnit(val mView: ActionBarView, val createTopMargin: Boolean, val 
 
         mActivityToolbarContainer.addView(mLocalToolbarContainer)
 
-        mView.getAppCompatActivity().setSupportActionBar(mToolbar)
+        setSupportActionBarAndTitle()
+        postSetupActionBar()
+    }
 
+    open fun getIdRes(): Int {
+        return R.layout.action_bar_layout
+    }
+
+    open fun setSupportActionBarAndTitle() {
+        mView.getAppCompatActivity().setSupportActionBar(mToolbar)
         mView.setupActionBarTitle()
+    }
+
+    open fun postSetupActionBar() {
+
     }
 
     fun setProperDimensForToolbarContainer() {

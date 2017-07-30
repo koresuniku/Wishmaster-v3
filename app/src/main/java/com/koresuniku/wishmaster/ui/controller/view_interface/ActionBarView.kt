@@ -9,4 +9,6 @@ interface ActionBarView {
     fun getAppCompatActivity(): AppCompatActivity
 
     fun setupActionBarTitle()
+
+    fun onBackPressedOverridden(): Boolean
 }

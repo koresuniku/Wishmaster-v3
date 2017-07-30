@@ -32,8 +32,13 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-    <include
-        layout="@layout/gallery_layout"
-        android:visibility="gone"></include>
+    <FrameLayout
+        android:id="@+id/gallery_layout_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <include layout="@layout/gallery_layout" />
+    </FrameLayout>
 </FrameLayout>
 

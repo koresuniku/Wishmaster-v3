@@ -2,22 +2,24 @@ package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Activity
 import android.content.Context
-import android.os.Handler
+import android.content.res.Configuration
+import android.support.v7.app.AppCompatActivity
 import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
+import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 import com.koresuniku.wishmaster.ui.controller.view_interface.IDialogAdapter
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
@@ -25,22 +27,21 @@ import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimen
+import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
-        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter {
-
-
+open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
+        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter, ActionBarView {
     val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
     val ITEM_SINGLE_IMAGE: Int = 1
     val ITEM_MULTIPLE_IMAGES: Int = 2
 
-    val mHandler = Handler()
     var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
     val mAnswersHolder: AnswersHolder = AnswersHolder(this)
+    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
 
     init {
         mAnswersHolder.initAnswersMap()
@@ -57,9 +58,24 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         var code: Int = -1
         var postNumber: String? = null
 
+        override fun showImageOrVideo(file: Files) {
+            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
+            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
+            val filesList = getFilesList()
+            mGalleryActionBarUnit.setupTitleAndSubtitle(file, filesList.indexOf(file), filesList.count())
+        }
+
         init {
             files = ArrayList()
         }
+    }
+
+    fun getFilesList(): List<Files> {
+        val filesList: ArrayList<Files> = ArrayList()
+        for (post in mView.getSchema().getPosts()!!) {
+            filesList += post.getFiles()
+        }
+        return filesList
     }
 
     override fun getContext(): Context {
@@ -68,6 +84,35 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun getActivity(): Activity {
         return mView.getActivity()
+    }
+
+    override fun getToolbarContainer(): FrameLayout {
+        return mView.getActivity().find<FrameLayout>(R.id.gallery_toolbar_container)
+    }
+
+    override fun getAppCompatActivity(): AppCompatActivity {
+        return mView.getAppCompatActivity()
+    }
+
+    override fun setupActionBarTitle() {
+
+    }
+
+    override fun onBackPressedOverridden(): Boolean {
+        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
+            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
+            mView.getGalleryLayoutContainer().visibility = View.GONE
+            return true
+        }
+
+
+        return false
+    }
+
+    fun onConfigurationChanged(configuration: Configuration) {
+        mGalleryActionBarUnit.onConfigurationChanged(configuration)
+        mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
+                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
@@ -139,11 +184,15 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         return holder
     }
 
+    open fun getPost(position: Int): Post {
+        return mView.getSchema().getPosts()!![position]
+    }
+
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
         var holder: ViewHolder
-        val post: Post = mView.getSchema().getPosts()!![position]
+        val post: Post = getPost(position)
         val files: List<Files> = post.getFiles()
 
         if (convertView == null) {
@@ -189,7 +238,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         holder.files = post.getFiles()
         ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
 
-
+        holder.mAnswers!!.bringToFront()
         holders.add(holder)
         return convertView
     }
@@ -201,7 +250,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         val files: List<Files> = post.getFiles()
 
         if (convertView == null) {
-            convertView = inflateCorrectConvertView(position, parent!!)
+            convertView = inflateCorrectConvertView(position, parent)
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.code = holdersCounter++
             holder.files = files
@@ -210,7 +259,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         } else {
             holder = convertView.tag as ViewHolder
             if (holder.viewType != getItemViewType(position)) {
-                convertView = inflateCorrectConvertView(position, parent!!)
+                convertView = inflateCorrectConvertView(position, parent)
                 //Log.d(LOG_TAG, "reusing holder: " + holder.code)
                 val code = holder.code
                 holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
@@ -243,7 +292,7 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         holder.files = post.getFiles()
         ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
 
-
+        holder.mAnswers!!.bringToFront()
         holders.add(holder)
         return convertView
     }
@@ -300,10 +349,6 @@ class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             Log.d(LOG_TAG, "post ${post.getNum()} doesn't exits")
         }
 
-    }
-
-    fun onLongBackPressed() {
-        mAnswersHolder.onLongBackPressed()
     }
 
     inner class OnAnswersClickListener(val postNumber: String) : View.OnClickListener {

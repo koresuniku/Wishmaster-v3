@@ -7,6 +7,9 @@ import android.widget.BaseAdapter
 import android.view.View.MeasureSpec
 import android.opengl.ETC1.getWidth
 import android.widget.ListView
+import android.widget.TextView
+import com.koresuniku.wishmaster.R
+import org.jetbrains.anko.find
 
 class AnswersListViewAdapter(var mViewsList: List<View>) : BaseAdapter() {
     val LOG_TAG: String = AnswersListViewAdapter::class.java.simpleName
@@ -20,6 +23,7 @@ class AnswersListViewAdapter(var mViewsList: List<View>) : BaseAdapter() {
         //Log.d(LOG_TAG, "getView: $p0")
         var convertView = p1
         convertView = mViewsList[p0]
+        convertView.find<TextView>(R.id.answers).bringToFront()
         return convertView
     }
 

@@ -19,7 +19,6 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.KeyEvent
 import android.widget.*
-import org.jetbrains.anko.sdk25.coroutines.onScrollListener
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -56,9 +55,9 @@ class AnswersHolder(val mView: AnswersHolderView) {
             schema = IBaseJsonSchemaImpl()
             schema.setPosts(mView.getSchema().getPosts()!!.subList(
                     mPreviousSchema!!.getPosts()!!.size, mView.getSchema().getPosts()!!.size))
-            Log.d(LOG_TAG, "new posts on schema: " + schema.getPosts()!!.size)
+            //Log.d(LOG_TAG, "new posts on schema: " + schema.getPosts()!!.size)
             for (post: Post in schema.getPosts()!!) {
-                Log.d(LOG_TAG, "putting post: ${post.getNum()}")
+                //Log.d(LOG_TAG, "putting post: ${post.getNum()}")
                 mAnswersMap.put(post.getNum(), ArrayList())
             }
         } else schema = mView.getSchema()
@@ -67,7 +66,7 @@ class AnswersHolder(val mView: AnswersHolderView) {
             matcher = pattern.matcher(Html.fromHtml(post.getComment()))
             while (matcher.find()) {
                 val group: String = matcher.group()
-                Log.d(LOG_TAG, "found $group")
+                //Log.d(LOG_TAG, "found $group")
                 if (mAnswersMap.containsKey(group.substring(2, group.length))) {
                     val answersList = mAnswersMap[group.substring(2, group.length)]
                     if (!answersList!!.contains(post.getNum())) {
@@ -78,7 +77,7 @@ class AnswersHolder(val mView: AnswersHolderView) {
             }
         }
 
-        Log.d(LOG_TAG, "mAnswersMap: $mAnswersMap")
+        //Log.d(LOG_TAG, "mAnswersMap: $mAnswersMap")
 
         if (mPreviousSchema != null) mView.notifyNewAnswersTextViews()
     }
@@ -168,6 +167,17 @@ class AnswersHolder(val mView: AnswersHolderView) {
         if (mAnswersListViewAdapter == null) {
             mAnswersListViewAdapter = AnswersListViewAdapter(viewsList)
             mDialogListView.adapter = mAnswersListViewAdapter
+            mDialogListView.setOnScrollListener(object : AbsListView.OnScrollListener {
+                override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {
+
+                }
+
+                override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
+                    if (p1 == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                        mDialogListView.invalidateViews()
+                    }
+                }
+            })
             mDialog.setContentView(mDialogListViewContainer)
             mDialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
             mDialog.setOnCancelListener({ onBackPressed() })
@@ -178,7 +188,7 @@ class AnswersHolder(val mView: AnswersHolderView) {
             mAnswersListViewAdapter!!.setViewsList(viewsList)
             mDialog.show()
             if (!newAnswer) {
-                Log.d(LOG_TAG, "setting scroll to: ${mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition}")
+                //Log.d(LOG_TAG, "setting scroll to: ${mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition}")
                 //mDialogListView.scrollTo(0, mViewsScrolls!![mViewsScrolls!!.size - 1])
                 //mDialogListView.smoothScrollToPositionFromTop(1, 100, 0)
                 mDialogListView.setSelectionFromTop(
@@ -213,6 +223,8 @@ class AnswersHolder(val mView: AnswersHolderView) {
 
     inner class OnLongKeyListener : DialogInterface.OnKeyListener {
         var times: Int = 0
+        var beforeTime: Long = 0L
+        var afterTime: Long = 0L
 
         var runnableForOnBackPress: Runnable = Runnable {
             //Log.d(LOG_TAG, "times: $times")
@@ -222,9 +234,19 @@ class AnswersHolder(val mView: AnswersHolderView) {
 
         override fun onKey(p0: DialogInterface?, p1: Int, p2: KeyEvent?): Boolean {
             if (p1 == KeyEvent.KEYCODE_BACK) {
-                //Log.d(LOG_TAG, "keycode back")
-                if (times == 0) Handler().postDelayed(runnableForOnBackPress, 100)
+                Log.d(LOG_TAG, "keycode back")
                 times++
+                if (times == 1) {
+                    beforeTime = System.currentTimeMillis()
+                }
+                if (times == 2) {
+                    afterTime = System.currentTimeMillis()
+                    if (afterTime - beforeTime > 400) onLongBackPressed()
+                    else onBackPressed()
+                    times = 0
+                    beforeTime = 0L
+                    afterTime = 0L
+                }
                 return true
             }
 

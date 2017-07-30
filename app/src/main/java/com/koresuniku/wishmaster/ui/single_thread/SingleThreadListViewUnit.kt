@@ -22,7 +22,6 @@ class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewA
         }
     }
 
-
     override fun adapterIsCreated(): Boolean {
         return adapterIsCreated!!
     }
@@ -37,6 +36,10 @@ class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewA
                     Glide.with(mView.getActivity()).pauseRequests()
                 } else {
                     Glide.with(mView.getActivity()).resumeRequests()
+                }
+
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    mListView!!.invalidateViews()
                 }
             }
 

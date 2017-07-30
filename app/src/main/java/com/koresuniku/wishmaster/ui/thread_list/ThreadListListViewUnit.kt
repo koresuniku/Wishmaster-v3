@@ -7,6 +7,7 @@ import android.widget.ListView
 import com.bumptech.glide.Glide
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.ui.controller.view_interface.IListViewAdapterCreatable
+import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 
 class ThreadListListViewUnit(val mView: ThreadListListViewView) : IListViewAdapterCreatable {
     val LOG_TAG: String = ThreadListListViewUnit::class.java.simpleName
@@ -48,6 +49,10 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) : IListViewAdapt
                     Glide.with(mView.getActivity()).pauseRequests()
                 } else {
                     Glide.with(mView.getActivity()).resumeRequests()
+                }
+
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    mListView!!.invalidateViews()
                 }
             }
 

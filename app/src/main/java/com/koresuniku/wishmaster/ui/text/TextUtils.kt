@@ -114,4 +114,36 @@ object TextUtils {
         return getCorrectRussianEndings(count, stringForZeroOrMultiple = "ответов",
                 stringForOne = "ответ", stringForTwoOrThreeOrFour = "ответа").toUpperCase()
     }
+
+    fun getSubtitleStringForGalleryToolbar(file: Files, indexOfFile: Int, filesCount: Int): String {
+        val sb: StringBuilder = StringBuilder()
+
+        sb.append("(")
+        sb.append(indexOfFile + 1)
+        sb.append("/")
+        sb.append(filesCount)
+        sb.append("), ")
+        sb.append(file.getSize())
+        sb.append("Кб, ")
+
+        var format: String = ""
+        var tempChar: String
+        for (i in file.getPath().length - 1 downTo 0) {
+            tempChar = file.getPath().substring(i, i + 1)
+            if (tempChar != ".") format += tempChar
+            else break
+        }
+        format = format.reversed()
+
+        sb.append(file.getWidth())
+        sb.append("x")
+        sb.append(file.getHeight())
+        sb.append(" ")
+        sb.append(format.toUpperCase())
+        //sb.append(", ")
+
+
+
+        return sb.toString()
+    }
 }

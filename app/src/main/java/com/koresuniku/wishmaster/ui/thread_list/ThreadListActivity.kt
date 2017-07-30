@@ -69,6 +69,10 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         loadData()
     }
 
+    override fun getGalleryLayoutContainer(): ViewGroup {
+        return find(R.id.gallery_layout_container)
+    }
+
     override fun getRefreshLayout(): SwipyRefreshLayout {
         return find(R.id.srl)
     }
@@ -85,9 +89,20 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         return mThreadListListViewUnit!!.mListViewAdapter!!
     }
 
+    override fun onBackPressed() {
+        if (mThreadListListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+
+        super.onBackPressed()
+    }
+
+    override fun onBackPressedOverridden(): Boolean {
+        return false
+    }
+
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+        mThreadListListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
     }
 
     override fun loadData() {
