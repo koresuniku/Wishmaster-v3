@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.ui.thread_list
 
 import android.content.res.Configuration
 import android.os.Handler
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
 import android.util.Log
@@ -25,6 +26,8 @@ import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableItemImageSizeChangedView
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
+import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
+import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
@@ -39,10 +42,13 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     val ITEM_SINGLE_IMAGE: Int = 1
     val ITEM_MULTIPLE_IMAGES: Int = 2
 
-    val mHandler = Handler()
     var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
+
     val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
+    var mGalleryPager: ViewPager? = null
+    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
+    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
 
     override fun iNotifyDataSetChanged() {
         this.notifyDataSetChanged()
@@ -55,16 +61,32 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         var mPostsAndFilesInfo: TextView? = null
 
         var viewType: Int? = null
-        var code: Int = -1
 
         override fun showImageOrVideo(file: Files) {
             UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
             mView.getGalleryLayoutContainer().visibility = View.VISIBLE
+            mGalleryActionBarUnit.setupTitleAndSubtitle(file, files!!.indexOf(file), files!!.count())
+
+            mGalleryPager = mView.getViewPager()
+            mGalleryPagerAdapter = GalleryPagerAdapter(
+                    mView.getAppCompatActivity().supportFragmentManager, files!!, files!!.indexOf(file))
+            mGalleryPager!!.adapter = mGalleryPagerAdapter
+            mGalleryPager!!.offscreenPageLimit = 1
+            mGalleryPager!!.currentItem = files!!.indexOf(file)
+            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
+            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
+        }
+
+        override fun onPageChanged(newPosition: Int) {
+            mGalleryPagerAdapter!!.onPageChanged(newPosition)
+            val file = files!![newPosition]
+            mGalleryActionBarUnit.onPageChanged(file, newPosition, files!!.count())
         }
 
         init {
             files = ArrayList()
         }
+
     }
 
     override fun getToolbarContainer(): FrameLayout {
@@ -80,13 +102,19 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     }
 
     fun onConfigurationChanged(configuration: Configuration) {
-        mGalleryActionBarUnit.onConfigurationChanged(configuration)
+        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
+            mGalleryActionBarUnit.onConfigurationChanged(configuration)
+            mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
+                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
+        }
     }
 
     override fun onBackPressedOverridden(): Boolean {
         if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
             UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
             mView.getGalleryLayoutContainer().visibility = View.GONE
+
+            mGalleryPager!!.clearOnPageChangeListeners()
             return true
         }
 
@@ -183,41 +211,31 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         return holder
     }
 
+    override fun getViewTypeCount(): Int {
+        return 3
+    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
-        var holder: ViewHolder
+        val holder: ViewHolder
         val thread: Thread = mView.getSchema().getThreads()[position]
-        val files: List<Files> = thread.getFiles()
 
         if (convertView == null) {
+            Log.d(LOG_TAG, "------------------")
+            Log.d(LOG_TAG, "inflating new view")
             convertView = inflateCorrectConvertView(position, parent)
             holder = getViewHolderInstance(convertView, getItemViewType(position))
-            holder.code = holdersCounter++
-            holder.files = files
             convertView.tag = holder
+            holders.add(holder)
         } else {
+            Log.d(LOG_TAG, "------------")
+            Log.d(LOG_TAG, "reusing view")
             holder = convertView.tag as ViewHolder
-            if (holder.viewType != getItemViewType(position)) {
-                convertView = inflateCorrectConvertView(position, parent)
-                Log.d(LOG_TAG, "reusing holder: " + holder.code)
-                val code = holder.code
-                holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
-                holder = getViewHolderInstance(convertView, getItemViewType(position))
-                holder.code = code
-                holder.files = files
-                convertView.tag = holder
-            }
         }
 
         Log.d(LOG_TAG, "holders.size: " + holders.size)
 
-        holder.mItemContainer!!.onClick { mView.openThread(thread.getNum()) }
-
-//        holder.mItemContainer!!.setOnClickListener {object : View.OnClickListener {
-//            override fun onClick(p0: View?) {
-//                mView.openThread(thread.getNum())
-//            }
-//        }}
+        holder.mItemContainer!!.setOnClickListener { mView.openThread(thread.getNum()) }
 
         holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {
@@ -251,34 +269,18 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
-        holders.add(holder)
         return convertView
     }
 
     fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
-        var holder: ViewHolder
+        var holder: ViewHolder  = ViewHolder()
         val thread: Thread = mView.getSchema().getThreads()[position]
-        val files: List<Files> = thread.getFiles()
 
         if (convertView == null) {
             convertView = inflateCorrectConvertView(position, parent)
             holder = getViewHolderInstance(convertView, getItemViewType(position))
-            holder.code = holdersCounter++
-            holder.files = files
             convertView.tag = holder
-        } else {
-            holder = convertView.tag as ViewHolder
-            if (holder.viewType != getItemViewType(position)) {
-                convertView = inflateCorrectConvertView(position, parent)
-                Log.d(LOG_TAG, "reusing holder: " + holder.code)
-                val code = holder.code
-                holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
-                holder = getViewHolderInstance(convertView, getItemViewType(position))
-                holder.code = code
-                holder.files = files
-                convertView.tag = holder
-            }
         }
 
         Log.d(LOG_TAG, "holders.size: " + holders.size)
@@ -291,7 +293,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 return false
             }
         })
-
 
         if (Dvach.disableSubject.contains(mView.getBoardId()) || thread.getSubject().isEmpty()) {
             holder.mSubjectTextView!!.visibility = View.GONE
@@ -309,12 +310,10 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
 
         holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
-
         holder.mCommentTextView!!.text = Html.fromHtml(thread.getComment())
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
-        holders.add(holder)
         return convertView
     }
 

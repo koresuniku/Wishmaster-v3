@@ -36,6 +36,10 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
         return R.layout.gallery_action_bar_layout
     }
 
+    fun onPageChanged(file: Files, indexOfFile: Int, filesCount: Int) {
+        setupTitleAndSubtitle(file, indexOfFile, filesCount)
+    }
+
     override fun setSupportActionBarAndTitle() {
         //Do nothing
     }

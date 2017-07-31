@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.single_thread
+package com.koresuniku.wishmaster.ui.single_thread.answers
 
 import android.app.Dialog
 import android.content.DialogInterface

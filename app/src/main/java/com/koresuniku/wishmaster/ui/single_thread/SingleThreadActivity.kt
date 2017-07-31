@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
@@ -113,6 +114,10 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         return find(R.id.gallery_layout_container)
     }
 
+    override fun getViewPager(): ViewPager {
+        return find(R.id.gallery_pager)
+    }
+
     //Field getters
 
     override fun getBoardId(): String? {
@@ -176,11 +181,14 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarUnit!!.onConfigurationChanged(newConfig!!)
-        mSingleThreadListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
+        if (mSingleThreadListViewUnit!!.adapterIsCreated())
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
     }
 
     override fun onBackPressed() {
-        if (mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+        if (mSingleThreadListViewUnit!!.adapterIsCreated()) {
+            if (mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+        }
 
         super.onBackPressed()
     }

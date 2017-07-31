@@ -43,6 +43,7 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) : IListViewAdapt
         adapterIsCreated = true
         mListViewAdapter = ThreadListListViewAdapter(mView)
         mListView!!.adapter = mListViewAdapter
+        mListView!!.onItemClickListener = null
         mListView!!.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
@@ -51,9 +52,6 @@ class ThreadListListViewUnit(val mView: ThreadListListViewView) : IListViewAdapt
                     Glide.with(mView.getActivity()).resumeRequests()
                 }
 
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    mListView!!.invalidateViews()
-                }
             }
 
             override fun onScroll(view: AbsListView, firstVisibleItem: Int,

@@ -14,6 +14,7 @@ import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListListViewAdapter
 import com.koresuniku.wishmaster.util.Formats
+import org.jetbrains.anko.doAsync
 
 object ListViewAdapterUtils {
 

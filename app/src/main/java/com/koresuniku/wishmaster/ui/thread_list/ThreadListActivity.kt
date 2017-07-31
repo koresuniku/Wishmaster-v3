@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
@@ -90,7 +91,9 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun onBackPressed() {
-        if (mThreadListListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+        if (mThreadListListViewUnit!!.adapterIsCreated()) {
+            if (mThreadListListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+        }
 
         super.onBackPressed()
     }
@@ -102,7 +105,8 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration?) {
         super.onConfigurationChanged(newConfig)
         mActionBarUnit!!.onConfigurationChanged(newConfig!!)
-        mThreadListListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
+        if (mThreadListListViewUnit!!.adapterIsCreated())
+            mThreadListListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
     }
 
     override fun loadData() {
@@ -193,6 +197,10 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun getProgressContainer(): View {
         return find(R.id.progress_container)
+    }
+
+    override fun getViewPager(): ViewPager {
+        return find(R.id.gallery_pager)
     }
 
     override fun getActivity(): Activity {

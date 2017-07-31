@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.ui.single_thread.AnswersHolder
+import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolder
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

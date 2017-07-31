@@ -1,11 +1,9 @@
-package com.koresuniku.wishmaster.ui.single_thread
+package com.koresuniku.wishmaster.ui.single_thread.answers
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.view.View.MeasureSpec
-import android.opengl.ETC1.getWidth
 import android.widget.ListView
 import android.widget.TextView
 import com.koresuniku.wishmaster.R

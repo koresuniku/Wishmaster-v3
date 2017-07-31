@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
 import android.widget.ListView
@@ -24,5 +25,7 @@ interface SingleThreadListViewView : FilesAdapterView {
     fun getAppCompatActivity(): AppCompatActivity
 
     fun getGalleryLayoutContainer(): ViewGroup
+
+    fun getViewPager(): ViewPager
 
 }
