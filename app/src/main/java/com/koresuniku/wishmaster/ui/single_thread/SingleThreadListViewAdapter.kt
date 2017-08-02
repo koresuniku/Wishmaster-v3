@@ -74,7 +74,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
             mGalleryPager = mView.getViewPager()
             mGalleryPagerAdapter = GalleryPagerAdapter(
-                    mView.getAppCompatActivity().supportFragmentManager, filesList, currentPosition)
+                    mView.getAppCompatActivity().supportFragmentManager, mGalleryPager!!,
+                    filesList, currentPosition)
             mGalleryPager!!.adapter = mGalleryPagerAdapter
             mGalleryPager!!.offscreenPageLimit = 1
             mGalleryPager!!.currentItem = currentPosition
@@ -129,6 +130,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             mView.getGalleryLayoutContainer().visibility = View.GONE
 
             mGalleryPager!!.clearOnPageChangeListeners()
+            mGalleryPagerAdapter!!.onBackPressed()
             return true
         }
 
@@ -238,17 +240,6 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         } else {
             holder = convertView.tag as ViewHolder
             holder.postNumber = post.getNum()
-//            if (holder.viewType != getItemViewType(position)) {
-//                convertView = inflateCorrectConvertView(position, parent!!)
-//                Log.d(LOG_TAG, "reusing holder: " + holder.code)
-//                val code = holder.code
-//                holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
-//                holder = getViewHolderInstance(convertView, getItemViewType(position))
-//                holder.code = code
-//                holder.files = files
-//                holder.postNumber = post.getNum()
-//                convertView.tag = holder
-//            }
         }
 
         Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
@@ -292,17 +283,6 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         } else {
             holder = convertView.tag as ViewHolder
             holder.postNumber = post.getNum()
-//            if (holder.viewType != getItemViewType(position)) {
-//                convertView = inflateCorrectConvertView(position, parent)
-//                //Log.d(LOG_TAG, "reusing holder: " + holder.code)
-//                val code = holder.code
-//                holders.filter { it.code == code }.forEach { holders.removeAt(holders.indexOf(it)) }
-//                holder = getViewHolderInstance(convertView, getItemViewType(position))
-//                holder.code = code
-//                holder.files = files
-//                holder.postNumber = post.getNum()
-//                convertView.tag = holder
-//            }
         }
 
 

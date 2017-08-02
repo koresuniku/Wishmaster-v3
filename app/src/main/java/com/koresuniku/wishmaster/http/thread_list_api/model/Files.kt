@@ -1,7 +1,9 @@
 package com.koresuniku.wishmaster.http.thread_list_api.model
 
+import android.util.Log
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.security.acl.LastOwnerException
 import javax.xml.datatype.Duration
 
 class Files {
@@ -76,6 +78,10 @@ class Files {
     }
 
     fun getDuration(): String {
+        if (duration.isNullOrBlank()) {
+            Log.d("File", "duration is null")
+            return ""
+        }
         return this.duration!!
     }
 

@@ -1,14 +1,22 @@
 package com.koresuniku.wishmaster.ui.gallery
 
+import android.content.res.Configuration
 import android.os.Handler
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toolbar
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 import com.koresuniku.wishmaster.ui.text.TextUtils
+import org.jetbrains.anko.configuration
+import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
 import org.w3c.dom.Text
 
@@ -25,10 +33,15 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
     var title: String? = null
     var subtitle: String? = null
 
-
     override fun postSetupActionBar() {
+        if (DeviceUtils.sdkIsKitkatOrHigher()) {
+            if (mView.getAppCompatActivity().configuration.orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE) doMarginActionBar()
+            else unMarginActionBar()
+        }
+
         mBackButton = mToolbar!!.find(R.id.back_button)
-        mBackButton!!.setOnClickListener { Log.d(LOG_TAG, "back button pressed"); mView.onBackPressedOverridden() }
+        mBackButton!!.setOnClickListener { mView.onBackPressedOverridden() }
         mBackButton!!.bringToFront()
     }
 
@@ -38,6 +51,33 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
 
     fun onPageChanged(file: Files, indexOfFile: Int, filesCount: Int) {
         setupTitleAndSubtitle(file, indexOfFile, filesCount)
+    }
+
+    override fun onConfigurationChanged(configuration: Configuration) {
+        super.onConfigurationChanged(configuration)
+        if (DeviceUtils.sdkIsKitkatOrHigher() &&
+                DeviceUtils.deviceHasNavigationBar(mView.getAppCompatActivity())) {
+            if (configuration.orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE) doMarginActionBar()
+            else unMarginActionBar()
+        }
+    }
+
+    fun doMarginActionBar() {
+        val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
+                mActivityToolbarContainer.layoutParams.width,
+                mActivityToolbarContainer.layoutParams.height)
+        params.setMargins(0, 0, UIUtils.convertDpToPixel(
+                mActivityToolbarContainer.dimen(R.dimen.navigation_bar_size).toFloat()).toInt() / 2, 0)
+        mActivityToolbarContainer.layoutParams = params
+    }
+
+    fun unMarginActionBar() {
+        val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
+                mActivityToolbarContainer.layoutParams.width,
+                mActivityToolbarContainer.layoutParams.height)
+        params.setMargins(0, 0, 0, 0)
+        mActivityToolbarContainer.layoutParams = params
     }
 
     override fun setSupportActionBarAndTitle() {

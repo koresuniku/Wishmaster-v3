@@ -1,8 +1,13 @@
 package com.koresuniku.wishmaster.system
 
+import android.content.Context
+import android.media.AudioManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
+import com.github.piasy.biv.BigImageViewer
+import com.github.piasy.biv.loader.fresco.FrescoImageLoader
+import com.github.piasy.biv.loader.glide.GlideImageLoader
 import com.koresuniku.wishmaster.http.HttpClient
 import java.io.InputStream
 
@@ -13,13 +18,14 @@ class App : android.app.Application() {
     override fun onCreate() {
         super.onCreate()
 
-        android.util.Log.d("Application: ", "App")
-        //BigImageViewer.initialize(GlideImageLoader.with(this));
-        Glide.get(this).register(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(HttpClient.client))
-        val audio = getSystemService(android.content.Context.AUDIO_SERVICE) as android.media.AudioManager
-        com.koresuniku.wishmaster.system.App.Companion.soundVolume = audio.getStreamVolume(android.media.AudioManager.STREAM_MUSIC)
+        Glide.get(this).register(GlideUrl::class.java,
+                InputStream::class.java,
+                OkHttpUrlLoader.Factory(HttpClient.client))
+        BigImageViewer.initialize(GlideImageLoader.with(this))
+        //BigImageViewer.initialize(FrescoImageLoader.with(this))
+        val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        App.Companion.soundVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
         setupContentObserver()
-
     }
 
 
@@ -35,12 +41,12 @@ class App : android.app.Application() {
     }
 
     companion object {
-        internal val LOG_TAG = com.koresuniku.wishmaster.system.App::class.java.simpleName
+        internal val LOG_TAG = App::class.java.simpleName
 
         var soundVolume: Int = 0
     }
 
-    fun getContext(): android.content.Context {
+    fun getContext(): Context {
         return applicationContext
     }
 

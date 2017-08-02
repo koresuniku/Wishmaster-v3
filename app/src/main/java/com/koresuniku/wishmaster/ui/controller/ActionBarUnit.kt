@@ -69,7 +69,7 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
         mLocalToolbarContainer!!.findViewById(R.id.tab_layout).visibility = View.VISIBLE
     }
 
-    fun onConfigurationChanged(configuration: Configuration) {
+    open fun onConfigurationChanged(configuration: Configuration) {
         setupActionBar(configuration)
     }
 

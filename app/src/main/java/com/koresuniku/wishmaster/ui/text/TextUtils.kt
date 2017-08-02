@@ -58,15 +58,7 @@ object TextUtils {
         val width = file.getWidth()
         val height = file.getHeight()
         val builder = StringBuilder()
-        var format: String = ""
-
-        var tempChar: String
-        for (i in file.getPath().length - 1 downTo 0) {
-            tempChar = file.getPath().substring(i, i + 1)
-            if (tempChar != ".") format += tempChar
-            else break
-        }
-        format = format.reversed()
+        val format = getSubstringAfterDot(file.getPath())
 
         builder.append(width)
         builder.append("x")
@@ -77,9 +69,11 @@ object TextUtils {
         builder.append(", ")
         builder.append(format.toUpperCase())
 
-        if (format == Formats.WEBM_FORMAT) {
-            builder.append("\n")
-            builder.append(file.getDuration())
+        if (Formats.VIDEO_FORMATS.contains(format.toLowerCase())) {
+            if (file.getDuration().isNotEmpty()) {
+                builder.append("\n")
+                builder.append(file.getDuration())
+            }
         }
 
         return builder.toString()
@@ -140,9 +134,6 @@ object TextUtils {
         sb.append(file.getHeight())
         sb.append(" ")
         sb.append(format.toUpperCase())
-        //sb.append(", ")
-
-
 
         return sb.toString()
     }

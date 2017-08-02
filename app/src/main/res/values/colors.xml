@@ -15,4 +15,5 @@
     <color name="color_unchecked">@color/material_gray_middle</color>
 
     <color name="color_gallery_tint">#f01d1d1d</color>
+    <color name="color_light_gallery_tint">#731d1d1d</color>
 </resources>

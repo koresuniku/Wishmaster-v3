@@ -174,7 +174,6 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         this.mSchema = schema[0] as BoardsJsonSchema
 
-
         val cursor: Cursor = contentResolver.query(DatabaseContract.BoardsEntry.CONTENT_URI,
                 BoardsUtils.mBoardsProjection, null, null, null)
 

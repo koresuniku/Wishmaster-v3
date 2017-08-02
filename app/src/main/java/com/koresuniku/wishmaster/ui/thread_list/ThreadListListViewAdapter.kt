@@ -69,7 +69,8 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
             mGalleryPager = mView.getViewPager()
             mGalleryPagerAdapter = GalleryPagerAdapter(
-                    mView.getAppCompatActivity().supportFragmentManager, files!!, files!!.indexOf(file))
+                    mView.getAppCompatActivity().supportFragmentManager, mGalleryPager!!,
+                    files!!, files!!.indexOf(file))
             mGalleryPager!!.adapter = mGalleryPagerAdapter
             mGalleryPager!!.offscreenPageLimit = 1
             mGalleryPager!!.currentItem = files!!.indexOf(file)
@@ -115,6 +116,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             mView.getGalleryLayoutContainer().visibility = View.GONE
 
             mGalleryPager!!.clearOnPageChangeListeners()
+            mGalleryPagerAdapter!!.onBackPressed()
             return true
         }
 
@@ -217,7 +219,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
-        val holder: ViewHolder
+        var holder: ViewHolder
         val thread: Thread = mView.getSchema().getThreads()[position]
 
         if (convertView == null) {
@@ -232,6 +234,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             Log.d(LOG_TAG, "reusing view")
             holder = convertView.tag as ViewHolder
         }
+
 
         Log.d(LOG_TAG, "holders.size: " + holders.size)
 

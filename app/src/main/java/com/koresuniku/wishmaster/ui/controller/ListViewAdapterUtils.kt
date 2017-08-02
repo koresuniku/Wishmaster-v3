@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.ui.controller
 
 import android.app.Activity
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,6 +20,7 @@ import org.jetbrains.anko.doAsync
 object ListViewAdapterUtils {
 
     fun setupImages(activity: Activity, holder: FilesListViewViewHolder, viewModeIsDialog: Boolean, reloadImages: Boolean) {
+        if (holder.files == null) {Log.d("ListViewAdapterUtils", "files is null"); return}
         val filesSize = holder.files!!.size
         switchImagesVisibility(holder, filesSize)
 
@@ -34,11 +36,11 @@ object ListViewAdapterUtils {
                                 holder.summary1!!, file, viewModeIsDialog, reloadImages)
                         1 -> setupImageContainer(activity, holder, holder.image2!!, holder.webmImageView2!!,
                                 holder.summary2!!, file, viewModeIsDialog, reloadImages)
-                        2 -> setupImageContainer(activity, holder,holder.image3!!, holder.webmImageView3!!,
+                        2 -> setupImageContainer(activity, holder, holder.image3!!, holder.webmImageView3!!,
                                 holder.summary3!!, file, viewModeIsDialog, reloadImages)
                         3 -> setupImageContainer(activity, holder, holder.image4!!, holder.webmImageView4!!,
                                 holder.summary4!!, file, viewModeIsDialog, reloadImages)
-                        4 -> setupImageContainer(activity, holder,holder.image5!!, holder.webmImageView5!!,
+                        4 -> setupImageContainer(activity, holder, holder.image5!!, holder.webmImageView5!!,
                                 holder.summary5!!, file, viewModeIsDialog, reloadImages)
                         5 -> setupImageContainer(activity, holder, holder.image6!!, holder.webmImageView6!!,
                                 holder.summary6!!, file, viewModeIsDialog, reloadImages)
@@ -273,6 +275,6 @@ object ListViewAdapterUtils {
 
         Glide.with(activity).load(Uri.parse(Dvach.DVACH_BASE_URL + file.getThumbnail()))
                 .crossFade(200).placeholder(image.drawable)
-                .diskCacheStrategy(DiskCacheStrategy.NONE).into(image)
+                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(image)
     }
 }

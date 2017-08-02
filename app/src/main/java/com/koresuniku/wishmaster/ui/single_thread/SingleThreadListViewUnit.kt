@@ -38,9 +38,6 @@ class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewA
                     Glide.with(mView.getActivity()).resumeRequests()
                 }
 
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    mListView!!.invalidateViews()
-                }
             }
 
             override fun onScroll(view: AbsListView, firstVisibleItem: Int,
