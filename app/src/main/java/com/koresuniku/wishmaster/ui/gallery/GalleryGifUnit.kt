@@ -32,7 +32,7 @@ class GalleryGifUnit(val mFragment: GalleryFragment, val file: Files) : View.OnC
         mGifImageLayout = mFragment.context.layoutInflater.inflate(
                 R.layout.gallery_gif_layout, FrameLayout(mFragment.context), false) as ViewGroup
         mProgressBar = mGifImageLayout!!.find(R.id.progressBar)
-        mGifImage = mGifImageLayout!!.find(R.id.mBigImage)
+        mGifImage = mGifImageLayout!!.find(R.id.gif_image)
 
         mGifImage!!.setOnClickListener(this)
         Glide.with(mFragment.context).load(Uri.parse(Dvach.DVACH_BASE_URL + file.getPath()))
@@ -50,6 +50,7 @@ class GalleryGifUnit(val mFragment: GalleryFragment, val file: Files) : View.OnC
                 return false
             }
         }).into(mGifImage)
+        mFragment.mRootView!!.addView(mGifImageLayout)
     }
 
     override fun onClick(p0: View?) {

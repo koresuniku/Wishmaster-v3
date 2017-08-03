@@ -17,7 +17,7 @@ class GalleryPagerAdapter(fragmentManager: FragmentManager, val viewPager: ViewP
     val mGalleryFragments: HashMap<Int, GalleryFragment> = HashMap()
 
     override fun getItem(position: Int): Fragment {
-        mGalleryFragments.put(position, GalleryFragment(mFiles[position]))
+        mGalleryFragments.put(position, GalleryFragment(this, position))
         return mGalleryFragments[position]!!
     }
 
@@ -27,21 +27,28 @@ class GalleryPagerAdapter(fragmentManager: FragmentManager, val viewPager: ViewP
 
     fun onPageChanged(newPosition: Int) {
         //TODO: Pause the video
+        if (mGalleryFragments[currentPosition]!!.mGalleryVideoUnit != null) {
+            mGalleryFragments[currentPosition]!!.mGalleryVideoUnit!!.pauseVideoView()
+        }
 
         //TODO: Video is paused
         currentPosition = newPosition
 
         //TODO: Start video view if needed
+        if (mGalleryFragments[currentPosition]!!.mGalleryVideoUnit != null) {
+            mGalleryFragments[currentPosition]!!.mGalleryVideoUnit!!.startVideoView()
+        }
 
     }
 
     override fun destroyItem(container: View?, position: Int, `object`: Any?) {
         super.destroyItem(container, position, `object`)
+        mGalleryFragments[position]!!.onDestroyItem()
         mGalleryFragments.remove(position)
     }
 
     fun onBackPressed() {
-        mGalleryFragments.forEach { it.component2().onBackPressed() }
+        mGalleryFragments.forEach { it.component2().onDestroyItem() }
         mGalleryFragments.clear()
         CacheUtils.trimCache(viewPager.context)
     }

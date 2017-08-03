@@ -86,7 +86,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="8dp"
             android:gravity="center"
-            android:text="14:88"
+            android:text="00:00"
             android:textColor="@android:color/white" />
 
     </LinearLayout>
