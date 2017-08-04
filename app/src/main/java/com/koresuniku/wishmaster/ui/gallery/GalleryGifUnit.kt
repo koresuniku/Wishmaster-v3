@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.ui.gallery
 
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -34,6 +35,7 @@ class GalleryGifUnit(val mFragment: GalleryFragment, val file: Files) : View.OnC
         mProgressBar = mGifImageLayout!!.find(R.id.progressBar)
         mGifImage = mGifImageLayout!!.find(R.id.gif_image)
 
+        mGifImageLayout!!.setOnClickListener(this)
         mGifImage!!.setOnClickListener(this)
         Glide.with(mFragment.context).load(Uri.parse(Dvach.DVACH_BASE_URL + file.getPath()))
                 .asGif().diskCacheStrategy(DiskCacheStrategy.NONE).listener(object : RequestListener<Uri, GifDrawable> {
@@ -54,6 +56,7 @@ class GalleryGifUnit(val mFragment: GalleryFragment, val file: Files) : View.OnC
     }
 
     override fun onClick(p0: View?) {
-
+        Log.d(LOG_TAG, "onClick:")
+        mFragment.onClick()
     }
 }

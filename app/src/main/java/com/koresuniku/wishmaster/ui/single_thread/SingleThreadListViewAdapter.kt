@@ -24,6 +24,7 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.IDialogAdapter
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
+import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolder
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolderView
 import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
@@ -55,7 +56,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         mAnswersHolder.appointAnswersToPosts()
     }
 
-    inner class ViewHolder : FilesListViewViewHolder() {
+    inner class ViewHolder : FilesListViewViewHolder(), GalleryPagerView {
         var mItemContainer: RelativeLayout? = null
         var mNumberAndTimeInfo: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
@@ -74,13 +75,25 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
             mGalleryPager = mView.getViewPager()
             mGalleryPagerAdapter = GalleryPagerAdapter(
-                    mView.getAppCompatActivity().supportFragmentManager, mGalleryPager!!,
+                    mView.getAppCompatActivity().supportFragmentManager, this,
                     filesList, currentPosition)
             mGalleryPager!!.adapter = mGalleryPagerAdapter
             mGalleryPager!!.offscreenPageLimit = 1
             mGalleryPager!!.currentItem = currentPosition
             mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
             mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
+        }
+
+        override fun getGalleryActionBar(): GalleryActionBarUnit {
+            return mGalleryActionBarUnit
+        }
+
+        override fun getViewPager(): ViewPager {
+            return mGalleryPager!!
+        }
+
+        override fun getActivity(): Activity {
+            return mView.getActivity()
         }
 
         override fun onPageChanged(newPosition: Int) {

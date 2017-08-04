@@ -8,15 +8,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
+import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.util.Formats
 
-class GalleryFragment() : Fragment(), SoundVolumeChangeListener {
+class GalleryFragment() :
+        Fragment(), SoundVolumeChangeListener, UIVisibilityManager.UiVisibilityChangedCallback {
     val LOG_TAG: String = GalleryFragment::class.java.simpleName
 
+    var mPagerAdapterView: GalleryPagerAdapterView? = null
     var mAdapter: GalleryPagerAdapter? = null
     var mPosition: Int? = null
     var mFile: Files? = null
@@ -27,10 +32,45 @@ class GalleryFragment() : Fragment(), SoundVolumeChangeListener {
     var mGalleryGifUnit: GalleryGifUnit? = null
     var mGalleryVideoUnit: GalleryVideoUnit? = null
 
-    constructor(adapter: GalleryPagerAdapter, position: Int) : this() {
-        mAdapter = adapter
+    var animCollapseActionBar: ScaleAnimation? = null
+    var animExpandActionBar: ScaleAnimation? = null
+
+    constructor(pagerAdapterView: GalleryPagerAdapterView, position: Int) : this() {
+        mPagerAdapterView = pagerAdapterView
+        mAdapter = pagerAdapterView.getAdapter()
         mPosition = position
-        mFile = adapter.mFiles[position]
+        mFile = mAdapter!!.mFiles[position]
+
+        setupAnimations()
+    }
+
+    fun setupAnimations() {
+        animExpandActionBar = ScaleAnimation(
+                1f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 0f)
+        animExpandActionBar!!.duration = 250
+        animCollapseActionBar = ScaleAnimation(
+                1f, 1f, 1f, 0f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 0f)
+        animCollapseActionBar!!.duration = 250
+        animExpandActionBar!!.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {}
+
+            override fun onAnimationEnd(p0: Animation?) {}
+
+            override fun onAnimationStart(p0: Animation?) {
+                mPagerAdapterView!!.getGalleryActionBar()
+                        .mActivityToolbarContainer.visibility = View.VISIBLE
+            }
+        })
+        animCollapseActionBar!!.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {}
+
+            override fun onAnimationEnd(p0: Animation?) {
+                mPagerAdapterView!!.getGalleryActionBar()
+                    .mActivityToolbarContainer.visibility = View.GONE
+            }
+
+            override fun onAnimationStart(p0: Animation?) {}
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,6 +96,22 @@ class GalleryFragment() : Fragment(), SoundVolumeChangeListener {
     fun isCurrentPosition(): Boolean {
         return mAdapter!!.currentPosition == mPosition
     }
+
+    fun onClick() {
+        UIVisibilityManager.changeSystemUiVisibility(this)
+    }
+
+    override fun onUiVisibilityChanged(isShown: Boolean, delegateToOtherFragments: Boolean) {
+        if (!isShown) mPagerAdapterView!!.getGalleryActionBar()
+                .mActivityToolbarContainer.startAnimation(animCollapseActionBar)
+        else mPagerAdapterView!!.getGalleryActionBar()
+                .mActivityToolbarContainer.startAnimation(animExpandActionBar)
+
+        if (mGalleryVideoUnit != null) mGalleryVideoUnit!!.onUiVisibilityChanged(isShown)
+
+        if (delegateToOtherFragments) mPagerAdapterView!!.onUiVisibilityChanged(isShown, mPosition!!)
+    }
+
 
     override fun onVolumeChanged(volume: Int) {
         mGalleryVideoUnit!!.onSoundChanged(volume)

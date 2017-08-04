@@ -8,9 +8,16 @@ import android.view.WindowManager
 import com.koresuniku.wishmaster.system.DeviceUtils
 
 object UIVisibilityManager {
+    var isSystemUiShown: Boolean = true
+
+    interface UiVisibilityChangedCallback {
+        fun onUiVisibilityChanged(isShown: Boolean, delegateToOtherFragments: Boolean)
+        fun getActivity(): Activity
+    }
 
     fun showSystemUI(activity: Activity) {
         if (DeviceUtils.sdkIsKitkatOrHigher()) {
+            isSystemUiShown = true
             if (activity.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 activity.window.decorView.systemUiVisibility =
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
@@ -34,6 +41,7 @@ object UIVisibilityManager {
 
     fun hideSystemUI(activity: Activity) {
         if (DeviceUtils.sdkIsKitkatOrHigher()) {
+            isSystemUiShown = false
             activity.window.decorView.systemUiVisibility =
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
@@ -41,6 +49,14 @@ object UIVisibilityManager {
                             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                             View.SYSTEM_UI_FLAG_FULLSCREEN or
                             View.SYSTEM_UI_FLAG_IMMERSIVE
+        }
+    }
+
+    fun changeSystemUiVisibility(callback: UiVisibilityChangedCallback) {
+        if (DeviceUtils.sdkIsKitkatOrHigher()) {
+            if (isSystemUiShown) hideSystemUI(callback.getActivity())
+            else showSystemUI(callback.getActivity())
+            callback.onUiVisibilityChanged(isSystemUiShown, true)
         }
     }
 
@@ -68,4 +84,5 @@ object UIVisibilityManager {
             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
     }
+
 }

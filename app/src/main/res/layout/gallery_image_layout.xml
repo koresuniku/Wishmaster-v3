@@ -15,6 +15,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
+    <FrameLayout
+        android:id="@+id/gallery_image_clickable_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
     <com.github.piasy.biv.view.BigImageView
         android:id="@+id/mBigImage"
         android:layout_width="match_parent"

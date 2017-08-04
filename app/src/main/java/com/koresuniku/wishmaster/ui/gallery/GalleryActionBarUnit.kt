@@ -34,7 +34,7 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
     var subtitle: String? = null
 
     override fun postSetupActionBar() {
-        if (DeviceUtils.sdkIsKitkatOrHigher()) {
+        if (DeviceUtils.sdkIsKitkatOrHigher() && DeviceUtils.deviceHasNavigationBar(mView.getAppCompatActivity())) {
             if (mView.getAppCompatActivity().configuration.orientation ==
                     Configuration.ORIENTATION_LANDSCAPE) doMarginActionBar()
             else unMarginActionBar()
@@ -55,10 +55,8 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
 
     override fun onConfigurationChanged(configuration: Configuration) {
         super.onConfigurationChanged(configuration)
-        if (DeviceUtils.sdkIsKitkatOrHigher() &&
-                DeviceUtils.deviceHasNavigationBar(mView.getAppCompatActivity())) {
-            if (configuration.orientation ==
-                    Configuration.ORIENTATION_LANDSCAPE) doMarginActionBar()
+        if (DeviceUtils.sdkIsKitkatOrHigher() && DeviceUtils.deviceHasNavigationBar(mView.getAppCompatActivity())) {
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) doMarginActionBar()
             else unMarginActionBar()
         }
     }

@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.ui.gallery
 
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -23,6 +24,7 @@ class GalleryImageUnit(val mFragment: GalleryFragment, val file: Files) : View.O
     val LOG_TAG: String = GalleryImageUnit::class.java.simpleName
 
     var mImageLayout: ViewGroup? = null
+    var mClickableLayout: FrameLayout? = null
     var mProgressBar: ProgressBar? = null
     var mBigImage: BigImageView? = null
 
@@ -34,8 +36,11 @@ class GalleryImageUnit(val mFragment: GalleryFragment, val file: Files) : View.O
         mImageLayout = mFragment.context.layoutInflater.inflate(
                 R.layout.gallery_image_layout, FrameLayout(mFragment.context), false) as ViewGroup
         mProgressBar = mImageLayout!!.find(R.id.progressBar)
+        mClickableLayout = mImageLayout!!.find(R.id.gallery_image_clickable_layout)
         mBigImage = mImageLayout!!.find(R.id.mBigImage)
 
+        mClickableLayout!!.setOnClickListener(this)
+        mClickableLayout!!.bringToFront()
         mBigImage!!.setOnClickListener(this)
         mBigImage!!.showImage(Uri.parse(Dvach.DVACH_BASE_URL + file.getPath()))
         mBigImage!!.ssiv.setOnImageEventListener(OnBigImageEventListener())
@@ -46,7 +51,8 @@ class GalleryImageUnit(val mFragment: GalleryFragment, val file: Files) : View.O
     }
 
     override fun onClick(p0: View?) {
-
+        Log.d(LOG_TAG, "onClick:")
+        mFragment.onClick()
     }
 
     fun onBackPressed() {
@@ -56,6 +62,7 @@ class GalleryImageUnit(val mFragment: GalleryFragment, val file: Files) : View.O
     inner class OnBigImageEventListener : SubsamplingScaleImageView.OnImageEventListener {
         override fun onImageLoaded() {
             mProgressBar!!.visibility = View.GONE
+            mBigImage!!.bringToFront()
         }
 
         override fun onReady() {

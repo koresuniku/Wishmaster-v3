@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.os.Handler
 import android.support.v4.view.ViewPager
@@ -28,6 +29,7 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListVie
 import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
+import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
@@ -54,7 +56,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         this.notifyDataSetChanged()
     }
 
-    inner class ViewHolder : FilesListViewViewHolder() {
+    inner class ViewHolder : FilesListViewViewHolder(), GalleryPagerView {
         var mItemContainer: RelativeLayout? = null
         var mSubjectTextView: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
@@ -69,13 +71,25 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
             mGalleryPager = mView.getViewPager()
             mGalleryPagerAdapter = GalleryPagerAdapter(
-                    mView.getAppCompatActivity().supportFragmentManager, mGalleryPager!!,
+                    mView.getAppCompatActivity().supportFragmentManager, this,
                     files!!, files!!.indexOf(file))
             mGalleryPager!!.adapter = mGalleryPagerAdapter
             mGalleryPager!!.offscreenPageLimit = 1
             mGalleryPager!!.currentItem = files!!.indexOf(file)
             mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
             mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
+        }
+
+        override fun getGalleryActionBar(): GalleryActionBarUnit {
+            return mGalleryActionBarUnit
+        }
+
+        override fun getViewPager(): ViewPager {
+            return mGalleryPager!!
+        }
+
+        override fun getActivity(): Activity {
+            return mView.getActivity()
         }
 
         override fun onPageChanged(newPosition: Int) {

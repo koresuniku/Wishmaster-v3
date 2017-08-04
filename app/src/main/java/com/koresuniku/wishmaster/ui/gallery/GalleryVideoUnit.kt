@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.*
 import com.devbrackets.android.exomedia.listener.OnCompletionListener
 import com.devbrackets.android.exomedia.listener.OnPreparedListener
@@ -18,6 +20,7 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.dimen
 import java.util.concurrent.TimeUnit
@@ -42,12 +45,17 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
     var mSoundSwitcherContainer: FrameLayout? = null
     var mSoundSwitcherImage: ImageView? = null
 
+    var animCollapseControls: ScaleAnimation? = null
+    var animExpandControls: ScaleAnimation? = null
+
     var isPrepared: Boolean = false
     var isCompleted: Boolean = false
     var previousVolume: Int = 1
+    var mDuration: Long = 0L
 
     init {
         onCreate()
+        setupAnimations()
     }
 
     fun createVideoView() {
@@ -62,6 +70,7 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         mProgressBar = mVideoLayout!!.find(R.id.progressBar)
         createVideoView()
         mVideoControlsContainer = mVideoLayout!!.find(R.id.video_controls_container)
+        if (!UIVisibilityManager.isSystemUiShown) mVideoControlsContainer!!.visibility = View.GONE
 
         mVideoView!!.setOnPreparedListener(this)
         mVideoView!!.setOnClickListener(this)
@@ -76,6 +85,40 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         onSoundChanged(App.soundVolume)
 
         mFragment.mRootView!!.addView(mVideoLayout)
+    }
+
+    fun setupAnimations() {
+        animExpandControls = ScaleAnimation(1f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f)
+        animExpandControls!!.duration = 250
+        animCollapseControls = ScaleAnimation(1f, 1f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f)
+        animCollapseControls!!.duration = 250
+
+        animExpandControls!!.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {}
+
+            override fun onAnimationEnd(p0: Animation?) {
+                mVideoControlsContainer!!.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
+        animCollapseControls!!.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {}
+
+            override fun onAnimationEnd(p0: Animation?) {
+
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+                mVideoControlsContainer!!.visibility = View.GONE
+            }
+        })
+    }
+
+    fun onUiVisibilityChanged(isShown: Boolean) {
+        if (!isShown) mVideoControlsContainer!!.startAnimation(animCollapseControls)
+        else mVideoControlsContainer!!.startAnimation(animExpandControls)
     }
 
     fun onConfigurationChanged(configuration: Configuration) {
@@ -108,12 +151,31 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         mPlayPauseContainer!!.setOnClickListener {
             if (mVideoView!!.isPlaying) pauseVideoView(); else startVideoView()
         }
-        if (mVideoView!!.isPlaying) mPlayPauseImage!!.imageResource = R.drawable.ic_pause_white_24dp
-        else mPlayPauseImage!!.imageResource = R.drawable.ic_play_arrow_white_24dp
+        if (isCompleted) {
+            completeVideoView()
+        } else {
+            if (mVideoView!!.isPlaying) mPlayPauseImage!!.imageResource = R.drawable.ic_pause_white_24dp
+            else mPlayPauseImage!!.imageResource = R.drawable.ic_play_arrow_white_24dp
+        }
 
         mVideoProgress!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) mVideoView!!.seekTo(mVideoView!!.duration * progress / 100)
+                if (fromUser) {
+                    if (isCompleted) {
+                        isCompleted = false
+                        mVideoView!!.restart()
+                        mVideoView!!.seekTo(mDuration * progress / 100)
+                        mPlayPauseImage!!.imageResource = R.drawable.ic_pause_white_24dp
+                        mPlayPauseContainer!!.setOnClickListener {
+                            if (mVideoView!!.isPlaying) pauseVideoView(); else startVideoView() }
+                        mVideoView!!.setOnBufferUpdateListener { percent -> run {
+                            mVideoProgress!!.secondaryProgress = percent }
+                        }
+                    } else {
+                        if (!isPrepared) mVideoView!!.seekTo(mDuration * progress / 100)
+                        else mVideoView!!.seekTo(mVideoView!!.duration * progress / 100)
+                    }
+                }
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -161,8 +223,7 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
     }
 
     fun setupMarginsForControlView(configuration: Configuration) {
-        if (DeviceUtils.sdkIsKitkatOrHigher() &&
-                DeviceUtils.deviceHasNavigationBar(mFragment.context)) {
+        if (DeviceUtils.sdkIsKitkatOrHigher() && DeviceUtils.deviceHasNavigationBar(mFragment.context)) {
             when (configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     mVideoControlsLayout!!.setPadding(0, 0, 0, UIUtils.convertDpToPixel(
@@ -200,13 +261,16 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         isCompleted = true
         mPlayPauseImage!!.imageResource = R.drawable.ic_refresh_white_24dp
         mPlayPauseContainer!!.setOnClickListener {
+            isCompleted = false
             mVideoView!!.restart()
             mVideoProgress!!.progress = 0
             mPlayPauseImage!!.imageResource = R.drawable.ic_pause_white_24dp
             startVideoView()
-            isCompleted = false
             mPlayPauseContainer!!.setOnClickListener {
                 if (mVideoView!!.isPlaying) pauseVideoView(); else startVideoView() }
+            mVideoView!!.setOnBufferUpdateListener { percent -> run {
+                mVideoProgress!!.secondaryProgress = percent }
+            }
         }
     }
 
@@ -243,7 +307,8 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
     }
 
     override fun onClick(view: View?) {
-
+        Log.d(LOG_TAG, "onClick:")
+        mFragment.onClick()
     }
 
     fun onItemDestroy() {
@@ -258,10 +323,12 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
     override fun onPrepared() {
         isPrepared = true
         mProgressBar!!.visibility = View.GONE
+        mDuration = mVideoView!!.duration
         startVideoView()
     }
 
     override fun onCompletion() {
+        isPrepared = false
         completeVideoView()
     }
 }
