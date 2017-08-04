@@ -33,6 +33,11 @@ object DialogManager {
         fun openBoard(boardId: String, boardName: String)
     }
 
+    interface GalleryVisibilityListener {
+        fun onGalleryShown()
+        fun onGalleryHidden()
+    }
+
     interface PostCallBack : IActivityView {
         fun openFullPost(position: Int)
     }
@@ -88,25 +93,4 @@ object DialogManager {
         builder.setCancelable(true)
         return builder.create()
     }
-
-//    fun createFullPostDialog(activity: Activity, view: View): Dialog {
-//        val builder = AlertDialog.Builder(activity)
-//        builder.setCancelable(true)
-//        builder.setView(view)
-//
-//
-//        val dialogContentView = builder.create()
-//
-//        val lp = WindowManager.LayoutParams()
-//        lp.copyFrom(dialogContentView.window.attributes)
-//        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-//        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-//        lp.gravity = Gravity.CENTER
-//
-//        dialogContentView.window.attributes = lp
-//
-//        //return builder.create()
-//        return dialogContentView
-//    }
-
 }

@@ -26,6 +26,7 @@ import com.koresuniku.wishmaster.system.settings.ResultCodes
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
+import com.koresuniku.wishmaster.ui.single_thread.answers.ScrollsHolder
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
 
@@ -47,6 +48,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     var mProgressUnit: ProgressUnit? = null
     var mThreadListListViewUnit: ThreadListListViewUnit? = null
     var mSwipyRefreshLayoutUnit: SwipyRefreshLayoutUnit? = null
+    var mFullPostDialogManager: FullPostDialogManager? = null
 
     var mDataLoader: DataLoader? = null
 
@@ -64,6 +66,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         mProgressUnit = ProgressUnit(this)
         mThreadListListViewUnit = ThreadListListViewUnit(this)
         mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
+        mFullPostDialogManager = FullPostDialogManager(this)
 
         mDataLoader = DataLoader(this)
         mProgressUnit!!.showProgressYoba()
@@ -225,19 +228,29 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun openFullPost(position: Int) {
-        val args: Bundle = Bundle()
-        args.putInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY, position)
-        removeDialog(DIALOG_FULL_POST_ID)
+//        val args: Bundle = Bundle()
+//        args.putInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY, position)
+//        removeDialog(DIALOG_FULL_POST_ID)
+//
+//        val dialog: Dialog = Dialog(this)
+//        val scrollView = ScrollView(this)
+//        val itemView: View = mThreadListListViewUnit!!.mListViewAdapter!!.getViewForDialog(
+//                args.getInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY), null, scrollView)
+//        scrollView.addView(itemView)
+//        dialog.setContentView(scrollView)
+//        dialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
+//
+//        dialog.show()
 
-        val dialog: Dialog = Dialog(this)
-        val scrollView = ScrollView(this)
-        val itemView: View = mThreadListListViewUnit!!.mListViewAdapter!!.getViewForDialog(
-                args.getInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY), null, scrollView)
-        scrollView.addView(itemView)
-        dialog.setContentView(scrollView)
-        dialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
+        mFullPostDialogManager!!.openFullPost(position)
+    }
 
-        dialog.show()
+    override fun notifyGalleryShown() {
+        mFullPostDialogManager!!.dismissFullPostDialog()
+    }
+
+    override fun notifyGalleryHidden() {
+        mFullPostDialogManager!!.showFullPostDialog()
     }
 
     override fun openThread(threadNumber: String) {

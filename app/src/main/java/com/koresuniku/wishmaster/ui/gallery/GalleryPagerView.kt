@@ -9,4 +9,6 @@ interface GalleryPagerView {
     fun getActivity(): Activity
 
     fun getGalleryActionBar(): GalleryActionBarUnit
+
+    fun onGalleryHidden()
 }

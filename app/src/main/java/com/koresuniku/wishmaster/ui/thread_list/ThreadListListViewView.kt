@@ -27,4 +27,8 @@ interface ThreadListListViewView : FilesAdapterView {
     fun getGalleryLayoutContainer(): ViewGroup
 
     fun getViewPager(): ViewPager
+
+    fun notifyGalleryShown()
+
+    fun notifyGalleryHidden()
 }

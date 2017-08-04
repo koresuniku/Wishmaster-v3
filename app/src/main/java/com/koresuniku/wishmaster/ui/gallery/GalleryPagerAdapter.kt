@@ -73,6 +73,7 @@ class GalleryPagerAdapter(fragmentManager: FragmentManager, val galleryPagerView
     }
 
     fun onBackPressed() {
+        galleryPagerView.onGalleryHidden()
         UIVisibilityManager.showSystemUI(galleryPagerView.getActivity())
         mGalleryFragments.forEach { it.component2().onDestroyItem() }
         mGalleryFragments.clear()

@@ -27,5 +27,4 @@ interface SingleThreadListViewView : FilesAdapterView {
     fun getGalleryLayoutContainer(): ViewGroup
 
     fun getViewPager(): ViewPager
-
 }

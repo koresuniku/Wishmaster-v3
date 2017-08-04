@@ -65,6 +65,8 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         var viewType: Int? = null
 
         override fun showImageOrVideo(file: Files) {
+            mView.notifyGalleryShown()
+
             UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
             mView.getGalleryLayoutContainer().visibility = View.VISIBLE
             mGalleryActionBarUnit.setupTitleAndSubtitle(file, files!!.indexOf(file), files!!.count())
@@ -82,6 +84,10 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         override fun getGalleryActionBar(): GalleryActionBarUnit {
             return mGalleryActionBarUnit
+        }
+
+        override fun onGalleryHidden() {
+            mView.notifyGalleryHidden()
         }
 
         override fun getViewPager(): ViewPager {

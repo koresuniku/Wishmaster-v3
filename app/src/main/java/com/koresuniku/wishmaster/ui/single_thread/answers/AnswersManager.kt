@@ -23,8 +23,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AnswersHolder(val mView: AnswersHolderView) {
-    val LOG_TAG: String = AnswersHolder::class.java.simpleName
+class AnswersManager(val mView: AnswersHolderView) {
+    val LOG_TAG: String = AnswersManager::class.java.simpleName
 
     val mAnswersMap: HashMap<String, ArrayList<String>> = HashMap()
     var mPreviousSchema: IBaseJsonSchemaImpl? = null
@@ -39,6 +39,7 @@ class AnswersHolder(val mView: AnswersHolderView) {
             .inflate(R.layout.dialog_list_template, null, false) as FrameLayout
     val mDialogListView: ListView = mDialogListViewContainer.find<ListView>(R.id.dialog_listview)
     var mAnswersListViewAdapter: AnswersListViewAdapter? = null
+    var currentScroll: ScrollsHolder? = null
 
     fun initAnswersMap() {
         for (post: Post in mView.getSchema().getPosts()!!) {
@@ -161,6 +162,26 @@ class AnswersHolder(val mView: AnswersHolderView) {
         mAnswersListViewAdapter = null
     }
 
+    fun dismissDialogs() {
+        if (mViews!!.size > 0) {
+            val c = mDialogListView.getChildAt(0)
+            currentScroll = ScrollsHolder(mDialogListView.firstVisiblePosition, c.top)
+            mDialog.dismiss()
+            mStubDialog.dismiss()
+        }
+    }
+
+    fun showDialogs() {
+        if (mViews!!.size > 0) {
+            mStubDialog.show()
+            mDialog.show()
+            Log.d(LOG_TAG, "fvp: ${mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition}")
+            Log.d(LOG_TAG, "top: ${mViewsScrolls!![mViewsScrolls!!.size - 1].top}")
+            mDialogListView.setSelectionFromTop(
+                    currentScroll!!.firstVisiblePosition!!, currentScroll!!.top!!)
+        }
+    }
+
     fun openDialog(newAnswer: Boolean) {
         val viewsList: List<View> = mViews!![mViews!!.size - 1]
 
@@ -168,9 +189,7 @@ class AnswersHolder(val mView: AnswersHolderView) {
             mAnswersListViewAdapter = AnswersListViewAdapter(viewsList)
             mDialogListView.adapter = mAnswersListViewAdapter
             mDialogListView.setOnScrollListener(object : AbsListView.OnScrollListener {
-                override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {
-
-                }
+                override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
                     if (p1 == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
@@ -187,14 +206,9 @@ class AnswersHolder(val mView: AnswersHolderView) {
             mDialog.dismiss()
             mAnswersListViewAdapter!!.setViewsList(viewsList)
             mDialog.show()
-            if (!newAnswer) {
-                //Log.d(LOG_TAG, "setting scroll to: ${mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition}")
-                //mDialogListView.scrollTo(0, mViewsScrolls!![mViewsScrolls!!.size - 1])
-                //mDialogListView.smoothScrollToPositionFromTop(1, 100, 0)
-                mDialogListView.setSelectionFromTop(
-                        mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition,
-                        mViewsScrolls!![mViewsScrolls!!.size - 1].top)
-
+            if (!newAnswer) { mDialogListView.setSelectionFromTop(
+                        mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition!!,
+                        mViewsScrolls!![mViewsScrolls!!.size - 1].top!!)
             }
 
         }
@@ -225,12 +239,6 @@ class AnswersHolder(val mView: AnswersHolderView) {
         var times: Int = 0
         var beforeTime: Long = 0L
         var afterTime: Long = 0L
-
-        var runnableForOnBackPress: Runnable = Runnable {
-            //Log.d(LOG_TAG, "times: $times")
-            if (times >= 2) { onBackPressed(); times = 0 }
-            else Handler().postDelayed({ onLongBackPressed(); times = 0 }, 500)
-        }
 
         override fun onKey(p0: DialogInterface?, p1: Int, p2: KeyEvent?): Boolean {
             if (p1 == KeyEvent.KEYCODE_BACK) {

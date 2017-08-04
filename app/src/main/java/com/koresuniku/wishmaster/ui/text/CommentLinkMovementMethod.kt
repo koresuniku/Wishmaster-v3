@@ -9,11 +9,11 @@ import android.util.Log
 import android.view.MotionEvent
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolder
+import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class CommentLinkMovementMethod(val answersHolder: AnswersHolder) : LinkMovementMethod() {
+class CommentLinkMovementMethod(val answersManager: AnswersManager) : LinkMovementMethod() {
     val LOG_TAG: String = CommentLinkMovementMethod::class.java.simpleName
 
     val backgroudColorSpan: BackgroundColorSpan = BackgroundColorSpan(R.color.linkBackground)
@@ -67,7 +67,7 @@ class CommentLinkMovementMethod(val answersHolder: AnswersHolder) : LinkMovement
                 matcher = pattern.matcher(matcher.group())
                 Log.d(LOG_TAG, "highlightLinkAndDoNotOpenPost: $highlightLinkAndDoNotOpenPost")
                 if (matcher.find() && !highlightLinkAndDoNotOpenPost) {
-                    answersHolder.openSingleAnswer(
+                    answersManager.openSingleAnswer(
                             matcher.group().substring(1, matcher.group().length))
                 }
                 if (highlightLinkAndDoNotOpenPost) highlightLink(buffer, links[0])

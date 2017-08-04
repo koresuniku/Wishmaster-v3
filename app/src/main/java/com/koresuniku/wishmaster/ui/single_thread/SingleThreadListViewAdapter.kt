@@ -16,6 +16,7 @@ import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
@@ -25,7 +26,7 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListVie
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
-import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolder
+import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolderView
 import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.text.TextUtils
@@ -33,10 +34,10 @@ import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
-        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter, ActionBarView {
+        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter, ActionBarView,
+        DialogManager.GalleryVisibilityListener {
     val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -44,7 +45,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     val ITEM_MULTIPLE_IMAGES: Int = 2
 
     val holders: ArrayList<ViewHolder> = ArrayList()
-    val mAnswersHolder: AnswersHolder = AnswersHolder(this)
+    val mAnswersHolder: AnswersManager = AnswersManager(this)
 
     val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
     var mGalleryPager: ViewPager? = null
@@ -66,6 +67,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         var postNumber: String? = null
 
         override fun showImageOrVideo(file: Files) {
+            mAnswersHolder.dismissDialogs()
+
             UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
             mView.getGalleryLayoutContainer().visibility = View.VISIBLE
 
@@ -86,6 +89,10 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
         override fun getGalleryActionBar(): GalleryActionBarUnit {
             return mGalleryActionBarUnit
+        }
+
+        override fun onGalleryHidden() {
+            mAnswersHolder.showDialogs()
         }
 
         override fun getViewPager(): ViewPager {
@@ -131,6 +138,14 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun getAppCompatActivity(): AppCompatActivity {
         return mView.getAppCompatActivity()
+    }
+
+    override fun onGalleryShown() {
+        mAnswersHolder.dismissDialogs()
+    }
+
+    override fun onGalleryHidden() {
+        mAnswersHolder.showDialogs()
     }
 
     override fun setupActionBarTitle() {

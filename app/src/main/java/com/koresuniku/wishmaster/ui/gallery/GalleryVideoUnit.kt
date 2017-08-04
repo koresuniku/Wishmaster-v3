@@ -23,7 +23,6 @@ import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.dimen
-import java.util.concurrent.TimeUnit
 
 class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         View.OnClickListener, OnPreparedListener, OnCompletionListener {

@@ -25,6 +25,7 @@ import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit
 import com.koresuniku.wishmaster.ui.controller.ProgressUnit
 import com.koresuniku.wishmaster.ui.controller.SwipyRefreshLayoutUnit
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
+import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
