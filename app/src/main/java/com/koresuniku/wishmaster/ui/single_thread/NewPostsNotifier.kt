@@ -7,6 +7,7 @@ import com.koresuniku.wishmaster.ui.text.TextUtils
 class NewPostsNotifier(val mView: NewPostsView) {
     val LOG_TAG: String = NewPostsNotifier::class.java.simpleName
 
+
     var previousPostsCount: Int = 0
 
     fun fetchPostsCount(postsCount: Int) {
@@ -17,14 +18,12 @@ class NewPostsNotifier(val mView: NewPostsView) {
         val newPostsDifference = newPostsCount - previousPostsCount
         var toastString: String = ""
 
-        if (newPostsDifference == 0) toastString = mView.getContext().getString(R.string.no_new_posts)
-        else {
+        if (newPostsDifference != 0) {
             toastString += TextUtils.getCorrectRussianEndings(newPostsDifference,
                     stringForZeroOrMultiple = "новых постов", stringForOne = "новый пост",
                     stringForTwoOrThreeOrFour = "новых поста")
+            val toast = Toast.makeText(mView.getContext(), toastString, Toast.LENGTH_SHORT)
+            toast.show()
         }
-
-        val toast = Toast.makeText(mView.getContext(), toastString, Toast.LENGTH_SHORT)
-        toast.show()
     }
 }

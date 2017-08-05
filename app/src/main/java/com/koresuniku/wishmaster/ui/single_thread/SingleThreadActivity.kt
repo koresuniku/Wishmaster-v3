@@ -209,7 +209,11 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         Log.d(LOG_TAG, "onDataLoaded:")
 
-        if (mSchema != null) mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
+        if (mSchema != null) {
+            mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
+            if ((schema[0] as IBaseJsonSchemaImpl).getPosts()!!.size != mSchema!!.getPosts()!!.size)
+                this.mSchema = schema[0] as IBaseJsonSchemaImpl
+        }
 
         this.mSchema = schema[0] as IBaseJsonSchemaImpl
 
@@ -218,7 +222,8 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         if (!mSingleThreadListViewUnit!!.adapterIsCreated()) {
             mSingleThreadListViewUnit!!.createListViewAdapter()
         } else {
-            mSwipyRefreshLayoutUnit!!.onDataLoaded()
+            mSwipyRefreshLayoutUnit!!.onDataLoaded(
+                    mNewPostsNotifier!!.previousPostsCount != schema[0].getPosts()!!.size)
             mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.appointAnswersToPosts()
         }
 
