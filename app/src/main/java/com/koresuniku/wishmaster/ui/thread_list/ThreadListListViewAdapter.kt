@@ -20,6 +20,7 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.system.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
@@ -30,14 +31,21 @@ import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
+import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
+import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+import com.pixplicity.htmlcompat.HtmlCompat
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.topPadding
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 
 class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(),
-        INotifyableListViewAdapter, INotifyableItemImageSizeChangedView, ActionBarView {
+        INotifyableListViewAdapter, INotifyableItemImageSizeChangedView, ActionBarView,
+        ClickableAdapter {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -108,6 +116,10 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             files = ArrayList()
         }
 
+    }
+
+    override fun onClick(threadNumber: String) {
+        mView.openThread(threadNumber)
     }
 
     override fun getToolbarContainer(): FrameLayout {
@@ -288,7 +300,25 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         if (maxLines == 0) holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
         else holder.mCommentTextView!!.maxLines = maxLines
 
-        holder.mCommentTextView!!.text = Html.fromHtml(thread.getComment())
+        val commentDocument: Document = Jsoup.parse(thread.getComment())
+        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
+
+        commentElements.forEach { it.getElementsByAttributeValue(
+                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
+                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
+        }
+        commentElements.forEach {
+            it.getElementsByAttributeValue(
+                    SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
+                    .tagName(SpanTagHandlerCompat.SPOILER_TAG)
+        }
+
+        holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+                mView.getActivity(), commentDocument.html(), 0,
+                null, SpanTagHandlerCompat(mView.getActivity()))
+        holder.mCommentTextView!!.linksClickable = false
+        holder.mCommentTextView!!.movementMethod =
+                CommentLinkMovementMethod(mView.getActivity(), this, thread.getNum())
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
@@ -331,9 +361,26 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.files = thread.getFiles()
 
         ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
+        val commentDocument: Document = Jsoup.parse(thread.getComment())
+        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
 
+        commentElements.forEach{ it.getElementsByAttributeValue(
+                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
+                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
+        }
+        commentElements.forEach{
+            it.getElementsByAttributeValue(
+                    SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
+                    .tagName(SpanTagHandlerCompat.SPOILER_TAG)
+        }
+
+        holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+                mView.getActivity(), commentDocument.html(), 0,
+                null, SpanTagHandlerCompat(mView.getActivity()))
         holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
-        holder.mCommentTextView!!.text = Html.fromHtml(thread.getComment())
+        holder.mCommentTextView!!.linksClickable = false
+        holder.mCommentTextView!!.movementMethod =
+                CommentLinkMovementMethod(mView.getActivity(), this, thread.getNum())
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 

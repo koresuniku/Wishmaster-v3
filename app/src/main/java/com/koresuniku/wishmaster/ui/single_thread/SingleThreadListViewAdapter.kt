@@ -32,7 +32,6 @@ import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolderView
 import com.koresuniku.wishmaster.ui.text.*
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.pixplicity.htmlcompat.HtmlCompat
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
@@ -338,8 +337,22 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         val mNumberAndTimeSpannable =
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
-        holder.mCommentTextView!!.text =
-                Html.fromHtml(post.getComment())
+        val commentDocument: Document = Jsoup.parse(post.getComment())
+        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
+
+        commentElements.forEach{ it.getElementsByAttributeValue(
+                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
+                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
+        }
+        commentElements.forEach{
+            it.getElementsByAttributeValue(
+                    SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
+                    .tagName(SpanTagHandlerCompat.SPOILER_TAG)
+        }
+
+        holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+                mView.getActivity(), commentDocument.html(), 0,
+                null, SpanTagHandlerCompat(mView.getActivity()))
         holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
         holder.postNumber = post.getNum()

@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
 import com.github.piasy.biv.BigImageViewer
-import com.github.piasy.biv.loader.fresco.FrescoImageLoader
 import com.github.piasy.biv.loader.glide.GlideImageLoader
 import com.koresuniku.wishmaster.http.HttpClient
 import java.io.InputStream
@@ -23,7 +22,6 @@ class App : Application() {
                 InputStream::class.java,
                 OkHttpUrlLoader.Factory(HttpClient.client))
         BigImageViewer.initialize(GlideImageLoader.with(this))
-        //BigImageViewer.initialize(FrescoImageLoader.with(this))
         val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         App.Companion.soundVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
         setupContentObserver()

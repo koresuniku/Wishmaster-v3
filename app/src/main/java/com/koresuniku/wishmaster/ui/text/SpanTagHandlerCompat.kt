@@ -62,13 +62,11 @@ class SpanTagHandlerCompat(val mContext: Context) : HtmlCompat.TagHandler {
 
     fun doSpanQuote(text: Editable, start: Int, end: Int) {
         text.setSpan(
-                ForegroundColorSpan(mContext.resources.getColor(R.color.colorQuote)),
+                QuoteSpan(mContext.resources.getColor(R.color.colorQuote)),
                 start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
     fun doSpanSpoiler(text: Editable, start: Int, end: Int) {
-        text.setSpan(
-                BackgroundColorSpan(mContext.resources.getColor(R.color.colorSpoiler))
-                , start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(SpoilerSpan(mContext, start, end), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }
