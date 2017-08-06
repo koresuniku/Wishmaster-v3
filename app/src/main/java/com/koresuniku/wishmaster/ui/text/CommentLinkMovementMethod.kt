@@ -1,5 +1,8 @@
 package com.koresuniku.wishmaster.ui.text
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Spannable
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -14,23 +17,23 @@ import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class CommentLinkMovementMethod(val answersManager: AnswersManager) : LinkMovementMethod() {
+class CommentLinkMovementMethod(val mContext: Context, val answersManager: AnswersManager) : LinkMovementMethod() {
     val LOG_TAG: String = CommentLinkMovementMethod::class.java.simpleName
 
     val backgroundColorSpan: BackgroundColorSpan = BackgroundColorSpan(R.color.linkBackground)
 
     override fun initialize(widget: TextView?, text: Spannable?) {
         super.initialize(widget, text)
-        findQuote(widget, text)
+        //findQuote(widget, text)
     }
 
     override fun onTouchEvent(widget: TextView?, buffer: Spannable?, event: MotionEvent?): Boolean {
         val action = event!!.action
 
-        Log.d(LOG_TAG, "action: $action")
+        //Log.d(LOG_TAG, "action: $action")
 
         if (action == MotionEvent.ACTION_DOWN) {
-            val off = locateOffset(widget, event)
+            //val off = locateOffset(widget, event)
             //findLink(off, buffer, true)
             return true
         }
@@ -77,12 +80,29 @@ class CommentLinkMovementMethod(val answersManager: AnswersManager) : LinkMoveme
                 }
                 if (highlightLinkAndDoNotOpenPost) highlightLink(buffer, links[0])
                 else unhighlightLink(buffer)
+                return
+            }
+
+            pattern = Pattern.compile("https?://2ch\\.hk.*")
+            matcher = pattern.matcher(links[0].url)
+
+            if (matcher.find()) {
+                //TODO: handle 2ch link
+                return
+            }
+
+            pattern = Pattern.compile("https?://.+")
+            matcher = pattern.matcher(links[0].url)
+
+            if (matcher.find()) {
+                mContext.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(matcher.group())))
             }
         }
     }
 
     fun highlightLink(buffer: Spannable?, span: URLSpan) {
-        buffer!!.setSpan(backgroundColorSpan, buffer.getSpanStart(span), buffer.getSpanEnd(span), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        buffer!!.setSpan(backgroundColorSpan, buffer.getSpanStart(span),
+                buffer.getSpanEnd(span), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
     fun unhighlightLink(buffer: Spannable) {
@@ -91,7 +111,6 @@ class CommentLinkMovementMethod(val answersManager: AnswersManager) : LinkMoveme
 
     fun findQuote(widget: TextView?, buffer: Spannable?) {
         val lines = widget!!.text.lines()
-        Log.d(LOG_TAG, "lines type: ${lines.javaClass.canonicalName}")
 
         if (lines.isEmpty()) return
 
@@ -101,11 +120,14 @@ class CommentLinkMovementMethod(val answersManager: AnswersManager) : LinkMoveme
         val pattern: Pattern = Pattern.compile("^>[^>]+")
         var matcher: Matcher
 
-        lines.forEach { if (lines.indexOf(it) != 0) { start = end + 1; end += it.length + 1 }
-            matcher = pattern.matcher(it)
+        var line: String
+        for (i in 0..lines.size - 1) {
+            line = lines[i]
+            if (i != 0) { start = end + 1; end += line.length + 1 }
+            matcher = pattern.matcher(line)
             if (matcher.find()) { buffer!!.setSpan(ForegroundColorSpan(
-                        widget.resources.getColor(R.color.colorQuote)),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    widget.resources.getColor(R.color.colorQuote)),
+                    start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
     }

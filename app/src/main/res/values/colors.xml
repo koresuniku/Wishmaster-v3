@@ -10,6 +10,7 @@
     <color name="colorSubject">#212e60</color>
     <color name="linkBackground">#c885c7ff</color>
     <color name="colorQuote">#719f38</color>
+    <color name="colorSpoiler">#d1d1d1</color>
 
     <color name="material_gray_middle">#e0e0e0</color>
 

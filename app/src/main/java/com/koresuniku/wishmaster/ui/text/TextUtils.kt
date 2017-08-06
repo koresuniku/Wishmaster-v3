@@ -5,12 +5,14 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.util.Log
-import android.view.View
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.util.Formats
+import com.pixplicity.htmlcompat.HtmlCompat
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 
 object TextUtils {
     val LOG_TAG: String = TextUtils::class.java.simpleName
@@ -94,8 +96,25 @@ object TextUtils {
         if (post.getOp() == "1") { ss.append(" OP"); additionalColorLength = 3 }
         ss.append(" №")
         ss.append(post.getNum())
-        ss.append(if (post.getName() == "") { "" } else " " + post.getName())
-        ss.append(if (post.getTrip() == "") { "" } else " " + post.getTrip())
+
+        val nameDocument: Document = Jsoup.parse(post.getName())
+        val nameElements: Elements = nameDocument.select(SpanTagHandlerCompat.SPAN_TAG)
+        nameElements.tagName(SpanTagHandlerCompat.MY_SPAN_TAG)
+        ss.append(if (post.getName() == "") { "" } else " " +
+                HtmlCompat.fromHtml(context, nameDocument.html(), 0, null, SpanTagHandlerCompat(context)))
+
+        //Log.d(LOG_TAG, "rawNameHtml: ${post.getName()}")
+        //Log.d(LOG_TAG, "nameElements.html: ${nameDocument.html()}")
+
+        val tripDocument: Document = Jsoup.parse(post.getTrip())
+        val tripElements: Elements = tripDocument.select(SpanTagHandlerCompat.SPAN_TAG)
+        tripElements.tagName(SpanTagHandlerCompat.MY_SPAN_TAG)
+        ss.append(if (post.getTrip() == "") { "" } else " " +
+                HtmlCompat.fromHtml(context, tripDocument.html(), 0, null, SpanTagHandlerCompat(context)))
+
+
+       // Log.d(LOG_TAG, "after post.getName: ${post.getName().replace(Regex("span .+style=\"color:"), "font color=\"").replace(";\"","\"").replace("</span>", "</font>")}")
+       // ss.append(if (post.getTrip() == "") { "" } else " " + Html.fromHtml(post.getTrip().replace("span style=\"color:", "font color='").replace(";\"", "\"").replace("</span>", "</font>")))
         ss.append(" ")
         ss.append(post.getDate().replace(Regex("[^0-9^:^/^ ]"), "").replace(Regex(" {2,}"), " "))
         ss.setSpan(ForegroundColorSpan(context.resources.getColor(R.color.colorNumber)),

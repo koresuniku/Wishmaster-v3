@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
+import android.text.util.Linkify
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,12 +29,16 @@ import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolderView
-import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
-import com.koresuniku.wishmaster.ui.text.TextUtils
+import com.koresuniku.wishmaster.ui.text.*
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+import com.pixplicity.htmlcompat.HtmlCompat
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 
 open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter, ActionBarView,
@@ -254,12 +259,11 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
-        var holder: ViewHolder
+        val holder: ViewHolder
         val post: Post = getPost(position)
-        val files: List<Files> = post.getFiles()
 
         if (convertView == null) {
-            Log.d(LOG_TAG, "convertview is null, inflating new viewholder")
+            //Log.d(LOG_TAG, "convertview is null, inflating new viewholder")
             convertView = inflateCorrectConvertView(position, parent!!)
             holder = getViewHolderInstance(convertView, getItemViewType(position))
             holder.postNumber = post.getNum()
@@ -270,24 +274,38 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             holder.postNumber = post.getNum()
         }
 
-        Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
+        //Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
 
-        holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View?): Boolean {
-                mView.showPostDialog(position)
-                return false
-            }
-        })
+        holder.mItemContainer!!.setOnLongClickListener {
+            mView.showPostDialog(position)
+            false
+        }
 
-        holder.mNumberAndTimeInfo!!.text =
+
+        val mNumberAndTimeSpannable =
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
-        holder.mCommentTextView!!.text =
-                Html.fromHtml(post.getComment())
+        holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
+        Log.d(LOG_TAG, "raw html: ${post.getComment()}")
+        val commentDocument: Document = Jsoup.parse(post.getComment())
+        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
+
+        commentElements.forEach{ it.getElementsByAttributeValue(
+                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
+                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
+        }
+        commentElements.forEach{
+            it.getElementsByAttributeValue(
+                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
+                .tagName(SpanTagHandlerCompat.SPOILER_TAG)
+        }
+
+        holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+                mView.getActivity(), commentDocument.html(), 0,
+                null, SpanTagHandlerCompat(mView.getActivity()))
         holder.mCommentTextView!!.linksClickable = false
-        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mAnswersHolder)
+        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
-
         holder.files = post.getFiles()
         ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
 
@@ -298,9 +316,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
-        var holder: ViewHolder
+        val holder: ViewHolder
         val post: Post = mView.getSchema().getPosts()!![position]
-        val files: List<Files> = post.getFiles()
 
         if (convertView == null) {
             convertView = inflateCorrectConvertView(position, parent)
@@ -313,20 +330,18 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             holder.postNumber = post.getNum()
         }
 
+        holder.mItemContainer!!.setOnLongClickListener {
+            mView.showPostDialog(position)
+            false
+        }
 
-        holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View?): Boolean {
-                mView.showPostDialog(position)
-                return false
-            }
-        })
-
-        holder.mNumberAndTimeInfo!!.text =
+        val mNumberAndTimeSpannable =
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
+        holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
         holder.mCommentTextView!!.text =
                 Html.fromHtml(post.getComment())
         holder.mCommentTextView!!.linksClickable = false
-        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mAnswersHolder)
+        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
 

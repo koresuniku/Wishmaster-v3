@@ -148,12 +148,12 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     //Activity methods
 
     override fun setupActionBarTitle() {
-        Log.d(LOG_TAG, "setupActionBarTitle:")
+        //Log.d(LOG_TAG, "setupActionBarTitle:")
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         if (mSchema != null) {
             supportActionBar!!.title = mSchema!!.getPosts()!![0].getSubject()
-            Log.d(LOG_TAG, "title: ${supportActionBar!!.title}")
+            //Log.d(LOG_TAG, "title: ${supportActionBar!!.title}")
         }
         else Log.d(LOG_TAG, "mSchema is null")
     }
@@ -213,9 +213,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
             mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
             if ((schema[0] as IBaseJsonSchemaImpl).getPosts()!!.size != mSchema!!.getPosts()!!.size)
                 this.mSchema = schema[0] as IBaseJsonSchemaImpl
-        }
-
-        this.mSchema = schema[0] as IBaseJsonSchemaImpl
+        } else this.mSchema = schema[0] as IBaseJsonSchemaImpl
 
         mProgressUnit!!.hideProgressYoba()
 
