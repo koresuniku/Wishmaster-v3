@@ -54,6 +54,7 @@ class CommentLinkMovementMethod(val mContext: Context, val answersManager: Answe
         }
         if (action == MotionEvent.ACTION_CANCEL) {
             Log.d(LOG_TAG, "action_cancel")
+            presenter.onActionCancel(widget!!, buffer!!, event)
             return true
         }
         return false
