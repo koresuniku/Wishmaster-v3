@@ -93,7 +93,10 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
         mFile = file
         mIndexOfFile = indexOfFile
         mFilesCount = filesCount
-        title = file.getDisplayName()
+
+        title = if (file.getDisplayName().isNullOrEmpty())
+                    mView.getAppCompatActivity().getString(R.string.unknown)
+                else file.getDisplayName()
         subtitle = TextUtils.getSubtitleStringForGalleryToolbar(
                 mFile!!, mIndexOfFile!!, mFilesCount!!)
 

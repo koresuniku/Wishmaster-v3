@@ -29,5 +29,4 @@ class SpoilerSpan(mContext: Context, val start: Int, val end: Int) : ClickableSp
         if (clicked) ds.color = Color.BLACK
         else ds.color = Color.TRANSPARENT
     }
-
 }

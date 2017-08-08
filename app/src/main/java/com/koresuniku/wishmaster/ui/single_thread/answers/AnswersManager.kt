@@ -13,10 +13,9 @@ import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import org.jetbrains.anko.find
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.style.StyleSpan
+import android.text.style.ForegroundColorSpan
 import android.view.KeyEvent
 import android.widget.*
 import java.util.*
@@ -229,7 +228,9 @@ class AnswersManager(val mView: AnswersHolderView) {
             start = matcher.start()
             end = matcher.end()
             if (end + 5 <= comment.length && comment.substring(end, end + 5) == " (OP)") end += 5
-            comment.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
+//            comment.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
+//                    start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            comment.setSpan(ForegroundColorSpan(mView.getActivity().resources.getColor(R.color.colorLinkHighlighted)),
                     start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             view.find<TextView>(R.id.post_comment).text = comment
         }

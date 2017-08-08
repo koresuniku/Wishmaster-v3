@@ -29,11 +29,11 @@ class Files {
     @Expose
     private var duration: String? = null
 
-    fun getDisplayName(): String {
-        return displayName!!
+    fun getDisplayName(): String? {
+        return displayName ?: ""
     }
 
-    fun setDisplayName(displayName: String) {
+    fun setDisplayName(displayName: String?) {
         this.displayName = displayName
     }
 

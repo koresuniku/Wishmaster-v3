@@ -8,7 +8,7 @@
     <color name="colorNumber">#008015</color>
 
     <color name="colorSubject">#212e60</color>
-    <color name="linkBackground">#c885c7ff</color>
+    <color name="colorLinkHighlighted">#0037ac</color>
     <color name="colorQuote">#719f38</color>
     <color name="colorSpoiler">#d1d1d1</color>
 

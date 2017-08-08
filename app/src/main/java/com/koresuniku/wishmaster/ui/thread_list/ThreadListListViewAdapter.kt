@@ -245,6 +245,15 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         return holder
     }
 
+    override fun onLongClick(threadNumber: String) {
+        for (thread in mView.getSchema().getThreads()) {
+            if (thread.getNum() == threadNumber) {
+                mView.showPostDialog(mView.getSchema().getThreads().indexOf(thread))
+                break
+            }
+        }
+    }
+
     override fun getViewTypeCount(): Int {
         return 3
     }
