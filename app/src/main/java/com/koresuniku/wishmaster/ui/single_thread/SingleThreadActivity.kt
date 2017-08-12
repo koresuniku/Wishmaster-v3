@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -152,8 +153,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         if (mSchema != null) {
-            supportActionBar!!.title = mSchema!!.getPosts()!![0].getSubject()
-            //Log.d(LOG_TAG, "title: ${supportActionBar!!.title}")
+            supportActionBar!!.title = Html.fromHtml(mSchema!!.getPosts()!![0].getSubject())
         }
         else Log.d(LOG_TAG, "mSchema is null")
     }

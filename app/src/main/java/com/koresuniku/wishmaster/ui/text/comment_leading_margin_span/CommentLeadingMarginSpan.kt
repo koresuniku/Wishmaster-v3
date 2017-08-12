@@ -59,7 +59,7 @@ class CommentLeadingMarginSpan(val holder: CommentAndFilesListViewViewHolder) :
 //        presenter = CommentLeadingMarginSpanPresenter(this)
 //        presenter!!.commentLineCount = lineCount
 //        marginLineCount = presenter!!.computeLeadingMarginLineCount()
-//        marginWidth = presenter!!.computeLeadingMarginWidthInPx()
+//        marginWidth = presenter!!.calculateLeadingMarginWidthInPx()
         marginLineCount = computeLinesToBeSpanned(holder)
         marginWidth = computeLeadingMarginWidth(holder)
     }

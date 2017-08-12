@@ -42,8 +42,6 @@ import org.jetbrains.anko.find
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import android.text.TextPaint
-import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan
 
 
 open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
@@ -309,66 +307,90 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             holder.mCommentTextView!!.linksClickable = false
             holder.mCommentTextView!!.movementMethod =
                     CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
-//            holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
-//                    mView.getActivity(), commentDocument.html(), 0,
-//                    null, SpanTagHandlerCompat(mView.getActivity()))
 
             if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
                 holder.mCommentTextView!!.post {
                     var spannable = SpannableString(HtmlCompat.fromHtml(
                             mView.getActivity(), commentDocument.html(), 0,
                             null, SpanTagHandlerCompat(mView.getActivity())))
-                    val textViewWidth = CommentLeadingMarginSpan2.computeCommentTextViewWidthInPx(holder)
-                    Log.d(LOG_TAG, "for $position textview measured width is: $textViewWidth")
-                    val myTextPaint = holder.mCommentTextView!!.paint
-                    myTextPaint.isAntiAlias = true
-                    val layout: StaticLayout = StaticLayout(commentDocument.text().toString(), myTextPaint,
-                            textViewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
-                    //Log.d(LOG_TAG, "for $position linesToBeSpanned: $linesToBeSpanned")
-                   // Log.d(LOG_TAG, "for $position layout width is: ${layout.width}")
-                    //Log.d(LOG_TAG, "for $position layout line count: ${layout.lineCount}")
-                    //Log.d(LOG_TAG, "for $position layout first line: ${spannable.substring(layout.getLineStart(0), layout.getLineEnd(0))}")
-                    var end: Int = 0
-                    var linesToBeSpanned: Int = 0
-                    if (layout.lineCount > 0) {
-                        for (lineIndex in 0..layout.lineCount - 1) {
-                            val aLine = spannable.substring(layout.getLineStart(lineIndex), layout.getLineEnd(lineIndex))
-                            Log.d(LOG_TAG, "line $lineIndex is: $aLine")
-                        }
-                        val imageContainerHeight: Int = UIUtils.convertDpToPixel(
-                                CommentLeadingMarginSpan2.computeImageContainerHeightInDp(holder)).toInt()
-                        val linesInLayoutToBeSpanned = Math.ceil(imageContainerHeight.toDouble() / holder.mCommentTextView!!.lineHeight).toInt()
-//                        for (lineIndex in 0..Math.min(layout.lineCount - 1, linesInLayoutToBeSpanned - 1)) {
-//                            end = layout.getLineEnd(lineIndex)
-//                        }
-                        var lineBottom: Int
-                        for (lineIndex in 0..Math.min(layout.lineCount - 1, linesInLayoutToBeSpanned - 1)) {
-                            lineBottom = layout.getLineBottom(lineIndex)
-                            //Log.d(LOG_TAG, "lineBottom: ${lineBottom}")
-                            if (layout.getLineBottom(lineIndex) > imageContainerHeight) {
-                                end = layout.getLineEnd(lineIndex)
-                                val spannableStringBuilder = SpannableStringBuilder(spannable)
-                                if (spannable.substring(end, end + 1) != "\n" &&
-                                        spannable.substring(end, end + 1) != "\r") {
-                                    if (spannable.substring(end, end + 1) == " ") {
-                                        spannableStringBuilder.replace(end, end + 1, "\n")
-                                    } else {
-                                        spannableStringBuilder.insert(end, "\n")
-                                    }
-                                }
-                                spannable = SpannableString(spannableStringBuilder)
-                                break
-                            }
-                        }
-                        //val end = layout.getLineEnd(Math.min(linesToBeSpanned - 1, layout.lineCount - 1))
-                        Log.d(LOG_TAG, "for $position spanemo: ${spannable.substring(0, end)}")
+                    val textViewWidth = CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder)
 
-                        spannable.setSpan(CommentLeadingMarginSpan2(
-                                CommentLeadingMarginSpan2.computeLeadingMarginWidthInPx(holder), linesToBeSpanned),
-                                0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    var end: Int = 0
+                    var overallHeightOfLines: Int = 0
+                    val imageContainerHeight: Int = UIUtils.convertDpToPixel(
+                            CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
+                    val commentParts = spannable.toString().split("\r")
+
+                    var endReached: Boolean = false
+                    commentParts.forEach {
+                        if (endReached) return@forEach
+
+                        val layout: StaticLayout = StaticLayout(it, holder.mCommentTextView!!.paint,
+                                textViewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+                        if (layout.lineCount > 0) {
+                            var localHeight: Int
+
+                            for (lineIndex in 0..layout.lineCount - 1) {
+                                localHeight = layout.getLineBottom(lineIndex)
+                                if (localHeight + overallHeightOfLines > imageContainerHeight) {
+                                    endReached = true
+                                    end = layout.getLineEnd(lineIndex)
+                                    val spannableStringBuilder = SpannableStringBuilder(spannable)
+                                    if (spannable.substring(end - 1, end) != "\n" &&
+                                            spannable.substring(end - 1, end) != "\r") {
+                                        if (spannable.substring(end - 1, end) == " ") {
+                                            spannableStringBuilder.replace(end - 1, end, "\n")
+                                        } else {
+                                            spannableStringBuilder.insert(end, "\n")
+                                        }
+                                    }
+                                    spannable = SpannableString(spannableStringBuilder)
+                                    break
+                                }
+                            }
+                            overallHeightOfLines += layout.lineCount * holder.mCommentTextView!!.lineHeight
+                        }
                     }
 
+//                    val layout: StaticLayout = StaticLayout(spannable.toString(), myTextPaint, textViewWidth,
+//                                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+//                    if (layout.lineCount > 0) {
+//                            for (lineIndex in 0..layout.lineCount - 1) {
+//                                val aLine = spannable.substring(layout.getLineStart(lineIndex), layout.getLineEnd(lineIndex))
+//                                Log.d(LOG_TAG, "line $lineIndex is: $aLine")
+//                            }
+//                            val imageContainerHeight: Int = UIUtils.convertDpToPixel(
+//                                    CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
+//
+//                            for (lineIndex in 0..layout.lineCount - 1) {
+//                                if (layout.getLineBottom(lineIndex) > imageContainerHeight) {
+//                                    end = layout.getLineEnd(lineIndex)
+//                                    val spannableStringBuilder = SpannableStringBuilder(spannable)
+//                                    if (spannable.substring(end, end + 1) != "\n" &&
+//                                            spannable.substring(end, end + 1) != "\r") {
+//                                        if (spannable.substring(end, end + 1) == " ") {
+//                                            spannableStringBuilder.replace(end, end + 1, "\n")
+//                                        } else {
+//                                            spannableStringBuilder.insert(end, "\n")
+//                                        }
+//                                    }
+//                                    spannable = SpannableString(spannableStringBuilder)
+//                                    break
+//                                }
+//                            }
+//
+//                        }
+
+                    //Log.d(LOG_TAG, "spanem: ${spannable.substring(0, end)}")
+
+                    spannable.setSpan(CommentLeadingMarginSpan2(
+                            CommentLeadingMarginSpan2.calculateLeadingMarginWidthInPx(holder)),
+                            0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    //}
+
                     holder.mCommentTextView!!.text = spannable
+
+                    holder.mCommentTextView!!.requestLayout()
 
                     //set left margin of desirable width
 //                val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
