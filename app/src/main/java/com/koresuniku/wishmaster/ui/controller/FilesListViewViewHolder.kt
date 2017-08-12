@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 
 open abstract class FilesListViewViewHolder {
+    var imageAndSummaryContainer: RelativeLayout? = null
     var imageAndSummaryContainer1: RelativeLayout? = null
     var imageAndSummaryContainer2: RelativeLayout? = null
     var imageAndSummaryContainer3: RelativeLayout? = null
@@ -43,6 +44,7 @@ open abstract class FilesListViewViewHolder {
     var summary8: TextView? = null
 
     var files: List<Files>? = null
+    var viewType: Int? = null
 
     abstract fun showImageOrVideo(file: Files)
 

@@ -1,12 +1,10 @@
-package com.koresuniku.wishmaster.ui.text
+package com.koresuniku.wishmaster.ui.text.comment_link_movement_method
 
 import android.text.Spannable
 import android.view.MotionEvent
 import android.widget.TextView
+import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 
-/**
- * Created by koresuniku on 08.08.17.
- */
 interface ICommentLinkMovementMethodPresenter {
     fun initFixSpoilerSpans(spannable: Spannable)
 

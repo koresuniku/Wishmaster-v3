@@ -1,14 +1,10 @@
-package com.koresuniku.wishmaster.ui.text
+package com.koresuniku.wishmaster.ui.text.comment_link_movement_method
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.text.Spannable
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.util.Log
 import android.view.MotionEvent
@@ -16,8 +12,7 @@ import android.widget.TextView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+import com.koresuniku.wishmaster.ui.text.LinkHighlightSpan
 
 class CommentLinkMovementMethod(val mContext: Context, val answersManager: AnswersManager?) :
         LinkMovementMethod(), ICommentLinkMovementMethod {

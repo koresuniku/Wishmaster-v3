@@ -35,6 +35,7 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
+import com.koresuniku.wishmaster.util.TestClass
 import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -58,6 +59,10 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        TestClass.bubble()
+//        Log.d(LOG_TAG, "factorial of 5: ${TestClass.factorial(5)}")
+//        Log.d(LOG_TAG, "fibonacci of 5: ${TestClass.fibonacci(5)}")
         Log.d(LOG_TAG, "onCreate:")
         setContentView(R.layout.activity_dashboard_drawer)
 

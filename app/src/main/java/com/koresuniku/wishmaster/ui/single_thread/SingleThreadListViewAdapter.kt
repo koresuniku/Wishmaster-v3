@@ -5,23 +5,24 @@ import android.content.Context
 import android.content.res.Configuration
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.text.Html
-import android.text.util.Linkify
+import android.text.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.*
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager
-import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
+import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.view_interface.IDialogAdapter
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
@@ -30,6 +31,9 @@ import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolderView
 import com.koresuniku.wishmaster.ui.text.*
+import com.koresuniku.wishmaster.ui.text.TextUtils
+import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan2
+import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.pixplicity.htmlcompat.HtmlCompat
 import org.jetbrains.anko.bottomPadding
@@ -38,6 +42,9 @@ import org.jetbrains.anko.find
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import android.text.TextPaint
+import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan
+
 
 open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter, ActionBarView,
@@ -48,7 +55,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     val ITEM_SINGLE_IMAGE: Int = 1
     val ITEM_MULTIPLE_IMAGES: Int = 2
 
-    val holders: ArrayList<ViewHolder> = ArrayList()
+    val holders: ArrayList<ViewHolderAndFiles> = ArrayList()
     val mAnswersHolder: AnswersManager = AnswersManager(this)
 
     val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
@@ -61,13 +68,10 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         mAnswersHolder.appointAnswersToPosts()
     }
 
-    inner class ViewHolder : FilesListViewViewHolder(), GalleryPagerView {
+    inner class ViewHolderAndFiles : CommentAndFilesListViewViewHolder(), GalleryPagerView {
         var mItemContainer: RelativeLayout? = null
         var mNumberAndTimeInfo: TextView? = null
-        var mCommentTextView: NoScrollTextView? = null
         var mAnswers: TextView? = null
-
-        var viewType: Int? = null
         var postNumber: String? = null
 
         override fun showImageOrVideo(file: Files) {
@@ -114,6 +118,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             val file = filesList[newPosition]
             mGalleryActionBarUnit.onPageChanged(file, currentPosition, filesList.count())
         }
+
 
         init {
             files = ArrayList()
@@ -196,8 +201,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         return View(mView.getActivity())
     }
 
-    fun getViewHolderInstance(itemView: View, viewType: Int): ViewHolder {
-        val holder: ViewHolder = ViewHolder()
+    fun getViewHolderInstance(itemView: View, viewType: Int): ViewHolderAndFiles {
+        val holder: ViewHolderAndFiles = ViewHolderAndFiles()
         holder.viewType = viewType
 
         holder.mItemContainer = itemView.findViewById(R.id.post_item_container) as RelativeLayout
@@ -205,6 +210,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         holder.mCommentTextView = itemView.findViewById(R.id.post_comment) as NoScrollTextView
         holder.mAnswers = itemView.findViewById(R.id.answers) as TextView
         if (viewType == ITEM_SINGLE_IMAGE) {
+            holder.imageAndSummaryContainer = itemView.findViewById(R.id.image_and_summary_container) as RelativeLayout
             holder.image = itemView.findViewById(R.id.post_image) as ImageView
             holder.webmImageView = itemView.findViewById(R.id.webm_imageview) as ImageView
             holder.summary = itemView.findViewById(R.id.image_summary) as TextView
@@ -258,7 +264,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
-        val holder: ViewHolder
+        val holder: ViewHolderAndFiles
         val post: Post = getPost(position)
 
         if (convertView == null) {
@@ -269,9 +275,12 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             convertView.tag = holder
             holders.add(holder)
         } else {
-            holder = convertView.tag as ViewHolder
+            holder = convertView.tag as ViewHolderAndFiles
             holder.postNumber = post.getNum()
         }
+
+        holder.files = post.getFiles()
+        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
 
         //Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
 
@@ -280,11 +289,10 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             false
         }
 
-
         val mNumberAndTimeSpannable =
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
-        Log.d(LOG_TAG, "raw html: ${post.getComment()}")
+        //Log.d(LOG_TAG, "raw html: ${post.getComment()}")
         val commentDocument: Document = Jsoup.parse(post.getComment())
         val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
 
@@ -298,24 +306,135 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                 .tagName(SpanTagHandlerCompat.SPOILER_TAG)
         }
 
-        holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
-                mView.getActivity(), commentDocument.html(), 0,
-                null, SpanTagHandlerCompat(mView.getActivity()))
-        holder.mCommentTextView!!.linksClickable = false
-        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
+            holder.mCommentTextView!!.linksClickable = false
+            holder.mCommentTextView!!.movementMethod =
+                    CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
+//            holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+//                    mView.getActivity(), commentDocument.html(), 0,
+//                    null, SpanTagHandlerCompat(mView.getActivity()))
+
+            if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
+                holder.mCommentTextView!!.post {
+                    var spannable = SpannableString(HtmlCompat.fromHtml(
+                            mView.getActivity(), commentDocument.html(), 0,
+                            null, SpanTagHandlerCompat(mView.getActivity())))
+                    val textViewWidth = CommentLeadingMarginSpan2.computeCommentTextViewWidthInPx(holder)
+                    Log.d(LOG_TAG, "for $position textview measured width is: $textViewWidth")
+                    val myTextPaint = holder.mCommentTextView!!.paint
+                    myTextPaint.isAntiAlias = true
+                    val layout: StaticLayout = StaticLayout(commentDocument.text().toString(), myTextPaint,
+                            textViewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+                    //Log.d(LOG_TAG, "for $position linesToBeSpanned: $linesToBeSpanned")
+                   // Log.d(LOG_TAG, "for $position layout width is: ${layout.width}")
+                    //Log.d(LOG_TAG, "for $position layout line count: ${layout.lineCount}")
+                    //Log.d(LOG_TAG, "for $position layout first line: ${spannable.substring(layout.getLineStart(0), layout.getLineEnd(0))}")
+                    var end: Int = 0
+                    var linesToBeSpanned: Int = 0
+                    if (layout.lineCount > 0) {
+                        for (lineIndex in 0..layout.lineCount - 1) {
+                            val aLine = spannable.substring(layout.getLineStart(lineIndex), layout.getLineEnd(lineIndex))
+                            Log.d(LOG_TAG, "line $lineIndex is: $aLine")
+                        }
+                        val imageContainerHeight: Int = UIUtils.convertDpToPixel(
+                                CommentLeadingMarginSpan2.computeImageContainerHeightInDp(holder)).toInt()
+                        val linesInLayoutToBeSpanned = Math.ceil(imageContainerHeight.toDouble() / holder.mCommentTextView!!.lineHeight).toInt()
+//                        for (lineIndex in 0..Math.min(layout.lineCount - 1, linesInLayoutToBeSpanned - 1)) {
+//                            end = layout.getLineEnd(lineIndex)
+//                        }
+                        var lineBottom: Int
+                        for (lineIndex in 0..Math.min(layout.lineCount - 1, linesInLayoutToBeSpanned - 1)) {
+                            lineBottom = layout.getLineBottom(lineIndex)
+                            //Log.d(LOG_TAG, "lineBottom: ${lineBottom}")
+                            if (layout.getLineBottom(lineIndex) > imageContainerHeight) {
+                                end = layout.getLineEnd(lineIndex)
+                                val spannableStringBuilder = SpannableStringBuilder(spannable)
+                                if (spannable.substring(end, end + 1) != "\n" &&
+                                        spannable.substring(end, end + 1) != "\r") {
+                                    if (spannable.substring(end, end + 1) == " ") {
+                                        spannableStringBuilder.replace(end, end + 1, "\n")
+                                    } else {
+                                        spannableStringBuilder.insert(end, "\n")
+                                    }
+                                }
+                                spannable = SpannableString(spannableStringBuilder)
+                                break
+                            }
+                        }
+                        //val end = layout.getLineEnd(Math.min(linesToBeSpanned - 1, layout.lineCount - 1))
+                        Log.d(LOG_TAG, "for $position spanemo: ${spannable.substring(0, end)}")
+
+                        spannable.setSpan(CommentLeadingMarginSpan2(
+                                CommentLeadingMarginSpan2.computeLeadingMarginWidthInPx(holder), linesToBeSpanned),
+                                0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+
+                    holder.mCommentTextView!!.text = spannable
+
+                    //set left margin of desirable width
+//                val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                params.leftMargin = holder.imageContainerHeight!!
+////                params.leftMargin = 200
+//                params.addRule(RelativeLayout.BELOW, holder.mNumberAndTimeInfo!!.id)
+//                holder.mCommentTextView!!.layoutParams = params
+//                if (holder.commentTextViewOnGlobalLayoutListener != null)
+//                    holder.mCommentTextView!!.viewTreeObserver.removeOnGlobalLayoutListener(
+//                            holder.commentTextViewOnGlobalLayoutListener)
+//
+//                //add onGlobalLayoutListener
+//                holder.mCommentTextView!!.viewTreeObserver.addOnGlobalLayoutListener(
+//                        if (holder.commentTextViewOnGlobalLayoutListener != null)
+//                            holder.commentTextViewOnGlobalLayoutListener
+//                        else CommentTextViewOnGlobalLayoutListener(holder,
+//                                SpannableString(HtmlCompat.fromHtml(
+//                                mView.getActivity(), commentDocument.html(), 0,
+//                                null, SpanTagHandlerCompat(mView.getActivity())))))
+                }
+            } else {
+                holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+                        mView.getActivity(), commentDocument.html(), 0,
+                        null, SpanTagHandlerCompat(mView.getActivity()))
+            }
+
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
-        holder.files = post.getFiles()
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
+
 
         holder.mAnswers!!.bringToFront()
 
         return convertView
     }
 
+    class CommentTextViewOnGlobalLayoutListener(
+            val holder: CommentAndFilesListViewViewHolder, val commentSpannable: Spannable) :
+            ViewTreeObserver.OnGlobalLayoutListener {
+        val LOG_TAG: String = CommentTextViewOnGlobalLayoutListener::class.java.simpleName
+
+        override fun onGlobalLayout() {
+
+            holder.mCommentTextView!!.viewTreeObserver.removeGlobalOnLayoutListener(this)
+
+            Log.d(LOG_TAG, "layout width on global: ${holder.mCommentTextView!!.layout.width}")
+//
+//            //when textview layout is drawn, get the line end to spanify only the needed text
+//            val charCount = holder.mCommentTextView!!.layout.getLineEnd(Math.min(
+//                    holder.mCommentTextView!!.layout.lineCount - 1,
+//                    CommentLeadingMarginSpan.computeLinesToBeSpanned(holder)))
+//                    //6))
+//            if (charCount <= commentSpannable.length) {
+//                commentSpannable.setSpan(CommentLeadingMarginSpan(holder),
+//                        0, charCount, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            }
+//
+//            //set the left margin back to zero
+//            (holder.mCommentTextView!!.layoutParams as RelativeLayout.LayoutParams).leftMargin = 0
+//            holder.mCommentTextView!!.text = commentSpannable
+        }
+    }
+
     override fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
-        val holder: ViewHolder
+        val holder: ViewHolderAndFiles
         val post: Post = mView.getSchema().getPosts()!![position]
 
         if (convertView == null) {
@@ -325,9 +444,12 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
             convertView.tag = holder
             holders.add(holder)
         } else {
-            holder = convertView.tag as ViewHolder
+            holder = convertView.tag as ViewHolderAndFiles
             holder.postNumber = post.getNum()
         }
+
+        holder.files = post.getFiles()
+        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
 
         holder.mItemContainer!!.setOnLongClickListener {
             mView.showPostDialog(position)
@@ -358,8 +480,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
 
-        holder.files = post.getFiles()
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
+
 
         holder.mAnswers!!.bringToFront()
 
@@ -399,7 +520,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         return mView.getSchema()
     }
 
-    fun setupAnswers(holder: ViewHolder, post: Post) {
+    fun setupAnswers(holder: ViewHolderAndFiles, post: Post) {
         if (mAnswersHolder.mAnswersMap.containsKey(post.getNum())) {
             val answersCount = mAnswersHolder.mAnswersMap[post.getNum()]!!.size
             if (answersCount == 0) {

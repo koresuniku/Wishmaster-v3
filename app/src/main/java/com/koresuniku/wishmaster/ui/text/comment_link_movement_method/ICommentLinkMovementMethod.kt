@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.text
+package com.koresuniku.wishmaster.ui.text.comment_link_movement_method
 
 import android.content.Context
 import android.text.Spannable

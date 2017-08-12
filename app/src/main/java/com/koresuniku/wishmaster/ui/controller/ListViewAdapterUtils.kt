@@ -19,6 +19,10 @@ import org.jetbrains.anko.doAsync
 
 object ListViewAdapterUtils {
 
+    val ITEM_NO_IMAGES: Int = 0
+    val ITEM_SINGLE_IMAGE: Int = 1
+    val ITEM_MULTIPLE_IMAGES: Int = 2
+
     fun setupImages(activity: Activity, holder: FilesListViewViewHolder, viewModeIsDialog: Boolean, reloadImages: Boolean) {
         if (holder.files == null) {Log.d("ListViewAdapterUtils", "files is null"); return}
         val filesSize = holder.files!!.size
@@ -258,6 +262,18 @@ object ListViewAdapterUtils {
         image.minimumHeight = minHeight
         image.maxHeight = maxHeight
         image.requestLayout()
+    }
+
+    fun computeImageHeightInPx(activity: Activity, file: Files, viewModeIsDialog: Boolean): Int {
+        val width: Int = UIUtils.convertDpToPixel(
+                ImageManager.computeImageWidthInDp(activity, viewModeIsDialog)).toInt()
+
+        val widthInt = Integer.parseInt(file.getWidth())
+        val heightInt = Integer.parseInt(file.getHeight())
+        val aspectRatio = widthInt.toFloat() / heightInt.toFloat()
+        val finalHeight = Math.round(width / aspectRatio)
+
+        return finalHeight
     }
 
     fun setCorrectVideoImageSize(activity: Activity, image: ImageView, viewModeIsDialog: Boolean) {

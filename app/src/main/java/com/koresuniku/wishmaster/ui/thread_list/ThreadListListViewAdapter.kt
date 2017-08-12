@@ -2,7 +2,6 @@ package com.koresuniku.wishmaster.ui.thread_list
 
 import android.app.Activity
 import android.content.res.Configuration
-import android.os.Handler
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
@@ -18,7 +17,6 @@ import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.system.PreferenceUtils
-import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
@@ -31,13 +29,12 @@ import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
-import com.koresuniku.wishmaster.ui.text.CommentLinkMovementMethod
+import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import com.pixplicity.htmlcompat.HtmlCompat
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.topPadding
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -69,8 +66,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         var mSubjectTextView: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
         var mPostsAndFilesInfo: TextView? = null
-
-        var viewType: Int? = null
 
         override fun showImageOrVideo(file: Files) {
             mView.notifyGalleryShown()
@@ -300,7 +295,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         }
 
         holder.files = thread.getFiles()
-
         ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
 
         val maxLines = PreferenceUtils.getSharedPreferences(mView.getActivity()).getString(

@@ -6,9 +6,18 @@ import kotlin.collections.HashSet
 
 object Formats {
 
-    val VIDEO_FORMATS: Set<String> = HashSet(Arrays.asList("webm", "mp4"))
+    val WEBM_FORMAT: String = "webm"
+    val MP4_FORMAT: String = "mp4"
 
-    val IMAGE_FORMATS: Set<String> = HashSet(Arrays.asList("jpeg", "jpg", "png"))
+    val JPEG_FORMAT: String = "jpeg"
+    val JPG_FORMAT: String = "jpg"
+    val PNG_FORMAT: String = "png"
 
-    val GIF_FORMAT: Set<String> = HashSet(Collections.singletonList("gif"))
+    val A_GIF_FORMAT: String = "gif"
+
+    val VIDEO_FORMATS: Set<String> = HashSet(Arrays.asList(WEBM_FORMAT, MP4_FORMAT))
+
+    val IMAGE_FORMATS: Set<String> = HashSet(Arrays.asList(JPEG_FORMAT, JPG_FORMAT, PNG_FORMAT))
+
+    val GIF_FORMAT: Set<String> = HashSet(Collections.singletonList(A_GIF_FORMAT))
 }
