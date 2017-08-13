@@ -10,7 +10,7 @@ ______________________________________
 * Kotlin как основной язык
 * OkHttp3 + Retrofit2 + Gson
 * SQLite
-* Android Support Tools (CardView, ViewPager...)
+* Android Support Tools (CardView, ViewPager, DrawerLayout...)
 * Glide
 * ExoPlayer (ExoMedia)
 * Jsoup
