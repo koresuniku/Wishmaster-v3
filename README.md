@@ -27,6 +27,7 @@ ______________________________________
 - [ ] Применить внедрение зависимостей посредством Dagger2
 - [ ] Применить RxJava в Interactor'ах Model слоя
 - [ ] Внедрить DataBinding
+- [ ] Покрыть Local и Instrumented тестами
 
 **TODO list performance and features:**
 - [ ] Оптимизировать ListView
