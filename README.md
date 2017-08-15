@@ -14,6 +14,7 @@ ______________________________________
 * Glide
 * ExoPlayer (ExoMedia)
 * Jsoup
+* EventBus
 # 
 
 **Возможности**:
