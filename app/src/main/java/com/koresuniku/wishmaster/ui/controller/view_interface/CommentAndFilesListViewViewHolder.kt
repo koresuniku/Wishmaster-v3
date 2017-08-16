@@ -9,9 +9,6 @@ import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLead
 abstract class CommentAndFilesListViewViewHolder : FilesListViewViewHolder() {
     var mCommentTextView: TextView? = null
 
-    var commentTextViewOnGlobalLayoutListener:
-            SingleThreadListViewAdapter.CommentTextViewOnGlobalLayoutListener? = null
-
     open var imageContainerHeight: Int? = null
 
     abstract fun getActivity(): Activity

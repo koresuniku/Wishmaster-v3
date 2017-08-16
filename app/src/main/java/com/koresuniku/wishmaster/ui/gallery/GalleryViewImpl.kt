@@ -13,22 +13,15 @@ import org.jetbrains.anko.find
 import java.io.File
 
 class GalleryViewImpl(val mView: SingleThreadListViewAdapter) : IGalleryView {
-    override var mGalleryLayoutContainer: ViewGroup
-        get() = mView.getActivity().find(R.id.gallery_layout_container)
-        set(value) {}
-    override var mGalleryActionBarUnit: GalleryActionBarUnit
-        get() = GalleryActionBarUnit(mView)
-        set(value) {}
-    override var mGalleryPager: ViewPager
-        get() = mView.getActivity().find(R.id.gallery_pager)
-        set(value) {}
-    override var mGalleryPagerAdapter: GalleryPagerAdapter?
-        get() = null
-        set(value) {}
-    override var mGalleryOnPageChangeListener: GalleryOnPageChangeListener?
-        get() = null
-        set(value) {}
-    lateinit var filesList: List<Files>
+    override var mGalleryLayoutContainer: ViewGroup = mView.getActivity().find(R.id.gallery_layout_container)
+
+    override var mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(mView)
+
+    override var mGalleryPager: ViewPager = mView.getActivity().find(R.id.gallery_pager)
+
+    override var mGalleryPagerAdapter: GalleryPagerAdapter? = null
+    override var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
+    var filesList: List<Files>? = null
 
     override fun showImageOrVideo(filesList: List<Files>, file: Files) {
         this.filesList = filesList
@@ -37,7 +30,6 @@ class GalleryViewImpl(val mView: SingleThreadListViewAdapter) : IGalleryView {
         mGalleryLayoutContainer.visibility = View.VISIBLE
 
         val currentPosition = filesList.indexOf(file)
-        mGalleryActionBarUnit.setupTitleAndSubtitle(file, currentPosition, filesList.count())
 
         mGalleryPagerAdapter = GalleryPagerAdapter(
                 mView.getAppCompatActivity().supportFragmentManager, this,
@@ -47,12 +39,15 @@ class GalleryViewImpl(val mView: SingleThreadListViewAdapter) : IGalleryView {
         mGalleryPager.currentItem = currentPosition
         mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
         mGalleryPager.addOnPageChangeListener(mGalleryOnPageChangeListener)
+
+        mGalleryActionBarUnit.setupActionBar(mView.getActivity().resources.configuration)
+        mGalleryActionBarUnit.setupTitleAndSubtitle(file, currentPosition, filesList.count())
     }
 
     override fun onPageChanged(newPosition: Int) {
         mGalleryPagerAdapter!!.onPageChanged(newPosition)
-        val file = filesList[newPosition]
-        mGalleryActionBarUnit.onPageChanged(file, newPosition, filesList.count())
+        val file = filesList!![newPosition]
+        mGalleryActionBarUnit.onPageChanged(file, newPosition, filesList!!.count())
     }
 
     override fun onBackPressed(): Boolean {

@@ -19,12 +19,9 @@ import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.UIUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager
-import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
-import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
-import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
-import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
+import com.koresuniku.wishmaster.ui.gallery.*
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManagerView
 import com.koresuniku.wishmaster.ui.text.*
@@ -54,6 +51,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     val holders: ArrayList<ViewHolderAndFiles> = ArrayList()
     val mAnswersHolder: AnswersManager = AnswersManager(this)
 
+    val mGalleryPresenter = GalleryPresenter(this)
+
 //    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
 //    var mGalleryPager: ViewPager? = null
 //    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
@@ -65,7 +64,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     }
 
     override fun onThumbnailClicked(file: Files) {
-
+        mGalleryPresenter.showImageOrVideo(getFilesList(), file)
     }
 
     inner class ViewHolderAndFiles : CommentAndFilesListViewViewHolder() {
@@ -161,8 +160,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     }
 
-    override fun onBackPressedOverridden(): Boolean {
-//        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
+    override fun onBackPressedOverridden(): Boolean = //        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
 //            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
 //            mView.getGalleryLayoutContainer().visibility = View.GONE
 //
@@ -173,7 +171,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 //
 //
 //        return false
-    }
+            mGalleryPresenter.onBackPressed()
 
     fun onConfigurationChanged(configuration: Configuration) {
 //        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
@@ -181,6 +179,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 //            mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
 //                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
 //        }
+
+        mGalleryPresenter.onConfigurationChanged(configuration)
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
@@ -293,81 +293,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
         //Log.d(LOG_TAG, "raw html: ${post.getComment()}")
-        val commentDocument: Document = Jsoup.parse(post.getComment())
-        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
-
-        commentElements.forEach{ it.getElementsByAttributeValue(
-                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
-                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
-        }
-        commentElements.forEach{
-            it.getElementsByAttributeValue(
-                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
-                .tagName(SpanTagHandlerCompat.SPOILER_TAG)
-        }
-
-            holder.mCommentTextView!!.linksClickable = false
-            holder.mCommentTextView!!.movementMethod =
-                    CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
-
-            if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
-                holder.mCommentTextView!!.post {
-                    var spannable = SpannableString(HtmlCompat.fromHtml(
-                            mView.getActivity(), commentDocument.html(), 0,
-                            null, SpanTagHandlerCompat(mView.getActivity())))
-                    val textViewWidth = CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder)
-
-                    var end: Int = 0
-                    var overallHeightOfLines: Int = 0
-                    val imageContainerHeight: Int = UIUtils.convertDpToPixel(
-                            CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
-                    val commentParts = spannable.toString().split("\r")
-
-                    var endReached: Boolean = false
-                    commentParts.forEach {
-                        if (endReached) return@forEach
-
-                        val layout: StaticLayout = StaticLayout(it, holder.mCommentTextView!!.paint,
-                                textViewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
-                        if (layout.lineCount > 0) {
-                            var localHeight: Int
-
-                            for (lineIndex in 0..layout.lineCount - 1) {
-                                localHeight = layout.getLineBottom(lineIndex)
-                                if (localHeight + overallHeightOfLines > imageContainerHeight) {
-                                    endReached = true
-                                    end = layout.getLineEnd(lineIndex)
-                                    val spannableStringBuilder = SpannableStringBuilder(spannable)
-                                    if (spannable.substring(end - 1, end) != "\n" &&
-                                            spannable.substring(end - 1, end) != "\r") {
-                                        if (spannable.substring(end - 1, end) == " ") {
-                                            spannableStringBuilder.replace(end - 1, end, "\n")
-                                        } else {
-                                            spannableStringBuilder.insert(end, "\n")
-                                        }
-                                    }
-                                    spannable = SpannableString(spannableStringBuilder)
-                                    break
-                                }
-                            }
-                            overallHeightOfLines += layout.lineCount * holder.mCommentTextView!!.lineHeight
-                        }
-                    }
-
-                    spannable.setSpan(CommentLeadingMarginSpan2(
-                            CommentLeadingMarginSpan2.calculateLeadingMarginWidthInPx(holder)),
-                            0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                    holder.mCommentTextView!!.text = spannable
-
-                    holder.mCommentTextView!!.requestLayout()
-
-                }
-            } else {
-                holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
-                        mView.getActivity(), commentDocument.html(), 0,
-                        null, SpanTagHandlerCompat(mView.getActivity()))
-            }
+        ListViewAdapterUtils.setupComment(holder, post, mAnswersHolder)
 
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
@@ -405,28 +331,9 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         val mNumberAndTimeSpannable =
                 TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
-        val commentDocument: Document = Jsoup.parse(post.getComment())
-        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
-
-        commentElements.forEach{ it.getElementsByAttributeValue(
-                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
-                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
-        }
-        commentElements.forEach{
-            it.getElementsByAttributeValue(
-                    SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
-                    .tagName(SpanTagHandlerCompat.SPOILER_TAG)
-        }
-
-        holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
-                mView.getActivity(), commentDocument.html(), 0,
-                null, SpanTagHandlerCompat(mView.getActivity()))
-        holder.mCommentTextView!!.linksClickable = false
-        holder.mCommentTextView!!.movementMethod = CommentLinkMovementMethod(mView.getActivity(), mAnswersHolder)
+        ListViewAdapterUtils.setupComment(holder, post, mAnswersHolder)
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
-
-
 
         holder.mAnswers!!.bringToFront()
 

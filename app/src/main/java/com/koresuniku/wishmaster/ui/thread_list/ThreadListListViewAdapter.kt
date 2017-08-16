@@ -25,10 +25,7 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableItemImageSizeChangedView
 import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
-import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
-import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
-import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
-import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
+import com.koresuniku.wishmaster.ui.gallery.*
 import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
@@ -42,7 +39,7 @@ import org.jsoup.select.Elements
 
 class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter(),
         INotifyableListViewAdapter, INotifyableItemImageSizeChangedView, ActionBarView,
-        ClickableAdapter {
+        ClickableAdapter, ListViewAdapterUtils.OnThumbnailClickedCallback {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -52,60 +49,66 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
 
-    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
-    var mGalleryPager: ViewPager? = null
-    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
-    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
+    val mGalleryPresenter = GalleryPresenter(this)
+
+//    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
+//    var mGalleryPager: ViewPager? = null
+//    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
+//    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
 
     override fun iNotifyDataSetChanged() {
         this.notifyDataSetChanged()
     }
 
-    inner class ViewHolder : FilesListViewViewHolder(), GalleryPagerView {
+    override fun onThumbnailClicked(file: Files) {
+
+    }
+
+    inner class ViewHolder : FilesListViewViewHolder() {
         var mItemContainer: RelativeLayout? = null
         var mSubjectTextView: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
         var mPostsAndFilesInfo: TextView? = null
 
-        override fun showImageOrVideo(file: Files) {
-            mView.notifyGalleryShown()
-
-            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
-            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
-            mGalleryActionBarUnit.setupTitleAndSubtitle(file, files!!.indexOf(file), files!!.count())
-
-            mGalleryPager = mView.getViewPager()
-            mGalleryPagerAdapter = GalleryPagerAdapter(
-                    mView.getAppCompatActivity().supportFragmentManager, this,
-                    files!!, files!!.indexOf(file))
-            mGalleryPager!!.adapter = mGalleryPagerAdapter
-            mGalleryPager!!.offscreenPageLimit = 1
-            mGalleryPager!!.currentItem = files!!.indexOf(file)
-            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
-            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
-        }
-
-        override fun getGalleryActionBar(): GalleryActionBarUnit {
-            return mGalleryActionBarUnit
-        }
-
-        override fun onGalleryHidden() {
-            mView.notifyGalleryHidden()
-        }
-
-        override fun getViewPager(): ViewPager {
-            return mGalleryPager!!
-        }
-
-        override fun getActivity(): Activity {
-            return mView.getActivity()
-        }
-
-        override fun onPageChanged(newPosition: Int) {
-            mGalleryPagerAdapter!!.onPageChanged(newPosition)
-            val file = files!![newPosition]
-            mGalleryActionBarUnit.onPageChanged(file, newPosition, files!!.count())
-        }
+//        override fun showImageOrVideo(file: Files) {
+//            mView.notifyGalleryShown()
+//
+//            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
+//            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
+//            mGalleryActionBarUnit.setupTitleAndSubtitle(file, files!!.indexOf(file), files!!.count())
+//
+//            mGalleryPager = mView.getViewPager()
+//            mGalleryPagerAdapter = GalleryPagerAdapter(
+//                    mView.getAppCompatActivity().supportFragmentManager, this,
+//                    files!!, files!!.indexOf(file))
+//            mGalleryPager!!.adapter = mGalleryPagerAdapter
+//            mGalleryPager!!.offscreenPageLimit = 1
+//            mGalleryPager!!.currentItem = files!!.indexOf(file)
+//            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
+//            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
+//        }
+//
+//        override fun getGalleryActionBar(): GalleryActionBarUnit {
+//            return mGalleryActionBarUnit
+//        }
+//
+//        override fun onGalleryHidden() {
+//            mView.notifyGalleryHidden()
+//        }
+//
+//        override fun getViewPager(): ViewPager {
+//            return mGalleryPager!!
+//        }
+//
+//        override fun getActivity(): Activity {
+//            return mView.getActivity()
+//        }
+//
+//        override fun onPageChanged(newPosition: Int) {
+//            mGalleryPagerAdapter!!.onPageChanged(newPosition)
+//            val file = files!![newPosition]
+//            mGalleryActionBarUnit.onPageChanged(file, newPosition, files!!.count())
+//        }
 
         init {
             files = ArrayList()
@@ -130,22 +133,12 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     }
 
     fun onConfigurationChanged(configuration: Configuration) {
-        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
-            mGalleryActionBarUnit.onConfigurationChanged(configuration)
-            mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
-                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
-        }
+//
+
     }
 
     override fun onBackPressedOverridden(): Boolean {
-        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
-            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
-            mView.getGalleryLayoutContainer().visibility = View.GONE
 
-            mGalleryPager!!.clearOnPageChangeListeners()
-            mGalleryPagerAdapter!!.onBackPressed()
-            return true
-        }
 
 
         return false
@@ -295,7 +288,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         }
 
         holder.files = thread.getFiles()
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
+        ListViewAdapterUtils.setupImages(this, mView.getActivity(), holder, false, true)
 
         val maxLines = PreferenceUtils.getSharedPreferences(mView.getActivity()).getString(
                 mView.getActivity().getString(R.string.pref_lines_count_key),
@@ -363,7 +356,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         holder.files = thread.getFiles()
 
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
+        ListViewAdapterUtils.setupImages(this, mView.getActivity(), holder, true, true)
         val commentDocument: Document = Jsoup.parse(thread.getComment())
         val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
 
@@ -401,6 +394,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     }
 
     override fun notifyItemImageSizeChanged() {
-        holders.forEach { ListViewAdapterUtils.setupImages(mView.getActivity(), it, false, false) }
+        holders.forEach { ListViewAdapterUtils.setupImages(this, mView.getActivity(), it, false, false) }
     }
 }

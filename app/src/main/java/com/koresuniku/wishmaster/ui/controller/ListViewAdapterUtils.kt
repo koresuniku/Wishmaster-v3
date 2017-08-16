@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.ui.controller
 
 import android.app.Activity
 import android.net.Uri
+import android.text.*
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -10,12 +11,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.Dvach
+import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
+import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
+import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.text.TextUtils
+import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan2
+import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListListViewAdapter
 import com.koresuniku.wishmaster.util.Formats
+import com.pixplicity.htmlcompat.HtmlCompat
 import org.jetbrains.anko.doAsync
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 
 object ListViewAdapterUtils {
 
@@ -25,6 +36,84 @@ object ListViewAdapterUtils {
 
     interface OnThumbnailClickedCallback {
         fun onThumbnailClicked(file: Files)
+    }
+
+    fun setupComment(holder: CommentAndFilesListViewViewHolder, post: Post, mAnswersHolder: AnswersManager) {
+        val commentDocument: Document = Jsoup.parse(post.getComment())
+        val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
+
+        commentElements.forEach{ it.getElementsByAttributeValue(
+                SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.QUOTE_VALUE)
+                .tagName(SpanTagHandlerCompat.QUOTE_TAG)
+        }
+        commentElements.forEach{
+            it.getElementsByAttributeValue(
+                    SpanTagHandlerCompat.CLASS_ATTR, SpanTagHandlerCompat.SPOILER_VALUE)
+                    .tagName(SpanTagHandlerCompat.SPOILER_TAG)
+        }
+
+        holder.mCommentTextView!!.linksClickable = false
+        holder.mCommentTextView!!.movementMethod =
+                CommentLinkMovementMethod(holder.getActivity(), mAnswersHolder)
+
+        if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
+            holder.mCommentTextView!!.post {
+                var spannable = SpannableString(HtmlCompat.fromHtml(
+                        holder.getActivity(), commentDocument.html(), 0,
+                        null, SpanTagHandlerCompat(holder.getActivity())))
+                val textViewWidth = CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder)
+
+                var end: Int = 0
+                var overallHeightOfLines: Int = 0
+                val imageContainerHeight: Int = UIUtils.convertDpToPixel(
+                        CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
+                val commentParts = spannable.toString().split("\r")
+
+                var endReached: Boolean = false
+                commentParts.forEach {
+                    if (endReached) return@forEach
+
+                    val layout: StaticLayout = StaticLayout(it, holder.mCommentTextView!!.paint,
+                            textViewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+                    if (layout.lineCount > 0) {
+                        var localHeight: Int
+
+                        for (lineIndex in 0..layout.lineCount - 1) {
+                            localHeight = layout.getLineBottom(lineIndex)
+                            if (localHeight + overallHeightOfLines > imageContainerHeight) {
+                                endReached = true
+                                end = layout.getLineEnd(lineIndex)
+                                val spannableStringBuilder = SpannableStringBuilder(spannable)
+                                if (spannable.substring(end - 1, end) != "\n" &&
+                                        spannable.substring(end - 1, end) != "\r") {
+                                    if (spannable.substring(end - 1, end) == " ") {
+                                        spannableStringBuilder.replace(end - 1, end, "\n")
+                                    } else {
+                                        spannableStringBuilder.insert(end, "\n")
+                                    }
+                                }
+                                spannable = SpannableString(spannableStringBuilder)
+                                break
+                            }
+                        }
+                        overallHeightOfLines += layout.lineCount * holder.mCommentTextView!!.lineHeight
+                    }
+                }
+
+                spannable.setSpan(CommentLeadingMarginSpan2(
+                        CommentLeadingMarginSpan2.calculateLeadingMarginWidthInPx(holder)),
+                        0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                holder.mCommentTextView!!.text = spannable
+
+                holder.mCommentTextView!!.requestLayout()
+                holder.imageAndSummaryContainer!!.bringToFront()
+            }
+        } else {
+            holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
+                    holder.getActivity(), commentDocument.html(), 0,
+                    null, SpanTagHandlerCompat(holder.getActivity()))
+        }
     }
 
     fun setupImages(callback: OnThumbnailClickedCallback, activity: Activity,

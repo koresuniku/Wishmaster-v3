@@ -1,10 +1,22 @@
 package com.koresuniku.wishmaster.ui.gallery
 
+import android.content.res.Configuration
+import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewAdapter
 
 class GalleryPresenter(val mSingleThreadListViewAdapter: SingleThreadListViewAdapter) {
     val LOG_TAG: String = GalleryPresenter::class.java.simpleName
 
     val mGalleryView: IGalleryView = GalleryViewImpl(mSingleThreadListViewAdapter)
+
+    fun showImageOrVideo(filesList: List<Files>, file: Files) {
+        mGalleryView.showImageOrVideo(filesList, file)
+    }
+
+    fun onBackPressed(): Boolean = mGalleryView.onBackPressed()
+
+    fun onConfigurationChanged(configuration: Configuration) {
+        mGalleryView.onConfigurationChanged(configuration)
+    }
 
 }
