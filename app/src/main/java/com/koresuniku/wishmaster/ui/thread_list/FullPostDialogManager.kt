@@ -33,7 +33,6 @@ class FullPostDialogManager(var mView: ThreadListActivity) {
         }
     }
 
-
     fun openFullPost(position: Int) {
         isDialogShown = true
 

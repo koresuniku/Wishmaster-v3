@@ -35,7 +35,6 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
-import com.koresuniku.wishmaster.util.TestClass
 import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -161,6 +160,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
         return this.mSchema!!
     }
 
+
     override fun onCreateDialog(id: Int, args: Bundle?): Dialog {
         return DialogManager.createDashBoardDialog(this, args)
     }
@@ -175,6 +175,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     fun getBoardsWrittenToDatabaseCallBack(): BoardsUtils.BoardsWrittenToDatabaseCallBack {
         return this
     }
+
 
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         this.mSchema = schema[0] as BoardsJsonSchema
