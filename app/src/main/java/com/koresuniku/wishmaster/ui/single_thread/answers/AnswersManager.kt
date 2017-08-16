@@ -22,7 +22,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AnswersManager(val mView: AnswersHolderView) {
+class AnswersManager(val mView: AnswersManagerView) {
     val LOG_TAG: String = AnswersManager::class.java.simpleName
 
     val mAnswersMap: HashMap<String, ArrayList<String>> = HashMap()

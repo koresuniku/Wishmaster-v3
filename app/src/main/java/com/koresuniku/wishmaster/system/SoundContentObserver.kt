@@ -1,15 +1,11 @@
 package com.koresuniku.wishmaster.system
 
-import android.app.Activity
 import android.content.Context
-import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
-import com.koresuniku.wishmaster.ui.gallery.GalleryFragment
 import android.media.AudioManager
-import android.content.Context.AUDIO_SERVICE
 import android.database.ContentObserver
 import android.os.Handler
 import android.util.Log
-import com.koresuniku.wishmaster.ui.gallery.SoundVolumeChangeListener
+import com.koresuniku.wishmaster.ui.gallery.content.SoundVolumeChangeListener
 
 
 class SoundContentObserver(internal var context: Context, handler: Handler) : ContentObserver(handler) {

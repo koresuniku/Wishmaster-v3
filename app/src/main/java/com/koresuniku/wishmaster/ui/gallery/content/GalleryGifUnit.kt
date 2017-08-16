@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.gallery
+package com.koresuniku.wishmaster.ui.gallery.content
 
 import android.net.Uri
 import android.util.Log

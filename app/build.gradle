@@ -51,6 +51,7 @@ dependencies {
     compile 'com.devbrackets.android:exomedia:4.0.0'
     compile 'com.pixplicity.htmlcompat:library:1.0.0'
     compile 'org.jsoup:jsoup:1.10.3'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
 repositories {
     mavenCentral()

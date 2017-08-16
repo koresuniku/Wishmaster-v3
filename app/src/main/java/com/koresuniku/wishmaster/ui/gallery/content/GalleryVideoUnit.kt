@@ -1,10 +1,8 @@
-package com.koresuniku.wishmaster.ui.gallery
+package com.koresuniku.wishmaster.ui.gallery.content
 
 import android.content.res.Configuration
 import android.os.Handler
-import android.support.v4.view.GravityCompat
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -12,7 +10,6 @@ import android.view.animation.ScaleAnimation
 import android.widget.*
 import com.devbrackets.android.exomedia.listener.OnCompletionListener
 import com.devbrackets.android.exomedia.listener.OnPreparedListener
-import com.devbrackets.android.exomedia.listener.OnSeekCompletionListener
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.Dvach

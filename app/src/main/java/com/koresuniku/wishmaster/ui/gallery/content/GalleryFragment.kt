@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.ui.gallery
+package com.koresuniku.wishmaster.ui.gallery.content
 
 
 import android.content.res.Configuration
@@ -14,6 +14,8 @@ import android.widget.FrameLayout
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
+import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapterView
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.util.Formats
 

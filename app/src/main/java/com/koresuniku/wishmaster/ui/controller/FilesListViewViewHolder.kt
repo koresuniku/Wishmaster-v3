@@ -46,7 +46,4 @@ open abstract class FilesListViewViewHolder {
     var files: List<Files>? = null
     var viewType: Int? = null
 
-    abstract fun showImageOrVideo(file: Files)
-
-    abstract fun onPageChanged(newPosition: Int)
 }

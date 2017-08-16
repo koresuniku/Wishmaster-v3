@@ -5,7 +5,7 @@ import android.content.Context
 import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
 import com.koresuniku.wishmaster.ui.controller.view_interface.IDialogAdapter
 
-interface AnswersHolderView {
+interface AnswersManagerView {
     fun getSchema(): IBaseJsonSchemaImpl
 
     fun notifyNewAnswersTextViews()

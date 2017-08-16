@@ -23,7 +23,13 @@ object ListViewAdapterUtils {
     val ITEM_SINGLE_IMAGE: Int = 1
     val ITEM_MULTIPLE_IMAGES: Int = 2
 
-    fun setupImages(activity: Activity, holder: FilesListViewViewHolder, viewModeIsDialog: Boolean, reloadImages: Boolean) {
+    interface OnThumbnailClickedCallback {
+        fun onThumbnailClicked(file: Files)
+    }
+
+    fun setupImages(callback: OnThumbnailClickedCallback, activity: Activity,
+                    holder: FilesListViewViewHolder, viewModeIsDialog: Boolean,
+                    reloadImages: Boolean) {
         if (holder.files == null) {Log.d("ListViewAdapterUtils", "files is null"); return}
         val filesSize = holder.files!!.size
         switchImagesVisibility(holder, filesSize)
@@ -31,26 +37,26 @@ object ListViewAdapterUtils {
         if (filesSize != 0) {
             for (file in holder.files!!) {
                 if (filesSize == 1) {
-                    setupImageContainer(activity, holder, holder.image!!, holder.webmImageView!!,
+                    setupImageContainer(callback, activity, holder, holder.image!!, holder.webmImageView!!,
                             holder.summary!!, file, viewModeIsDialog, reloadImages)
                 }
                 if (filesSize > 1) {
                     when (holder.files!!.indexOf(file)) {
-                        0 -> setupImageContainer(activity, holder, holder.image1!!, holder.webmImageView1!!,
+                        0 -> setupImageContainer(callback, activity, holder, holder.image1!!, holder.webmImageView1!!,
                                 holder.summary1!!, file, viewModeIsDialog, reloadImages)
-                        1 -> setupImageContainer(activity, holder, holder.image2!!, holder.webmImageView2!!,
+                        1 -> setupImageContainer(callback, activity, holder, holder.image2!!, holder.webmImageView2!!,
                                 holder.summary2!!, file, viewModeIsDialog, reloadImages)
-                        2 -> setupImageContainer(activity, holder, holder.image3!!, holder.webmImageView3!!,
+                        2 -> setupImageContainer(callback, activity, holder, holder.image3!!, holder.webmImageView3!!,
                                 holder.summary3!!, file, viewModeIsDialog, reloadImages)
-                        3 -> setupImageContainer(activity, holder, holder.image4!!, holder.webmImageView4!!,
+                        3 -> setupImageContainer(callback, activity, holder, holder.image4!!, holder.webmImageView4!!,
                                 holder.summary4!!, file, viewModeIsDialog, reloadImages)
-                        4 -> setupImageContainer(activity, holder, holder.image5!!, holder.webmImageView5!!,
+                        4 -> setupImageContainer(callback, activity, holder, holder.image5!!, holder.webmImageView5!!,
                                 holder.summary5!!, file, viewModeIsDialog, reloadImages)
-                        5 -> setupImageContainer(activity, holder, holder.image6!!, holder.webmImageView6!!,
+                        5 -> setupImageContainer(callback, activity, holder, holder.image6!!, holder.webmImageView6!!,
                                 holder.summary6!!, file, viewModeIsDialog, reloadImages)
-                        6 -> setupImageContainer(activity, holder, holder.image7!!, holder.webmImageView7!!,
+                        6 -> setupImageContainer(callback, activity, holder, holder.image7!!, holder.webmImageView7!!,
                                 holder.summary7!!, file, viewModeIsDialog, reloadImages)
-                        7 -> setupImageContainer(activity, holder, holder.image8!!, holder.webmImageView8!!,
+                        7 -> setupImageContainer(callback, activity, holder, holder.image8!!, holder.webmImageView8!!,
                                 holder.summary8!!, file, viewModeIsDialog, reloadImages)
                     }
                 }
@@ -221,8 +227,10 @@ object ListViewAdapterUtils {
         }
     }
 
-    fun setupImageContainer(activity: Activity, holder: FilesListViewViewHolder, image: ImageView, webmImage: ImageView, summary: TextView,
-                            file: Files, viewModeIsDialog: Boolean, reloadImages: Boolean) {
+    fun setupImageContainer(callback: OnThumbnailClickedCallback, activity: Activity,
+                            holder: FilesListViewViewHolder, image: ImageView, webmImage: ImageView,
+                            summary: TextView, file: Files, viewModeIsDialog: Boolean,
+                            reloadImages: Boolean) {
         val path: String = file.getPath()
 
         if (Formats.VIDEO_FORMATS.contains(TextUtils.getSubstringAfterDot(path))) {
@@ -235,7 +243,10 @@ object ListViewAdapterUtils {
         setCorrectImageSize(activity, image, file, viewModeIsDialog)
         summary.text = TextUtils.getSummaryString(activity, file)
         if (reloadImages) loadImageThumbnail(activity, image, file)
-        image.setOnClickListener({ holder.showImageOrVideo(file) })
+        image.setOnClickListener({
+            callback.onThumbnailClicked(file)
+            //holder.showImageOrVideo(file)
+        })
     }
 
     fun setCorrectImageSize(activity: Activity, image: ImageView, file: Files, viewModeIsDialog: Boolean) {

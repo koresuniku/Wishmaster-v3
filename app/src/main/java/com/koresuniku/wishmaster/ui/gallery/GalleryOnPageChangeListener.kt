@@ -5,7 +5,7 @@ import android.util.Log
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 
 
-class GalleryOnPageChangeListener(val filesListViewViewHolder: FilesListViewViewHolder) :
+class GalleryOnPageChangeListener(val mGalleryView: IGalleryView) :
         ViewPager.OnPageChangeListener {
     val LOG_TAG: String = GalleryOnPageChangeListener::class.java.simpleName
 
@@ -20,6 +20,6 @@ class GalleryOnPageChangeListener(val filesListViewViewHolder: FilesListViewView
 
     override fun onPageSelected(position: Int) {
         Log.d(LOG_TAG, "onPageSelected: $position")
-        filesListViewViewHolder.onPageChanged(position)
+        mGalleryView.onPageChanged(position)
     }
 }

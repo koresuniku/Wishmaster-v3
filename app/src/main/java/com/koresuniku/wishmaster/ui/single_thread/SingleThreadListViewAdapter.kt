@@ -21,15 +21,12 @@ import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.gallery.GalleryActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
-import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
-import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
-import com.koresuniku.wishmaster.ui.controller.view_interface.IDialogAdapter
-import com.koresuniku.wishmaster.ui.controller.view_interface.INotifyableListViewAdapter
+import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import com.koresuniku.wishmaster.ui.gallery.GalleryOnPageChangeListener
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerView
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
-import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersHolderView
+import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManagerView
 import com.koresuniku.wishmaster.ui.text.*
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan2
@@ -45,8 +42,9 @@ import org.jsoup.select.Elements
 
 
 open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
-        BaseAdapter(), INotifyableListViewAdapter, AnswersHolderView, IDialogAdapter, ActionBarView,
-        DialogManager.GalleryVisibilityListener {
+        BaseAdapter(), INotifyableListViewAdapter, AnswersManagerView, IDialogAdapter, ActionBarView,
+        DialogManager.GalleryVisibilityListener, AppCompatActivityView,
+        ListViewAdapterUtils.OnThumbnailClickedCallback {
     val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
@@ -56,66 +54,70 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     val holders: ArrayList<ViewHolderAndFiles> = ArrayList()
     val mAnswersHolder: AnswersManager = AnswersManager(this)
 
-    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
-    var mGalleryPager: ViewPager? = null
-    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
-    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
+//    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
+//    var mGalleryPager: ViewPager? = null
+//    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
+//    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
 
     init {
         mAnswersHolder.initAnswersMap()
         mAnswersHolder.appointAnswersToPosts()
     }
 
-    inner class ViewHolderAndFiles : CommentAndFilesListViewViewHolder(), GalleryPagerView {
+    override fun onThumbnailClicked(file: Files) {
+
+    }
+
+    inner class ViewHolderAndFiles : CommentAndFilesListViewViewHolder() {
         var mItemContainer: RelativeLayout? = null
         var mNumberAndTimeInfo: TextView? = null
         var mAnswers: TextView? = null
         var postNumber: String? = null
 
-        override fun showImageOrVideo(file: Files) {
-            mAnswersHolder.dismissDialogs()
-
-            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
-            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
-
-            val filesList = getFilesList()
-            val currentPosition = filesList.indexOf(file)
-            mGalleryActionBarUnit.setupTitleAndSubtitle(file, currentPosition, filesList.count())
-
-            mGalleryPager = mView.getViewPager()
-            mGalleryPagerAdapter = GalleryPagerAdapter(
-                    mView.getAppCompatActivity().supportFragmentManager, this,
-                    filesList, currentPosition)
-            mGalleryPager!!.adapter = mGalleryPagerAdapter
-            mGalleryPager!!.offscreenPageLimit = 1
-            mGalleryPager!!.currentItem = currentPosition
-            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
-            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
-        }
-
-        override fun getGalleryActionBar(): GalleryActionBarUnit {
-            return mGalleryActionBarUnit
-        }
-
-        override fun onGalleryHidden() {
-            mAnswersHolder.showDialogs()
-        }
-
-        override fun getViewPager(): ViewPager {
-            return mGalleryPager!!
-        }
+//        override fun showImageOrVideo(file: Files) {
+//            mAnswersHolder.dismissDialogs()
+//
+//            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
+//            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
+//
+//            val filesList = getFilesList()
+//            val currentPosition = filesList.indexOf(file)
+//            mGalleryActionBarUnit.setupTitleAndSubtitle(file, currentPosition, filesList.count())
+//
+//            mGalleryPager = mView.getViewPager()
+//            mGalleryPagerAdapter = GalleryPagerAdapter(
+//                    mView.getAppCompatActivity().supportFragmentManager, this,
+//                    filesList, currentPosition)
+//            mGalleryPager!!.adapter = mGalleryPagerAdapter
+//            mGalleryPager!!.offscreenPageLimit = 1
+//            mGalleryPager!!.currentItem = currentPosition
+//            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
+//            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
+//        }
+//
+//        override fun getGalleryActionBar(): GalleryActionBarUnit {
+//            return mGalleryActionBarUnit
+//        }
+//
+//        override fun onGalleryHidden() {
+//            mAnswersHolder.showDialogs()
+//        }
+//
+//        override fun getViewPager(): ViewPager {
+//            return mGalleryPager!!
+//        }
 
         override fun getActivity(): Activity {
             return mView.getActivity()
         }
 
-        override fun onPageChanged(newPosition: Int) {
-            mGalleryPagerAdapter!!.onPageChanged(newPosition)
-            val filesList = getFilesList()
-            val currentPosition = newPosition
-            val file = filesList[newPosition]
-            mGalleryActionBarUnit.onPageChanged(file, currentPosition, filesList.count())
-        }
+//        override fun onPageChanged(newPosition: Int) {
+//            mGalleryPagerAdapter!!.onPageChanged(newPosition)
+//            val filesList = getFilesList()
+//            val currentPosition = newPosition
+//            val file = filesList[newPosition]
+//            mGalleryActionBarUnit.onPageChanged(file, currentPosition, filesList.count())
+//        }
 
 
         init {
@@ -160,25 +162,25 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     }
 
     override fun onBackPressedOverridden(): Boolean {
-        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
-            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
-            mView.getGalleryLayoutContainer().visibility = View.GONE
-
-            mGalleryPager!!.clearOnPageChangeListeners()
-            mGalleryPagerAdapter!!.onBackPressed()
-            return true
-        }
-
-
-        return false
+//        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
+//            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
+//            mView.getGalleryLayoutContainer().visibility = View.GONE
+//
+//            mGalleryPager!!.clearOnPageChangeListeners()
+//            mGalleryPagerAdapter!!.onBackPressed()
+//            return true
+//        }
+//
+//
+//        return false
     }
 
     fun onConfigurationChanged(configuration: Configuration) {
-        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
-            mGalleryActionBarUnit.onConfigurationChanged(configuration)
-            mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
-                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
-        }
+//        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
+//            mGalleryActionBarUnit.onConfigurationChanged(configuration)
+//            mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
+//                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
+//        }
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
@@ -278,7 +280,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         }
 
         holder.files = post.getFiles()
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, false, true)
+        ListViewAdapterUtils.setupImages(this, mView.getActivity(), holder, false, true)
 
         //Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
 
@@ -352,65 +354,14 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                         }
                     }
 
-//                    val layout: StaticLayout = StaticLayout(spannable.toString(), myTextPaint, textViewWidth,
-//                                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
-//                    if (layout.lineCount > 0) {
-//                            for (lineIndex in 0..layout.lineCount - 1) {
-//                                val aLine = spannable.substring(layout.getLineStart(lineIndex), layout.getLineEnd(lineIndex))
-//                                Log.d(LOG_TAG, "line $lineIndex is: $aLine")
-//                            }
-//                            val imageContainerHeight: Int = UIUtils.convertDpToPixel(
-//                                    CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
-//
-//                            for (lineIndex in 0..layout.lineCount - 1) {
-//                                if (layout.getLineBottom(lineIndex) > imageContainerHeight) {
-//                                    end = layout.getLineEnd(lineIndex)
-//                                    val spannableStringBuilder = SpannableStringBuilder(spannable)
-//                                    if (spannable.substring(end, end + 1) != "\n" &&
-//                                            spannable.substring(end, end + 1) != "\r") {
-//                                        if (spannable.substring(end, end + 1) == " ") {
-//                                            spannableStringBuilder.replace(end, end + 1, "\n")
-//                                        } else {
-//                                            spannableStringBuilder.insert(end, "\n")
-//                                        }
-//                                    }
-//                                    spannable = SpannableString(spannableStringBuilder)
-//                                    break
-//                                }
-//                            }
-//
-//                        }
-
-                    //Log.d(LOG_TAG, "spanem: ${spannable.substring(0, end)}")
-
                     spannable.setSpan(CommentLeadingMarginSpan2(
                             CommentLeadingMarginSpan2.calculateLeadingMarginWidthInPx(holder)),
                             0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    //}
 
                     holder.mCommentTextView!!.text = spannable
 
                     holder.mCommentTextView!!.requestLayout()
 
-                    //set left margin of desirable width
-//                val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-//                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//                params.leftMargin = holder.imageContainerHeight!!
-////                params.leftMargin = 200
-//                params.addRule(RelativeLayout.BELOW, holder.mNumberAndTimeInfo!!.id)
-//                holder.mCommentTextView!!.layoutParams = params
-//                if (holder.commentTextViewOnGlobalLayoutListener != null)
-//                    holder.mCommentTextView!!.viewTreeObserver.removeOnGlobalLayoutListener(
-//                            holder.commentTextViewOnGlobalLayoutListener)
-//
-//                //add onGlobalLayoutListener
-//                holder.mCommentTextView!!.viewTreeObserver.addOnGlobalLayoutListener(
-//                        if (holder.commentTextViewOnGlobalLayoutListener != null)
-//                            holder.commentTextViewOnGlobalLayoutListener
-//                        else CommentTextViewOnGlobalLayoutListener(holder,
-//                                SpannableString(HtmlCompat.fromHtml(
-//                                mView.getActivity(), commentDocument.html(), 0,
-//                                null, SpanTagHandlerCompat(mView.getActivity())))))
                 }
             } else {
                 holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
@@ -425,33 +376,6 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         holder.mAnswers!!.bringToFront()
 
         return convertView
-    }
-
-    class CommentTextViewOnGlobalLayoutListener(
-            val holder: CommentAndFilesListViewViewHolder, val commentSpannable: Spannable) :
-            ViewTreeObserver.OnGlobalLayoutListener {
-        val LOG_TAG: String = CommentTextViewOnGlobalLayoutListener::class.java.simpleName
-
-        override fun onGlobalLayout() {
-
-            holder.mCommentTextView!!.viewTreeObserver.removeGlobalOnLayoutListener(this)
-
-            Log.d(LOG_TAG, "layout width on global: ${holder.mCommentTextView!!.layout.width}")
-//
-//            //when textview layout is drawn, get the line end to spanify only the needed text
-//            val charCount = holder.mCommentTextView!!.layout.getLineEnd(Math.min(
-//                    holder.mCommentTextView!!.layout.lineCount - 1,
-//                    CommentLeadingMarginSpan.computeLinesToBeSpanned(holder)))
-//                    //6))
-//            if (charCount <= commentSpannable.length) {
-//                commentSpannable.setSpan(CommentLeadingMarginSpan(holder),
-//                        0, charCount, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            }
-//
-//            //set the left margin back to zero
-//            (holder.mCommentTextView!!.layoutParams as RelativeLayout.LayoutParams).leftMargin = 0
-//            holder.mCommentTextView!!.text = commentSpannable
-        }
     }
 
     override fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -471,7 +395,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         }
 
         holder.files = post.getFiles()
-        ListViewAdapterUtils.setupImages(mView.getActivity(), holder, true, true)
+        ListViewAdapterUtils.setupImages(this, mView.getActivity(), holder, true, true)
 
         holder.mItemContainer!!.setOnLongClickListener {
             mView.showPostDialog(position)

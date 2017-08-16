@@ -1,23 +1,18 @@
-package com.koresuniku.wishmaster.ui.gallery
+package com.koresuniku.wishmaster.ui.gallery.content
 
 import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.ProgressBar
-import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.github.piasy.biv.loader.glide.GlideImageLoader
 import com.github.piasy.biv.view.BigImageView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.layoutInflater
-import org.jetbrains.anko.support.v4.find
 import java.lang.Exception
 
 class GalleryImageUnit(val mFragment: GalleryFragment, val file: Files) : View.OnClickListener {

@@ -4,12 +4,12 @@ import android.app.Activity
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.ViewPager
 import android.view.View
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.system.CacheUtils
 import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.gallery.content.GalleryFragment
 
 class GalleryPagerAdapter(fragmentManager: FragmentManager, val galleryPagerView: GalleryPagerView,
                           files: List<Files>, var currentPosition: Int) :
