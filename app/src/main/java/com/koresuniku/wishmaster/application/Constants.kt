@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system
+package com.koresuniku.wishmaster.application
 
 object Constants {
     val CLICK_TIME: Long = 150L

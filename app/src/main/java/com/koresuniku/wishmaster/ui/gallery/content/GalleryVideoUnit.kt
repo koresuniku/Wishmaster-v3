@@ -14,8 +14,8 @@ import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.system.App
-import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.application.App
+import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import org.jetbrains.anko.*

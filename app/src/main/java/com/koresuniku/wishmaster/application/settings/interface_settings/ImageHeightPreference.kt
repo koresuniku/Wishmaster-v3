@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system.settings.interface_settings
+package com.koresuniku.wishmaster.application.settings.interface_settings
 
 import android.content.Context
 import android.content.DialogInterface
@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.PreferenceUtils
+import com.koresuniku.wishmaster.application.PreferenceUtils
 import org.jetbrains.anko.find
 
 class ImageHeightPreference(context: Context, attributeSet: AttributeSet) :

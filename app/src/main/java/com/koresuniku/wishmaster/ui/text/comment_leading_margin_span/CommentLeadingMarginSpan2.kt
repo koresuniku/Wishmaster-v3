@@ -26,10 +26,10 @@ class CommentLeadingMarginSpan2(val every: Int) :
 //            return Math.ceil((imageContainerHeightInDp / commentLineHeightInDp).toDouble()).toInt()
 //        }
 
-        fun calculateImageContainerHeightInDp(holder: CommentAndFilesListViewViewHolder): Float {
+        fun calculateImageContainerHeightInDp(holder: CommentAndFilesListViewViewHolder, forDialog: Boolean): Float {
             val containerView = holder.imageAndSummaryContainer
             val imageViewHeight = ListViewAdapterUtils
-                    .computeImageHeightInPx(holder.getActivity(), holder.files!![0], false)
+                    .computeImageHeightInPx(holder.getActivity(), holder.files!![0], forDialog)
             val summaryLineHeight = holder.summary!!.lineHeight
             val summaryHeight = if (Formats.VIDEO_FORMATS.contains(
                     TextUtils.getSubstringAfterDot(holder.files!![0].getPath()!!)))

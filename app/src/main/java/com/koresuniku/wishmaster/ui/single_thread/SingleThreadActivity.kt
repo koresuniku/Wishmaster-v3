@@ -17,9 +17,10 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
-import com.koresuniku.wishmaster.system.IntentUtils
-import com.koresuniku.wishmaster.system.settings.ResultCodes
-import com.koresuniku.wishmaster.system.settings.SettingsActivity
+import com.koresuniku.wishmaster.application.IntentUtils
+import com.koresuniku.wishmaster.application.settings.ResultCodes
+import com.koresuniku.wishmaster.application.settings.SettingsActivity
+import com.koresuniku.wishmaster.http.BaseJsonSchemaMapper
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit
@@ -200,13 +201,13 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     override fun loadData() {
         if (mSchema != null) {
             mNewPostsNotifier!!.fetchPostsCount(mSchema!!.getPosts()!!.size)
-            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.savePreviousSchema(mSchema!!)
         }
         doAsync { mDataLoader!!.loadData(boardId!!, threadNumber!!) }
     }
 
     override fun onDataLoaded(schema: List<IBaseJsonSchema>) {
         Log.d(LOG_TAG, "onDataLoaded:")
+        BaseJsonSchemaMapper.setPostNumbersAscending(schema[0])
 
         if (mSchema != null) {
             mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
@@ -224,7 +225,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
             mSwipyRefreshLayoutUnit!!.onDataLoaded(
                     mNewPostsNotifier!!.previousPostsCount != schema[0].getPosts()!!.size)
             mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema = this.mSchema!!
-            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.assignAnswersToPosts()
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersManager.assignAnswersToPosts()
         }
 
         setupActionBarTitle()

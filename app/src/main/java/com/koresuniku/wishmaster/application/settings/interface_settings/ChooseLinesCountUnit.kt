@@ -1,11 +1,9 @@
-package com.koresuniku.wishmaster.system.settings.interface_settings
+package com.koresuniku.wishmaster.application.settings.interface_settings
 
-import android.content.Context
-import android.preference.ListPreference
 import android.preference.Preference
 import android.preference.PreferenceFragment
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.PreferenceUtils
+import com.koresuniku.wishmaster.application.PreferenceUtils
 
 class ChooseLinesCountUnit(val fragment: PreferenceFragment) {
 

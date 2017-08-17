@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 
 open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean, val presetupTitleLoading: Boolean) {

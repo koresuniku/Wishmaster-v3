@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView

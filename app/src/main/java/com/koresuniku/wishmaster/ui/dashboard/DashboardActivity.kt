@@ -21,9 +21,9 @@ import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
-import com.koresuniku.wishmaster.system.DeviceUtils
-import com.koresuniku.wishmaster.system.IntentUtils
-import com.koresuniku.wishmaster.system.PreferenceUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
+import com.koresuniku.wishmaster.application.IntentUtils
+import com.koresuniku.wishmaster.application.PreferenceUtils
 import com.koresuniku.wishmaster.ui.controller.ActionBarWithTabsUnit
 import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_ID_KEY
@@ -32,7 +32,7 @@ import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_DASHBOARD_ID
 import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_REMOVE_FROM_FAVOURITES_KEY
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarWithTabsView
 import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
-import com.koresuniku.wishmaster.system.settings.SettingsActivity
+import com.koresuniku.wishmaster.application.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
 import org.jetbrains.anko.doAsync
@@ -96,7 +96,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun loadData() {
-        doAsync({ mDataLoader!!.loadData() })
+        doAsync{ mDataLoader!!.loadData() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

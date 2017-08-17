@@ -3,8 +3,8 @@ package com.koresuniku.wishmaster.ui.controller
 import android.app.Activity
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.ui.UiUtils
-import com.koresuniku.wishmaster.system.DeviceUtils
-import com.koresuniku.wishmaster.system.PreferenceUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
+import com.koresuniku.wishmaster.application.PreferenceUtils
 
 
 object ImageManager {

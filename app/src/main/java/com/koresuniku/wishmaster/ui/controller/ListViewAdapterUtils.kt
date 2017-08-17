@@ -38,7 +38,7 @@ object ListViewAdapterUtils {
         fun onThumbnailClicked(file: Files)
     }
 
-    fun setupComment(holder: CommentAndFilesListViewViewHolder, post: Post, mAnswersHolder: AnswersManager) {
+    fun setupComment(holder: CommentAndFilesListViewViewHolder, post: Post, mAnswersHolder: AnswersManager, forDialog: Boolean) {
         val commentDocument: Document = Jsoup.parse(post.getComment())
         val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
 
@@ -66,7 +66,7 @@ object ListViewAdapterUtils {
                 var end: Int = 0
                 var overallHeightOfLines: Int = 0
                 val imageContainerHeight: Int = UiUtils.convertDpToPixel(
-                        CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
+                        CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder, forDialog)).toInt()
                 val commentParts = spannable.toString().split("\r")
 
                 var endReached: Boolean = false

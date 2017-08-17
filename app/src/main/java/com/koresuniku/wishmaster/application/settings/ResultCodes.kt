@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system.settings
+package com.koresuniku.wishmaster.application.settings
 
 object ResultCodes {
     val THREAD_LIST_RESULT_CODE = 1

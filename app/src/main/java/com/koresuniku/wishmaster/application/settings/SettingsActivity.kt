@@ -1,6 +1,5 @@
-package com.koresuniku.wishmaster.system.settings
+package com.koresuniku.wishmaster.application.settings
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -9,7 +8,6 @@ import android.preference.*
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import com.koresuniku.wishmaster.R
 

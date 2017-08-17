@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system.settings.interface_settings
+package com.koresuniku.wishmaster.application.settings.interface_settings
 
 import android.content.Context
 import android.content.DialogInterface
@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.PreferenceUtils
+import com.koresuniku.wishmaster.application.PreferenceUtils
 import org.jetbrains.anko.find
 
 class LinesCountPreference(context: Context, attributeSet: AttributeSet) :
@@ -37,9 +37,9 @@ class LinesCountPreference(context: Context, attributeSet: AttributeSet) :
         super.onBindDialogView(view)
 
         mCurrentLinesCount = view!!.find(R.id.min_height_current)
-        mLinesCountSeekBar = view!!.find(R.id.min_height_seekbar)
-        mMaxLinesCount = view!!.find(R.id.min_height_max)
-        mHintTextView = view!!.find(R.id.lines_count_hint)
+        mLinesCountSeekBar = view.find(R.id.min_height_seekbar)
+        mMaxLinesCount = view.find(R.id.min_height_max)
+        mHintTextView = view.find(R.id.lines_count_hint)
 
         mCurrentLinesCount!!.text = PreferenceUtils.getSharedPreferences(this.context).getString(
                 this.context.getString(R.string.pref_lines_count_key),

@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.View
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.system.App
-import com.koresuniku.wishmaster.system.CacheUtils
+import com.koresuniku.wishmaster.application.App
+import com.koresuniku.wishmaster.application.CacheUtils
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.gallery.content.GalleryFragment
 

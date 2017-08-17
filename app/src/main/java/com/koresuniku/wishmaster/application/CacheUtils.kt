@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system
+package com.koresuniku.wishmaster.application
 
 import android.content.Context
 import java.io.File

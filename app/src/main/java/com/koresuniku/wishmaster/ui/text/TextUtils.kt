@@ -92,7 +92,7 @@ object TextUtils {
         val ss: SpannableStringBuilder = SpannableStringBuilder()
         var additionalColorLength: Int = 0
         ss.append("#")
-        ss.append((position + 1).toString())
+        ss.append((position).toString())
         if (post.getOp() == "1") { ss.append(" OP"); additionalColorLength = 3 }
         ss.append(" №")
         ss.append(post.getNum())

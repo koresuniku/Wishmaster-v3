@@ -4,7 +4,6 @@ import android.widget.AbsListView
 import android.widget.ListView
 import com.bumptech.glide.Glide
 import com.koresuniku.wishmaster.ui.controller.view_interface.IListViewAdapterCreatable
-import com.koresuniku.wishmaster.ui.thread_list.ThreadListListViewAdapter
 
 class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewAdapterCreatable {
     val LOG_TAG: String = SingleThreadListViewUnit::class.java.simpleName
@@ -22,13 +21,11 @@ class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewA
         }
     }
 
-    override fun adapterIsCreated(): Boolean {
-        return adapterIsCreated!!
-    }
+    override fun adapterIsCreated(): Boolean = adapterIsCreated!!
 
     override fun createListViewAdapter() {
         adapterIsCreated = true
-        mListViewAdapter = SingleThreadListViewAdapter(mView)
+        mListViewAdapter = SingleThreadListViewAdapter(mView, mView.getSchema(), false)
         mListView!!.adapter = mListViewAdapter
         mListView!!.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {

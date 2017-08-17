@@ -1,11 +1,10 @@
 package com.koresuniku.wishmaster.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.res.Configuration
 import android.view.View
 import android.view.WindowManager
-import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
 
 object UiVisibilityManager {
     var isSystemUiShown: Boolean = true

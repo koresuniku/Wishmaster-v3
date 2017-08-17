@@ -33,6 +33,14 @@ class Post {
     @Expose
     private var files: List<Files>? = null
 
+    var postNumberAsc: Int? = null
+
+    fun setPostNumberAsc(number: Int) {
+        this.postNumberAsc = number
+    }
+
+    fun getPostNUmberAsc(): Int = this.postNumberAsc!!
+
     fun getComment(): String {
         return comment!!
     }

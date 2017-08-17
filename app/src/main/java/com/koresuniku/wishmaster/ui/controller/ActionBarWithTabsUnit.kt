@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.FrameLayout
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.system.DeviceUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarWithTabsView

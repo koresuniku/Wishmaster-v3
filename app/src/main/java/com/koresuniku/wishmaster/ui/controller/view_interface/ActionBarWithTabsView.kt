@@ -4,7 +4,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.FrameLayout
-import com.koresuniku.wishmaster.system.PreferenceUtils
+import com.koresuniku.wishmaster.application.PreferenceUtils
 import com.koresuniku.wishmaster.ui.dashboard.BoardListFragment
 import com.koresuniku.wishmaster.ui.dashboard.FavouritesFragment
 import com.koresuniku.wishmaster.ui.dashboard.HistoryFragment

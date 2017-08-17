@@ -8,7 +8,7 @@ import android.text.style.URLSpan
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.TextView
-import com.koresuniku.wishmaster.system.Constants
+import com.koresuniku.wishmaster.application.Constants
 import com.koresuniku.wishmaster.ui.text.LinkHighlightSpan
 import com.koresuniku.wishmaster.ui.text.QuoteSpan
 import com.koresuniku.wishmaster.ui.text.SpoilerSpan

@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system.settings.dashboard
+package com.koresuniku.wishmaster.application.settings.dashboard
 
 import android.annotation.SuppressLint
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system.settings.interface_settings
+package com.koresuniku.wishmaster.application.settings.interface_settings
 
 import android.preference.ListPreference
 import android.preference.PreferenceFragment

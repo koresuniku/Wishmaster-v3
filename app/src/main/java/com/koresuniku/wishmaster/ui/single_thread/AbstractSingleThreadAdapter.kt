@@ -1,10 +1,7 @@
 package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Activity
-import android.content.Context
-import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,46 +11,22 @@ import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
-import com.koresuniku.wishmaster.ui.controller.view_interface.*
-import com.koresuniku.wishmaster.ui.gallery.*
-import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
-import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManagerView
-import com.koresuniku.wishmaster.ui.single_thread.answers.OnThumbnailClickedEvent
+import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
+import com.koresuniku.wishmaster.ui.controller.view_interface.AppCompatActivityView
+import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.jetbrains.anko.bottomPadding
-import org.jetbrains.anko.dimen
-import org.jetbrains.anko.find
 
-
-open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
-                                       var mSchema: BaseJsonSchemaImpl,
-                                       val mForDialog: Boolean) :
-        BaseAdapter(), INotifyableListViewAdapter, AnswersManagerView, ActionBarView,
-        DialogManager.GalleryVisibilityListener, AppCompatActivityView,
+abstract class AbstractSingleThreadAdapter(val mView: SingleThreadListViewView,
+                                           val mSchema: BaseJsonSchemaImpl) :
+        BaseAdapter(), ActionBarView, AppCompatActivityView,
         ListViewAdapterUtils.OnThumbnailClickedCallback {
-    open val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
-
 
     val holders: ArrayList<ViewHolderAndFiles> = ArrayList()
-    open var mAnswersManager: AnswersManager = AnswersManager(this)
-
-    private val mGalleryPresenter = GalleryPresenter(this)
-
-    init {
-        initAnswersManager()
-        EventBus.getDefault().register(this)
-    }
-
-    open fun initAnswersManager() {
-        mAnswersManager.initAnswersMap()
-        mAnswersManager.assignAnswersToPosts()
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLifecycleEvent(event: LifecycleEvent) {
@@ -63,17 +36,6 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    open fun onThumbnailClickedEvent(event: OnThumbnailClickedEvent) {
-        Log.d(LOG_TAG, "onThumbnailClickedEvent:")
-        //onThumbnailClicked(event.file)
-    }
-
-    override fun onThumbnailClicked(file: Files) {
-        mGalleryPresenter.showImageOrVideo(getFilesList(), file)
-    }
-
-    override fun getSingleThreadListViewView(): SingleThreadListViewView = mView
 
     inner class ViewHolderAndFiles : CommentAndFilesListViewViewHolder() {
         var mItemContainer: RelativeLayout? = null
@@ -94,26 +56,6 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
             filesList += post.getFiles()
         }
         return filesList
-    }
-
-    override fun getContext(): Context = mView.getActivity()
-
-    override fun getActivity(): Activity = mView.getActivity()
-
-    override fun getToolbarContainer(): FrameLayout = mView.getActivity().find(R.id.gallery_toolbar_container)
-
-    override fun getAppCompatActivity(): AppCompatActivity = mView.getAppCompatActivity()
-
-    override fun onGalleryShown() {}
-
-    override fun onGalleryHidden() {}
-
-    override fun setupActionBarTitle() {}
-
-    override fun onBackPressedOverridden(): Boolean = mGalleryPresenter.onBackPressed()
-
-    fun onConfigurationChanged(configuration: Configuration) {
-        mGalleryPresenter.onConfigurationChanged(configuration)
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
@@ -186,14 +128,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         return holder
     }
 
-
-    override fun getViewTypeCount(): Int {
-        return 3
-    }
-
-    open fun getPost(position: Int): Post {
-        return mSchema.getPosts()!![position]
-    }
+    open fun getPost(position: Int): Post = mSchema.getPosts()!![position]
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
@@ -213,40 +148,28 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         }
 
         holder.files = post.getFiles()
-        ListViewAdapterUtils.setupImages(this, mView.getActivity(), holder, mForDialog, true)
+        ListViewAdapterUtils.setupImages(this, mView.getActivity(), holder, false, true)
 
-        Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
+        holder.mItemContainer!!.setOnLongClickListener { mView.showPostDialog(position); false }
 
-        holder.mItemContainer!!.setOnLongClickListener {
-            mView.showPostDialog(position)
-            false
-        }
-
-        val mNumberAndTimeSpannable = TextUtils.getNumberAndTimeInfoSpannableString(
-                mView.getActivity(), post.getPostNUmberAsc(), post)
+        val mNumberAndTimeSpannable =
+                TextUtils.getNumberAndTimeInfoSpannableString(mView.getActivity(), position, post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
-        //Log.d(LOG_TAG, "raw html: ${post.getComment()}")
-        ListViewAdapterUtils.setupComment(holder, post, mAnswersManager, mForDialog)
+
+        //ListViewAdapterUtils.setupComment(holder, post, mAnswersManager)
 
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
-
 
         holder.mAnswers!!.bringToFront()
 
         return convertView
     }
 
-    override fun getItem(position: Int): Any {
-        return mSchema.getPosts()!![position]
-    }
+    abstract fun setupAnswers(holder: CommentAndFilesListViewViewHolder, post: Post)
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
-    }
-
-    override fun getCount(): Int {
-        return mSchema.getPosts()!!.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -257,46 +180,21 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         return ListViewAdapterUtils.ITEM_NO_IMAGES
     }
 
-    override fun iNotifyDataSetChanged() {
-        this.notifyDataSetChanged()
+    override fun getCount(): Int = mSchema.getPosts()!!.size
+
+    override fun getToolbarContainer(): FrameLayout {
+        return FrameLayout(mView.getActivity())
     }
 
-    override fun notifyNewAnswersTextViews() {
-        holders.forEach { it.mAnswers!!.text =
-                TextUtils.getAnswersStringUpperCased(mAnswersManager.mAnswersMap[it.postNumber]!!.size)}
-    }
-
-    override fun getSchema(): BaseJsonSchemaImpl = mSchema
-
-    fun setupAnswers(holder: ViewHolderAndFiles, post: Post) {
-        if (mAnswersManager.mAnswersMap.containsKey(post.getNum())) {
-            val answersCount = mAnswersManager.mAnswersMap[post.getNum()]!!.size
-            if (answersCount == 0) {
-                holder.mAnswers!!.visibility = View.GONE
-                holder.mItemContainer!!.bottomPadding =
-                        mView.getActivity().dimen(R.dimen.post_item_bottom_padding_no_answers)
-            } else {
-                holder.mAnswers!!.visibility = View.VISIBLE
-                holder.mAnswers!!.text = TextUtils.getAnswersStringUpperCased(
-                        mAnswersManager.mAnswersMap[post.getNum()]!!.size)
-                holder.mItemContainer!!.bottomPadding = 0
-            }
-
-            holder.mAnswers!!.setOnClickListener(OnAnswersClickListener(holder.postNumber!!))
-        } else {
-            Log.d(LOG_TAG, "post ${post.getNum()} doesn't exits")
-        }
+    override fun setupActionBarTitle() {
 
     }
 
-    inner class OnAnswersClickListener(val postNumber: String) : View.OnClickListener {
-        override fun onClick(p0: View?) {
-            mAnswersManager.onAnswersClicked(postNumber)
-        }
+    override fun onBackPressedOverridden(): Boolean {
+        return false
     }
 
-    override fun openAnswersDialog() {
+    override fun onThumbnailClicked(file: Files) {
 
     }
-
 }

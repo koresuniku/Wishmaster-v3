@@ -1,4 +1,4 @@
-package com.koresuniku.wishmaster.system
+package com.koresuniku.wishmaster.application
 
 object IntentUtils {
     val BOARD_ID_CODE: String = "board_id"
