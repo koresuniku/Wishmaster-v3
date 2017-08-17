@@ -33,9 +33,8 @@ import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_REMOVE_FROM_
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarWithTabsView
 import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
-import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 
@@ -65,7 +64,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
         Log.d(LOG_TAG, "onCreate:")
         setContentView(R.layout.activity_dashboard_drawer)
 
-        UIVisibilityManager.showSystemUI(this)
+        UiVisibilityManager.showSystemUI(this)
 
         mPreferencesManager = PreferenceUtils
         mDataLoader = DataLoader(this)
@@ -97,7 +96,7 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun loadData() {
-        async { mDataLoader!!.loadData() }
+        doAsync({ mDataLoader!!.loadData() })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -60,7 +60,7 @@ object TextUtils {
         val width = file.getWidth()
         val height = file.getHeight()
         val builder = StringBuilder()
-        val format = getSubstringAfterDot(file.getPath())
+        val format = getSubstringAfterDot(file.getPath()!!)
 
         builder.append(width)
         builder.append("x")
@@ -141,8 +141,8 @@ object TextUtils {
 
         var format: String = ""
         var tempChar: String
-        for (i in file.getPath().length - 1 downTo 0) {
-            tempChar = file.getPath().substring(i, i + 1)
+        for (i in file.getPath()!!.length - 1 downTo 0) {
+            tempChar = file.getPath()!!.substring(i, i + 1)
             if (tempChar != ".") format += tempChar
             else break
         }

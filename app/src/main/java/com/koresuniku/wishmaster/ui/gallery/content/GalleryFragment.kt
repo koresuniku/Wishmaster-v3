@@ -13,14 +13,14 @@ import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapter
 import com.koresuniku.wishmaster.ui.gallery.GalleryPagerAdapterView
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.util.Formats
 
 class GalleryFragment() :
-        Fragment(), SoundVolumeChangeListener, UIVisibilityManager.UiVisibilityChangedCallback {
+        Fragment(), SoundVolumeChangeListener, UiVisibilityManager.UiVisibilityChangedCallback {
     val LOG_TAG: String = GalleryFragment::class.java.simpleName
 
     var mPagerAdapterView: GalleryPagerAdapterView? = null
@@ -78,7 +78,7 @@ class GalleryFragment() :
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mRootView = FrameLayout(container!!.context)
 
-        val format: String = TextUtils.getSubstringAfterDot(mFile!!.getPath())
+        val format: String = TextUtils.getSubstringAfterDot(mFile!!.getPath()!!)
         Log.d(LOG_TAG, "format: $format")
 
         if (Formats.IMAGE_FORMATS.contains(format)) {
@@ -100,7 +100,7 @@ class GalleryFragment() :
     }
 
     fun onClick() {
-        UIVisibilityManager.changeSystemUiVisibility(this)
+        UiVisibilityManager.changeSystemUiVisibility(this)
     }
 
     override fun onUiVisibilityChanged(isShown: Boolean, delegateToOtherFragments: Boolean) {

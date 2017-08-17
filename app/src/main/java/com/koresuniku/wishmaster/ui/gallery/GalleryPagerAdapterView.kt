@@ -1,8 +1,5 @@
 package com.koresuniku.wishmaster.ui.gallery
 
-import android.app.Activity
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
-
 interface GalleryPagerAdapterView {
     fun getAdapter(): GalleryPagerAdapter
 

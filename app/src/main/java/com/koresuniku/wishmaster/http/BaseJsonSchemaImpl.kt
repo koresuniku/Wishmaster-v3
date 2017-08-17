@@ -2,7 +2,7 @@ package com.koresuniku.wishmaster.http
 
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 
-class IBaseJsonSchemaImpl : IBaseJsonSchema {
+class BaseJsonSchemaImpl : IBaseJsonSchema {
     var postsVar: List<Post>? = null
 
     override fun setPosts(posts: List<Post>?) {

@@ -16,17 +16,16 @@ import android.widget.ListView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
-import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
+import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.system.IntentUtils
 import com.koresuniku.wishmaster.system.settings.ResultCodes
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit
 import com.koresuniku.wishmaster.ui.controller.ProgressUnit
 import com.koresuniku.wishmaster.ui.controller.SwipyRefreshLayoutUnit
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
-import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -38,7 +37,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
     private var boardId: String? = null
     var boardName: String? = null
     var threadNumber: String? = null
-    var mSchema: IBaseJsonSchemaImpl? = null
+    var mSchema: BaseJsonSchemaImpl? = null
 
     var mAppBarLayoutUnit: AppBarLayoutUnit? = null
     var mActionBarUnit: ActionBarUnit? = null
@@ -57,7 +56,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         boardName = intent.getStringExtra(IntentUtils.BOARD_NAME_CODE)
         threadNumber = intent.getStringExtra(IntentUtils.THREAD_NUMBER_CODE)
 
-        UIVisibilityManager.showSystemUI(this)
+        UiVisibilityManager.showSystemUI(this)
 
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
         mActionBarUnit = ActionBarUnit(this, false, true)
@@ -138,7 +137,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
         return mSingleThreadListViewUnit!!.mListViewAdapter!!
     }
 
-    override fun getSchema(): IBaseJsonSchemaImpl {
+    override fun getSchema(): BaseJsonSchemaImpl {
         return this.mSchema!!
     }
 
@@ -211,18 +210,21 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
 
         if (mSchema != null) {
             mNewPostsNotifier!!.notifyNewPosts(schema[0].getPosts()!!.size)
-            if ((schema[0] as IBaseJsonSchemaImpl).getPosts()!!.size != mSchema!!.getPosts()!!.size)
-                this.mSchema = schema[0] as IBaseJsonSchemaImpl
-        } else this.mSchema = schema[0] as IBaseJsonSchemaImpl
+            if ((schema[0] as BaseJsonSchemaImpl).getPosts()!!.size != mSchema!!.getPosts()!!.size) {
+                this.mSchema = schema[0] as BaseJsonSchemaImpl
+            }
+        } else this.mSchema = schema[0] as BaseJsonSchemaImpl
 
         mProgressUnit!!.hideProgressYoba()
 
         if (!mSingleThreadListViewUnit!!.adapterIsCreated()) {
             mSingleThreadListViewUnit!!.createListViewAdapter()
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema = this.mSchema!!
         } else {
             mSwipyRefreshLayoutUnit!!.onDataLoaded(
                     mNewPostsNotifier!!.previousPostsCount != schema[0].getPosts()!!.size)
-            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.appointAnswersToPosts()
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema = this.mSchema!!
+            mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersHolder.assignAnswersToPosts()
         }
 
         setupActionBarTitle()

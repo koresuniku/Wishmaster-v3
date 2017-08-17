@@ -7,7 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import com.koresuniku.wishmaster.system.DeviceUtils
 
-object UIVisibilityManager {
+object UiVisibilityManager {
     var isSystemUiShown: Boolean = true
 
     interface UiVisibilityChangedCallback {

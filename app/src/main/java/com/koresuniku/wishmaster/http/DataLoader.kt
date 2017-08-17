@@ -55,7 +55,7 @@ class DataLoader(private val view: LoadDataView) {
         val call = HttpClient.singleThreadService.getPosts("get_thread", boardId, threadNumber, 0)
         call.enqueue(object : Callback<List<Post>> {
             override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                val schema: IBaseJsonSchema = IBaseJsonSchemaImpl()
+                val schema: IBaseJsonSchema = BaseJsonSchemaImpl()
                 schema.setPosts(response.body())
                 view.onDataLoaded(listOf(schema))
 

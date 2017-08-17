@@ -1,8 +1,6 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
-import android.app.Activity
 import android.content.res.Configuration
-import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
 import android.util.Log
@@ -17,7 +15,6 @@ import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.system.PreferenceUtils
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
@@ -42,7 +39,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         ClickableAdapter, ListViewAdapterUtils.OnThumbnailClickedCallback {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
-    var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
 
     val mGalleryPresenter = GalleryPresenter(this)
@@ -60,46 +56,6 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         var mSubjectTextView: TextView? = null
         var mCommentTextView: NoScrollTextView? = null
         var mPostsAndFilesInfo: TextView? = null
-
-//        override fun showImageOrVideo(file: Files) {
-//            mView.notifyGalleryShown()
-//
-//            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
-//            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
-//            mGalleryActionBarUnit.setupTitleAndSubtitle(file, files!!.indexOf(file), files!!.count())
-//
-//            mGalleryPager = mView.getViewPager()
-//            mGalleryPagerAdapter = GalleryPagerAdapter(
-//                    mView.getAppCompatActivity().supportFragmentManager, this,
-//                    files!!, files!!.indexOf(file))
-//            mGalleryPager!!.adapter = mGalleryPagerAdapter
-//            mGalleryPager!!.offscreenPageLimit = 1
-//            mGalleryPager!!.currentItem = files!!.indexOf(file)
-//            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
-//            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
-//        }
-//
-//        override fun getGalleryActionBar(): GalleryActionBarUnit {
-//            return mGalleryActionBarUnit
-//        }
-//
-//        override fun onGalleryHidden() {
-//            mView.notifyGalleryHidden()
-//        }
-//
-//        override fun getViewPager(): ViewPager {
-//            return mGalleryPager!!
-//        }
-//
-//        override fun getActivity(): Activity {
-//            return mView.getActivity()
-//        }
-//
-//        override fun onPageChanged(newPosition: Int) {
-//            mGalleryPagerAdapter!!.onPageChanged(newPosition)
-//            val file = files!![newPosition]
-//            mGalleryActionBarUnit.onPageChanged(file, newPosition, files!!.count())
-//        }
 
         init {
             files = ArrayList()
@@ -126,17 +82,11 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         mView.openThread(threadNumber)
     }
 
-    override fun getToolbarContainer(): FrameLayout {
-        return mView.getActivity().find<FrameLayout>(R.id.gallery_toolbar_container)
-    }
+    override fun getToolbarContainer(): FrameLayout = mView.getActivity().find(R.id.gallery_toolbar_container)
 
-    override fun getAppCompatActivity(): AppCompatActivity {
-        return mView.getAppCompatActivity()
-    }
+    override fun getAppCompatActivity(): AppCompatActivity = mView.getAppCompatActivity()
 
-    override fun setupActionBarTitle() {
-
-    }
+    override fun setupActionBarTitle() {}
 
     fun onConfigurationChanged(configuration: Configuration) = mGalleryPresenter.onConfigurationChanged(configuration)
 
@@ -183,6 +133,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mCommentTextView = itemView.findViewById(R.id.post_comment) as NoScrollTextView
         holder.mPostsAndFilesInfo = itemView.findViewById(R.id.answers) as TextView
         if (viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
+            holder.imageAndSummaryContainer = itemView.findViewById(R.id.image_and_summary_container) as RelativeLayout
             holder.image = itemView.findViewById(R.id.thread_image) as ImageView
             holder.webmImageView = itemView.findViewById(R.id.webm_imageview) as ImageView
             holder.summary = itemView.findViewById(R.id.image_summary) as TextView
@@ -234,9 +185,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         }
     }
 
-    override fun getViewTypeCount(): Int {
-        return 3
-    }
+    override fun getViewTypeCount(): Int = 3
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
@@ -259,16 +208,16 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
         Log.d(LOG_TAG, "holders.size: " + holders.size)
 
-        holder.mItemContainer!!.setOnClickListener { mView.openThread(thread.getNum()) }
+                holder.mItemContainer!!.setOnClickListener { mView.openThread(thread.getNum()) }
 
-        holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
+                holder.mItemContainer!!.setOnLongClickListener(object : View.OnLongClickListener {
             override fun onLongClick(v: View?): Boolean {
                 mView.showPostDialog(position)
                 return false
             }
         })
 
-        if (Dvach.disableSubject.contains(mView.getBoardId()) || thread.getSubject().isEmpty()) {
+                if (Dvach.disableSubject.contains(mView.getBoardId()) || thread.getSubject().isEmpty()) {
             holder.mSubjectTextView!!.visibility = View.GONE
             holder.mItemContainer!!.topPadding =
                     mView.getActivity().dimen(R.dimen.post_item_side_padding)

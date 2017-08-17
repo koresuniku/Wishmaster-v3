@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
-import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewAdapter
 import org.jetbrains.anko.find
 
 class GalleryViewImpl(val mView: ActionBarView) : IGalleryView {
@@ -26,7 +25,7 @@ class GalleryViewImpl(val mView: ActionBarView) : IGalleryView {
     override fun showImageOrVideo(filesList: List<Files>, file: Files) {
         this.filesList = filesList
 
-        UIVisibilityManager.setBarsTranslucent(mView.getAppCompatActivity(), true)
+        UiVisibilityManager.setBarsTranslucent(mView.getAppCompatActivity(), true)
         mGalleryLayoutContainer.visibility = View.VISIBLE
 
         val currentPosition = filesList.indexOf(file)
@@ -52,7 +51,7 @@ class GalleryViewImpl(val mView: ActionBarView) : IGalleryView {
 
     override fun onBackPressed(): Boolean {
         if (mGalleryLayoutContainer.visibility == View.VISIBLE) {
-            UIVisibilityManager.setBarsTranslucent(mView.getAppCompatActivity(), false)
+            UiVisibilityManager.setBarsTranslucent(mView.getAppCompatActivity(), false)
             mGalleryLayoutContainer.visibility = View.GONE
 
             mGalleryPager.clearOnPageChangeListeners()

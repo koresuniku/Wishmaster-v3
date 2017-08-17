@@ -9,7 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 
-object UIUtils {
+object UiUtils {
 
     fun setImageViewColorFilter(imageView: ImageView, color: Int) {
         imageView.setColorFilter(

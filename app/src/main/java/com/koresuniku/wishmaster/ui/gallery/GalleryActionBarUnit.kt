@@ -1,24 +1,19 @@
 package com.koresuniku.wishmaster.ui.gallery
 
 import android.content.res.Configuration
-import android.os.Handler
-import android.util.Log
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.DeviceUtils
-import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import org.jetbrains.anko.configuration
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
-import org.w3c.dom.Text
 
 class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, false) {
     override var LOG_TAG: String = GalleryActionBarUnit::class.java.simpleName
@@ -69,7 +64,7 @@ class GalleryActionBarUnit(mView: ActionBarView) : ActionBarUnit(mView, true, fa
         val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
                 mActivityToolbarContainer.layoutParams.width,
                 mActivityToolbarContainer.layoutParams.height)
-        params.setMargins(0, 0, UIUtils.convertDpToPixel(
+        params.setMargins(0, 0, UiUtils.convertDpToPixel(
                 mActivityToolbarContainer.dimen(R.dimen.navigation_bar_size).toFloat()).toInt() / 2, 0)
         mActivityToolbarContainer.layoutParams = params
     }

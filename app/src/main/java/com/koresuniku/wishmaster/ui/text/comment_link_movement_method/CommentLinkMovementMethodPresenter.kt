@@ -3,18 +3,15 @@ package com.koresuniku.wishmaster.ui.text.comment_link_movement_method
 import android.content.Intent
 import android.net.Uri
 import android.text.Spannable
-import android.text.Spanned
 import android.text.style.CharacterStyle
 import android.text.style.URLSpan
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.TextView
 import com.koresuniku.wishmaster.system.Constants
-import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.text.LinkHighlightSpan
 import com.koresuniku.wishmaster.ui.text.QuoteSpan
 import com.koresuniku.wishmaster.ui.text.SpoilerSpan
-import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan
 import java.util.regex.Pattern
 
 class CommentLinkMovementMethodPresenter(val linkMovementMethod: ICommentLinkMovementMethod) :

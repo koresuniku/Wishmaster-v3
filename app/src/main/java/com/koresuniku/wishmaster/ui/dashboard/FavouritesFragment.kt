@@ -19,7 +19,7 @@ import com.koresuniku.wishmaster.database.BoardsUtils
 import com.koresuniku.wishmaster.database.DatabaseContract
 import com.koresuniku.wishmaster.http.boards_api.model.BaseBoardSchema
 import com.koresuniku.wishmaster.system.PreferenceUtils
-import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.ItemTouchHelperAdapter
 import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.OnStartDragListener
 import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.SimpleDividerItemDecoration
@@ -63,7 +63,7 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
         if (mRecyclerViewAdapter != null) mRecyclerViewAdapter!!.notifyDataSetChanged()
         else {
             mRecyclerView!!.addItemDecoration(SimpleDividerItemDecoration(mView.getActivity().resources))
-            mRecyclerView!!.layoutManager = LinearLayoutManager(mView.getActivity()) as RecyclerView.LayoutManager?
+            mRecyclerView!!.layoutManager = LinearLayoutManager(mView.getActivity())
             mRecyclerViewAdapter = RecyclerViewAdapter(this)
             mRecyclerView!!.adapter = mRecyclerViewAdapter
 
@@ -179,7 +179,7 @@ class FavouritesFragment(val mView: FavouritesFragmentView) : Fragment(), OnStar
 
             holder!!.boardNameTextView.text = getTextForTextView(position)
 
-            UIUtils.setImageViewColorFilter(holder.dragAndDropDots, android.R.color.darker_gray)
+            UiUtils.setImageViewColorFilter(holder.dragAndDropDots, android.R.color.darker_gray)
             holder.dragAndDropDots.setOnLongClickListener({
                 mOnStartDragListener.onStartDrag(holder); false
             })

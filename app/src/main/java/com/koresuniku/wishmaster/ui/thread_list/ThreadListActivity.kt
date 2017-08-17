@@ -17,16 +17,14 @@ import com.koresuniku.wishmaster.http.DataLoader
 import com.koresuniku.wishmaster.http.IBaseJsonSchema
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.system.IntentUtils
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import org.jetbrains.anko.find
-import android.widget.ScrollView
 import com.koresuniku.wishmaster.system.DeviceUtils
 import com.koresuniku.wishmaster.system.settings.ResultCodes
 import com.koresuniku.wishmaster.system.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
-import com.koresuniku.wishmaster.ui.single_thread.answers.ScrollsHolder
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
 
@@ -59,7 +57,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         boardId = intent.getStringExtra(IntentUtils.BOARD_ID_CODE)
         boardName = intent.getStringExtra(IntentUtils.BOARD_NAME_CODE)
 
-        UIVisibilityManager.showSystemUI(this)
+        UiVisibilityManager.showSystemUI(this)
 
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
         mActionBarUnit = ActionBarUnit(this, false, false)

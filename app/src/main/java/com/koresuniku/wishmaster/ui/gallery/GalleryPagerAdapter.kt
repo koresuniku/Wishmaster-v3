@@ -8,7 +8,7 @@ import android.view.View
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.system.CacheUtils
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.gallery.content.GalleryFragment
 
 class GalleryPagerAdapter(fragmentManager: FragmentManager, val galleryPagerView: GalleryPagerView,
@@ -74,7 +74,7 @@ class GalleryPagerAdapter(fragmentManager: FragmentManager, val galleryPagerView
 
     fun onBackPressed() {
         galleryPagerView.onGalleryHidden()
-        UIVisibilityManager.showSystemUI(galleryPagerView.getActivity())
+        UiVisibilityManager.showSystemUI(galleryPagerView.getActivity())
         mGalleryFragments.forEach { it.component2().onDestroyItem() }
         mGalleryFragments.clear()
         CacheUtils.trimCache(galleryPagerView.getViewPager().context)

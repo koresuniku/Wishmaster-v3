@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
+import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import org.jetbrains.anko.find
 import java.util.regex.Matcher
@@ -26,7 +26,7 @@ class AnswersManager(val mView: AnswersManagerView) {
     val LOG_TAG: String = AnswersManager::class.java.simpleName
 
     val mAnswersMap: HashMap<String, ArrayList<String>> = HashMap()
-    var mPreviousSchema: IBaseJsonSchemaImpl? = null
+    var mPreviousSchema: BaseJsonSchemaImpl? = null
     var mViews: ArrayList<ArrayList<View>>? = ArrayList()
     var mViewsScrolls: ArrayList<ScrollsHolder>? = ArrayList()
 
@@ -46,13 +46,13 @@ class AnswersManager(val mView: AnswersManagerView) {
         }
     }
 
-    fun appointAnswersToPosts() {
+    fun assignAnswersToPosts() {
         val pattern: Pattern = Pattern.compile(">>[0-9]+")
         var matcher: Matcher
-        val schema: IBaseJsonSchemaImpl
+        val schema: BaseJsonSchemaImpl
 
         if (mPreviousSchema != null) {
-            schema = IBaseJsonSchemaImpl()
+            schema = BaseJsonSchemaImpl()
             schema.setPosts(mView.getSchema().getPosts()!!.subList(
                     mPreviousSchema!!.getPosts()!!.size, mView.getSchema().getPosts()!!.size))
             //Log.d(LOG_TAG, "new posts on schema: " + schema.getPosts()!!.size)
@@ -82,7 +82,7 @@ class AnswersManager(val mView: AnswersManagerView) {
         if (mPreviousSchema != null) mView.notifyNewAnswersTextViews()
     }
 
-    fun savePreviousSchema(schema: IBaseJsonSchemaImpl) {
+    fun savePreviousSchema(schema: BaseJsonSchemaImpl) {
         mPreviousSchema = schema
     }
 
@@ -185,7 +185,7 @@ class AnswersManager(val mView: AnswersManagerView) {
         val viewsList: List<View> = mViews!![mViews!!.size - 1]
 
         if (mAnswersListViewAdapter == null) {
-            mAnswersListViewAdapter = AnswersListViewAdapter(viewsList)
+            //mAnswersListViewAdapter = AnswersListViewAdapter(viewsList)
             mDialogListView.adapter = mAnswersListViewAdapter
             mDialogListView.setOnScrollListener(object : AbsListView.OnScrollListener {
                 override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {}
@@ -203,7 +203,7 @@ class AnswersManager(val mView: AnswersManagerView) {
             mStubDialog.show()
         } else {
             mDialog.dismiss()
-            mAnswersListViewAdapter!!.setViewsList(viewsList)
+            //mAnswersListViewAdapter!!.setViewsList(viewsList)
             mDialog.show()
             if (!newAnswer) { mDialogListView.setSelectionFromTop(
                         mViewsScrolls!![mViewsScrolls!!.size - 1].firstVisiblePosition!!,

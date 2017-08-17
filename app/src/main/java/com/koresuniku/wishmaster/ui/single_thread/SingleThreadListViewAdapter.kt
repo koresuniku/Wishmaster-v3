@@ -3,64 +3,45 @@ package com.koresuniku.wishmaster.ui.single_thread
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.text.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.*
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.IBaseJsonSchemaImpl
+import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.ui.UIUtils
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.DialogManager
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import com.koresuniku.wishmaster.ui.gallery.*
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManagerView
-import com.koresuniku.wishmaster.ui.text.*
 import com.koresuniku.wishmaster.ui.text.TextUtils
-import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan2
-import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
 import com.koresuniku.wishmaster.ui.widget.NoScrollTextView
-import com.pixplicity.htmlcompat.HtmlCompat
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.find
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 
 
-open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
+open class SingleThreadListViewAdapter(open val mView: SingleThreadListViewView) :
         BaseAdapter(), INotifyableListViewAdapter, AnswersManagerView, IDialogAdapter, ActionBarView,
         DialogManager.GalleryVisibilityListener, AppCompatActivityView,
         ListViewAdapterUtils.OnThumbnailClickedCallback {
-    val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
+    open val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
-    val ITEM_NO_IMAGES: Int = 0
-    val ITEM_SINGLE_IMAGE: Int = 1
-    val ITEM_MULTIPLE_IMAGES: Int = 2
+    var mSchema: BaseJsonSchemaImpl = mView.getSchema()
 
     val holders: ArrayList<ViewHolderAndFiles> = ArrayList()
     val mAnswersHolder: AnswersManager = AnswersManager(this)
 
     val mGalleryPresenter = GalleryPresenter(this)
 
-//    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
-//    var mGalleryPager: ViewPager? = null
-//    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
-//    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
-
     init {
         mAnswersHolder.initAnswersMap()
-        mAnswersHolder.appointAnswersToPosts()
+        mAnswersHolder.assignAnswersToPosts()
     }
 
     override fun onThumbnailClicked(file: Files) {
@@ -73,60 +54,16 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         var mAnswers: TextView? = null
         var postNumber: String? = null
 
-//        override fun showImageOrVideo(file: Files) {
-//            mAnswersHolder.dismissDialogs()
-//
-//            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), true)
-//            mView.getGalleryLayoutContainer().visibility = View.VISIBLE
-//
-//            val filesList = getFilesList()
-//            val currentPosition = filesList.indexOf(file)
-//            mGalleryActionBarUnit.setupTitleAndSubtitle(file, currentPosition, filesList.count())
-//
-//            mGalleryPager = mView.getViewPager()
-//            mGalleryPagerAdapter = GalleryPagerAdapter(
-//                    mView.getAppCompatActivity().supportFragmentManager, this,
-//                    filesList, currentPosition)
-//            mGalleryPager!!.adapter = mGalleryPagerAdapter
-//            mGalleryPager!!.offscreenPageLimit = 1
-//            mGalleryPager!!.currentItem = currentPosition
-//            mGalleryOnPageChangeListener = GalleryOnPageChangeListener(this)
-//            mGalleryPager!!.addOnPageChangeListener(mGalleryOnPageChangeListener)
-//        }
-//
-//        override fun getGalleryActionBar(): GalleryActionBarUnit {
-//            return mGalleryActionBarUnit
-//        }
-//
-//        override fun onGalleryHidden() {
-//            mAnswersHolder.showDialogs()
-//        }
-//
-//        override fun getViewPager(): ViewPager {
-//            return mGalleryPager!!
-//        }
-
-        override fun getActivity(): Activity {
-            return mView.getActivity()
-        }
-
-//        override fun onPageChanged(newPosition: Int) {
-//            mGalleryPagerAdapter!!.onPageChanged(newPosition)
-//            val filesList = getFilesList()
-//            val currentPosition = newPosition
-//            val file = filesList[newPosition]
-//            mGalleryActionBarUnit.onPageChanged(file, currentPosition, filesList.count())
-//        }
-
+        override fun getActivity(): Activity = mView.getActivity()
 
         init {
             files = ArrayList()
         }
     }
 
-    fun getFilesList(): List<Files> {
+    private fun getFilesList(): List<Files> {
         val filesList: ArrayList<Files> = ArrayList()
-        for (post in mView.getSchema().getPosts()!!) {
+        for (post in mSchema.getPosts()!!) {
             filesList += post.getFiles()
         }
         return filesList
@@ -160,40 +97,23 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
 
     }
 
-    override fun onBackPressedOverridden(): Boolean = //        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
-//            UIVisibilityManager.setBarsTranslucent(mView.getActivity(), false)
-//            mView.getGalleryLayoutContainer().visibility = View.GONE
-//
-//            mGalleryPager!!.clearOnPageChangeListeners()
-//            mGalleryPagerAdapter!!.onBackPressed()
-//            return true
-//        }
-//
-//
-//        return false
-            mGalleryPresenter.onBackPressed()
+    override fun onBackPressedOverridden(): Boolean = mGalleryPresenter.onBackPressed()
 
     fun onConfigurationChanged(configuration: Configuration) {
-//        if (mView.getGalleryLayoutContainer().visibility == View.VISIBLE) {
-//            mGalleryActionBarUnit.onConfigurationChanged(configuration)
-//            mGalleryActionBarUnit.setupTitleAndSubtitle(mGalleryActionBarUnit.mFile!!,
-//                mGalleryActionBarUnit.mIndexOfFile!!, mGalleryActionBarUnit.mFilesCount!!)
-//        }
-
         mGalleryPresenter.onConfigurationChanged(configuration)
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
         when (getItemViewType(position)) {
-            ITEM_NO_IMAGES -> {
+            ListViewAdapterUtils.ITEM_NO_IMAGES -> {
                 return LayoutInflater.from(mView.getActivity())
                         .inflate(R.layout.post_item_no_images, parent, false)
             }
-            ITEM_SINGLE_IMAGE -> {
+            ListViewAdapterUtils.ITEM_SINGLE_IMAGE -> {
                 return LayoutInflater.from(mView.getActivity())
                         .inflate(R.layout.post_item_single_image, parent, false)
             }
-            ITEM_MULTIPLE_IMAGES -> {
+            ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES -> {
                 return LayoutInflater.from(mView.getActivity())
                         .inflate(R.layout.post_item_multiple_images, parent, false)
             }
@@ -209,13 +129,13 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
         holder.mNumberAndTimeInfo = itemView.findViewById(R.id.post_number_and_time_info) as TextView
         holder.mCommentTextView = itemView.findViewById(R.id.post_comment) as NoScrollTextView
         holder.mAnswers = itemView.findViewById(R.id.answers) as TextView
-        if (viewType == ITEM_SINGLE_IMAGE) {
+        if (viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
             holder.imageAndSummaryContainer = itemView.findViewById(R.id.image_and_summary_container) as RelativeLayout
             holder.image = itemView.findViewById(R.id.post_image) as ImageView
             holder.webmImageView = itemView.findViewById(R.id.webm_imageview) as ImageView
             holder.summary = itemView.findViewById(R.id.image_summary) as TextView
         }
-        if (viewType == ITEM_MULTIPLE_IMAGES) {
+        if (viewType == ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES) {
             holder.imageAndSummaryContainer1 = itemView.findViewById(R.id.image_with_summary_container_1) as RelativeLayout
             holder.imageAndSummaryContainer2 = itemView.findViewById(R.id.image_with_summary_container_2) as RelativeLayout
             holder.imageAndSummaryContainer3 = itemView.findViewById(R.id.image_with_summary_container_3) as RelativeLayout
@@ -259,7 +179,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     }
 
     open fun getPost(position: Int): Post {
-        return mView.getSchema().getPosts()!![position]
+        return mSchema.getPosts()!![position]
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -307,7 +227,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     override fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         val holder: ViewHolderAndFiles
-        val post: Post = mView.getSchema().getPosts()!![position]
+        val post: Post = mSchema.getPosts()!![position]
 
         if (convertView == null) {
             convertView = inflateCorrectConvertView(position, parent)
@@ -341,7 +261,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     }
 
     override fun getItem(position: Int): Any {
-        return mView.getSchema().getPosts()!![position]
+        return mSchema.getPosts()!![position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -349,15 +269,15 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
     }
 
     override fun getCount(): Int {
-        return mView.getSchema().getPosts()!!.size
+        return mSchema.getPosts()!!.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        val size = mView.getSchema().getPosts()!![position].getFiles().size
-        if (size == 0) return ITEM_NO_IMAGES
-        if (size == 1) return ITEM_SINGLE_IMAGE
-        if (size > 1) return ITEM_MULTIPLE_IMAGES
-        return ITEM_NO_IMAGES
+        val size = mSchema.getPosts()!![position].getFiles().size
+        if (size == 0) return ListViewAdapterUtils.ITEM_NO_IMAGES
+        if (size == 1) return ListViewAdapterUtils.ITEM_SINGLE_IMAGE
+        if (size > 1) return ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES
+        return ListViewAdapterUtils.ITEM_NO_IMAGES
     }
 
     override fun iNotifyDataSetChanged() {
@@ -369,8 +289,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView) :
                 TextUtils.getAnswersStringUpperCased(mAnswersHolder.mAnswersMap[it.postNumber]!!.size)}
     }
 
-    override fun getSchema(): IBaseJsonSchemaImpl {
-        return mView.getSchema()
+    override fun getSchema(): BaseJsonSchemaImpl {
+        return mSchema
     }
 
     fun setupAnswers(holder: ViewHolderAndFiles, post: Post) {

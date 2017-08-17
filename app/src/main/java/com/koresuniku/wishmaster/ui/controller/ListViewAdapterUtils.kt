@@ -13,22 +13,22 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan2
 import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
-import com.koresuniku.wishmaster.ui.thread_list.ThreadListListViewAdapter
 import com.koresuniku.wishmaster.util.Formats
 import com.pixplicity.htmlcompat.HtmlCompat
-import org.jetbrains.anko.doAsync
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import java.security.acl.LastOwnerException
 
 object ListViewAdapterUtils {
+    val LOG_TAG: String = ListViewAdapterUtils::class.java.simpleName
 
     val ITEM_NO_IMAGES: Int = 0
     val ITEM_SINGLE_IMAGE: Int = 1
@@ -65,7 +65,7 @@ object ListViewAdapterUtils {
 
                 var end: Int = 0
                 var overallHeightOfLines: Int = 0
-                val imageContainerHeight: Int = UIUtils.convertDpToPixel(
+                val imageContainerHeight: Int = UiUtils.convertDpToPixel(
                         CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder)).toInt()
                 val commentParts = spannable.toString().split("\r")
 
@@ -126,8 +126,7 @@ object ListViewAdapterUtils {
         if (filesSize != 0) {
             for (file in holder.files!!) {
                 if (filesSize == 1) {
-                    setupImageContainer(callback, activity, holder, holder.image!!, holder.webmImageView!!,
-                            holder.summary!!, file, viewModeIsDialog, reloadImages)
+                    setupImageContainer(callback, activity, holder, holder.image!!, holder.webmImageView!!, holder.summary!!, file, viewModeIsDialog, reloadImages)
                 }
                 if (filesSize > 1) {
                     when (holder.files!!.indexOf(file)) {
@@ -320,7 +319,7 @@ object ListViewAdapterUtils {
                             holder: FilesListViewViewHolder, image: ImageView, webmImage: ImageView,
                             summary: TextView, file: Files, viewModeIsDialog: Boolean,
                             reloadImages: Boolean) {
-        val path: String = file.getPath()
+        val path: String = file.getPath()!!
 
         if (Formats.VIDEO_FORMATS.contains(TextUtils.getSubstringAfterDot(path))) {
             webmImage.visibility = View.VISIBLE
@@ -334,24 +333,21 @@ object ListViewAdapterUtils {
         if (reloadImages) loadImageThumbnail(activity, image, file)
         image.setOnClickListener({
             callback.onThumbnailClicked(file)
-            //holder.showImageOrVideo(file)
         })
     }
 
     fun setCorrectImageSize(activity: Activity, image: ImageView, file: Files, viewModeIsDialog: Boolean) {
-        val width: Int = UIUtils.convertDpToPixel(
+        val width: Int = UiUtils.convertDpToPixel(
                 ImageManager.computeImageWidthInDp(activity, viewModeIsDialog)).toInt()
-        val minHeight: Int = UIUtils.convertDpToPixel(
+        val minHeight: Int = UiUtils.convertDpToPixel(
                 ImageManager.getPreferredMinimumImageHeightInDp(activity)).toInt()
-        val maxHeight: Int = UIUtils.convertDpToPixel(
+        val maxHeight: Int = UiUtils.convertDpToPixel(
                 ImageManager.getPreferredMaximumImageHeightInDp(activity)).toInt()
 
         val widthInt = Integer.parseInt(file.getWidth())
         val heightInt = Integer.parseInt(file.getHeight())
         val aspectRatio = widthInt.toFloat() / heightInt.toFloat()
         val finalHeight = Math.round(width / aspectRatio)
-
-        image.contentDescription = finalHeight.toString()
 
         image.layoutParams.width = width
 
@@ -365,7 +361,7 @@ object ListViewAdapterUtils {
     }
 
     fun computeImageHeightInPx(activity: Activity, file: Files, viewModeIsDialog: Boolean): Int {
-        val width: Int = UIUtils.convertDpToPixel(
+        val width: Int = UiUtils.convertDpToPixel(
                 ImageManager.computeImageWidthInDp(activity, viewModeIsDialog)).toInt()
 
         val widthInt = Integer.parseInt(file.getWidth())
@@ -377,7 +373,7 @@ object ListViewAdapterUtils {
     }
 
     fun setCorrectVideoImageSize(activity: Activity, image: ImageView, viewModeIsDialog: Boolean) {
-        val imageWidth = UIUtils.convertDpToPixel(
+        val imageWidth = UiUtils.convertDpToPixel(
                 ImageManager.computeImageWidthInDp(activity, viewModeIsDialog)).toInt()
         val size = imageWidth / 2
         image.layoutParams.width = size

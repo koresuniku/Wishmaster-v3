@@ -53,7 +53,7 @@ class Files {
         this.width = width
     }
 
-    fun getPath(): String {
+    fun getPath(): String? {
         return path!!
     }
 
@@ -61,7 +61,7 @@ class Files {
         this.path = path
     }
 
-    fun getThumbnail(): String {
+    fun getThumbnail(): String? {
         return thumbnail!!
     }
 
@@ -69,7 +69,7 @@ class Files {
         this.thumbnail = thumbnail
     }
 
-    fun getSize(): String {
+    fun getSize(): String? {
         return size!!
     }
 
@@ -78,11 +78,8 @@ class Files {
     }
 
     fun getDuration(): String {
-        if (duration.isNullOrBlank()) {
-            Log.d("File", "duration is null")
-            return ""
-        }
-        return this.duration!!
+        return if (duration.isNullOrBlank()) ""
+        else this.duration!!
     }
 
     fun setDuration(duration: String) {

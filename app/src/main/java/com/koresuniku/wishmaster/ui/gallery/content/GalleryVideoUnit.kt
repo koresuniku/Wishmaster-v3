@@ -16,8 +16,8 @@ import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.system.App
 import com.koresuniku.wishmaster.system.DeviceUtils
-import com.koresuniku.wishmaster.ui.UIUtils
-import com.koresuniku.wishmaster.ui.UIVisibilityManager
+import com.koresuniku.wishmaster.ui.UiUtils
+import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.dimen
 
@@ -66,7 +66,7 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         mProgressBar = mVideoLayout!!.find(R.id.progressBar)
         createVideoView()
         mVideoControlsContainer = mVideoLayout!!.find(R.id.video_controls_container)
-        if (!UIVisibilityManager.isSystemUiShown) mVideoControlsContainer!!.visibility = View.GONE
+        if (!UiVisibilityManager.isSystemUiShown) mVideoControlsContainer!!.visibility = View.GONE
 
         mVideoView!!.setOnPreparedListener(this)
         mVideoView!!.setOnClickListener(this)
@@ -222,11 +222,11 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
         if (DeviceUtils.sdkIsKitkatOrHigher() && DeviceUtils.deviceHasNavigationBar(mFragment.context)) {
             when (configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    mVideoControlsLayout!!.setPadding(0, 0, 0, UIUtils.convertDpToPixel(
+                    mVideoControlsLayout!!.setPadding(0, 0, 0, UiUtils.convertDpToPixel(
                             mFragment.dimen(R.dimen.navigation_bar_size).toFloat()).toInt() / 2)
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    mVideoControlsLayout!!.setPadding(0, 0, UIUtils.convertDpToPixel(
+                    mVideoControlsLayout!!.setPadding(0, 0, UiUtils.convertDpToPixel(
                             mFragment.dimen(R.dimen.navigation_bar_size).toFloat()).toInt() / 2, 0)
                 }
             }

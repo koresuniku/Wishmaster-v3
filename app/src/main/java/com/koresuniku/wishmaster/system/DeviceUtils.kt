@@ -8,7 +8,7 @@ import android.os.Build
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.ViewConfiguration
-import com.koresuniku.wishmaster.ui.UIUtils
+import com.koresuniku.wishmaster.ui.UiUtils
 
 object DeviceUtils {
 
@@ -38,7 +38,7 @@ object DeviceUtils {
         if (activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             width = size.y
         }
-        return UIUtils.convertPixelsToDp(width.toFloat())
+        return UiUtils.convertPixelsToDp(width.toFloat())
     }
 
     fun getMaximumDisplayWidthInPx(activity: Activity): Int {
