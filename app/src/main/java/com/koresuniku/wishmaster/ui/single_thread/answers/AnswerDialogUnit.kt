@@ -34,6 +34,8 @@ class AnswerDialogUnit(private val mView: SingleThreadListViewView,
         mDialog.setOnKeyListener(mAnswersManager.OnLongKeyListener())
     }
 
+    fun getDialogListView(): ListView = mDialogListView
+
     fun showDialog() {
         mDialog.show()
     }

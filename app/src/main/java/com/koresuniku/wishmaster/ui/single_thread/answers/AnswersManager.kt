@@ -34,6 +34,8 @@ class AnswersManager(val mView: AnswersManagerView) {
     private val mAnswerDialogStack: ArrayList<AnswerDialogUnit> = ArrayList()
     private val mBackgroundTintDialog: Dialog = Dialog(mView.getActivity())
 
+    private lateinit var mCurrentDialogScrollHolder: ScrollsHolder
+
     init {
         EventBus.getDefault().register(this)
     }
@@ -44,6 +46,18 @@ class AnswersManager(val mView: AnswersManagerView) {
             LifecycleEvent.onStart -> EventBus.getDefault().register(this)
             LifecycleEvent.onStop -> EventBus.getDefault().unregister(this)
         }
+    }
+
+    fun saveCurrentDialogScroll() {
+        val lastDialogListView = mAnswerDialogStack.last().getDialogListView()
+        val c = lastDialogListView.getChildAt(0)
+        mCurrentDialogScrollHolder = ScrollsHolder(lastDialogListView.firstVisiblePosition, c.top)
+    }
+
+    fun restoreCurrentDialogScroll() {
+        val lastDialogListView = mAnswerDialogStack.last().getDialogListView()
+        lastDialogListView.setSelectionFromTop(
+                mCurrentDialogScrollHolder.firstVisiblePosition!!, mCurrentDialogScrollHolder.top!!)
     }
 
     fun initAnswersMap() {
@@ -91,8 +105,10 @@ class AnswersManager(val mView: AnswersManagerView) {
                 GalleryVisibilityEvent.IS_HIDDEN -> {
                     mBackgroundTintDialog.show()
                     mAnswerDialogStack.forEach { it.showDialog() }
+                    restoreCurrentDialogScroll()
                 }
                 GalleryVisibilityEvent.IS_SHOWN -> {
+                    saveCurrentDialogScroll()
                     mAnswerDialogStack.forEach { it.closeDialog() }
                     mBackgroundTintDialog.dismiss()
                 }
