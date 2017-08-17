@@ -42,26 +42,17 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         ClickableAdapter, ListViewAdapterUtils.OnThumbnailClickedCallback {
     val LOG_TAG: String = ThreadListListViewAdapter::class.java.simpleName
 
-    val ITEM_NO_IMAGES: Int = 0
-    val ITEM_SINGLE_IMAGE: Int = 1
-    val ITEM_MULTIPLE_IMAGES: Int = 2
-
     var holdersCounter = 0
     val holders: ArrayList<ViewHolder> = ArrayList()
 
     val mGalleryPresenter = GalleryPresenter(this)
-
-//    val mGalleryActionBarUnit: GalleryActionBarUnit = GalleryActionBarUnit(this)
-//    var mGalleryPager: ViewPager? = null
-//    var mGalleryPagerAdapter: GalleryPagerAdapter? = null
-//    var mGalleryOnPageChangeListener: GalleryOnPageChangeListener? = null
 
     override fun iNotifyDataSetChanged() {
         this.notifyDataSetChanged()
     }
 
     override fun onThumbnailClicked(file: Files) {
-
+        mGalleryPresenter.showImageOrVideo(getFilesList(file), file)
     }
 
     inner class ViewHolder : FilesListViewViewHolder() {
@@ -116,6 +107,21 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
     }
 
+    private fun getFilesList(files: Files): List<Files> {
+        var filesList: List<Files> = ArrayList()
+        mView.getSchema().getThreads().forEach {
+            val localFilesList = it.getFiles()
+            for (aLocalFile in localFilesList) {
+                if (aLocalFile.hashCode() == files.hashCode()) {
+                    filesList = localFilesList
+                    break
+                }
+            }
+        }
+
+        return filesList
+    }
+
     override fun onClick(threadNumber: String) {
         mView.openThread(threadNumber)
     }
@@ -132,49 +138,35 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
     }
 
-    fun onConfigurationChanged(configuration: Configuration) {
-//
+    fun onConfigurationChanged(configuration: Configuration) = mGalleryPresenter.onConfigurationChanged(configuration)
 
-    }
+    override fun onBackPressedOverridden(): Boolean = mGalleryPresenter.onBackPressed()
 
-    override fun onBackPressedOverridden(): Boolean {
+    override fun getCount(): Int = mView.getSchema().getThreads().size
 
+    override fun getItem(position: Int): Any? = mView.getSchema().getThreads()[position]
 
-
-        return false
-    }
-
-    override fun getCount(): Int {
-        return mView.getSchema().getThreads().size
-    }
-
-    override fun getItem(position: Int): Any? {
-        return mView.getSchema().getThreads()[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+    override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getItemViewType(position: Int): Int {
         val size = mView.getSchema().getThreads()[position].getFiles().size
-        if (size == 0) return ITEM_NO_IMAGES
-        if (size == 1) return ITEM_SINGLE_IMAGE
-        if (size > 1) return ITEM_MULTIPLE_IMAGES
-        return ITEM_NO_IMAGES
+        if (size == 0) return ListViewAdapterUtils.ITEM_NO_IMAGES
+        if (size == 1) return ListViewAdapterUtils.ITEM_SINGLE_IMAGE
+        if (size > 1) return ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES
+        return ListViewAdapterUtils.ITEM_NO_IMAGES
     }
 
     fun inflateCorrectConvertView(position: Int, parent: ViewGroup): View {
         when (getItemViewType(position)) {
-            ITEM_NO_IMAGES -> {
+            ListViewAdapterUtils.ITEM_NO_IMAGES -> {
                 return LayoutInflater.from(mView.getActivity())
                         .inflate(R.layout.thread_item_no_images, parent, false)
             }
-            ITEM_SINGLE_IMAGE -> {
+            ListViewAdapterUtils.ITEM_SINGLE_IMAGE -> {
                 return LayoutInflater.from(mView.getActivity())
                         .inflate(R.layout.thread_item_single_image, parent, false)
             }
-            ITEM_MULTIPLE_IMAGES -> {
+            ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES -> {
                 return LayoutInflater.from(mView.getActivity())
                         .inflate(R.layout.thread_item_multiple_images, parent, false)
             }
@@ -190,12 +182,12 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mSubjectTextView = itemView.findViewById(R.id.post_subject) as TextView
         holder.mCommentTextView = itemView.findViewById(R.id.post_comment) as NoScrollTextView
         holder.mPostsAndFilesInfo = itemView.findViewById(R.id.answers) as TextView
-        if (viewType == ITEM_SINGLE_IMAGE) {
+        if (viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
             holder.image = itemView.findViewById(R.id.thread_image) as ImageView
             holder.webmImageView = itemView.findViewById(R.id.webm_imageview) as ImageView
             holder.summary = itemView.findViewById(R.id.image_summary) as TextView
         }
-        if (viewType == ITEM_MULTIPLE_IMAGES) {
+        if (viewType == ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES) {
             holder.imageAndSummaryContainer1 = itemView.findViewById(R.id.image_with_summary_container_1) as RelativeLayout
             holder.imageAndSummaryContainer2 = itemView.findViewById(R.id.image_with_summary_container_2) as RelativeLayout
             holder.imageAndSummaryContainer3 = itemView.findViewById(R.id.image_with_summary_container_3) as RelativeLayout
