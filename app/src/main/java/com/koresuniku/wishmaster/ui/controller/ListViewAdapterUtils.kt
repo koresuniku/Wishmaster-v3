@@ -57,11 +57,11 @@ object ListViewAdapterUtils {
                 CommentLinkMovementMethod(holder.getActivity(), mAnswersHolder)
 
         if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
-            holder.mCommentTextView!!.post {
+            //holder.mCommentTextView!!.post {
                 var spannable = SpannableString(HtmlCompat.fromHtml(
                         holder.getActivity(), commentDocument.html(), 0,
                         null, SpanTagHandlerCompat(holder.getActivity())))
-                val textViewWidth = CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder)
+                val textViewWidth = CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder, forDialog)
 
                 var end: Int = 0
                 var overallHeightOfLines: Int = 0
@@ -108,7 +108,7 @@ object ListViewAdapterUtils {
 
                 holder.mCommentTextView!!.requestLayout()
                 holder.imageAndSummaryContainer!!.bringToFront()
-            }
+           // }
         } else {
             holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
                     holder.getActivity(), commentDocument.html(), 0,

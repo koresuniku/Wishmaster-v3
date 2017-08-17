@@ -8,7 +8,7 @@ import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewAdapter
 class GalleryPresenter(val mView: ActionBarView) {
     val LOG_TAG: String = GalleryPresenter::class.java.simpleName
 
-    val mGalleryView: IGalleryView = GalleryViewImpl(mView)
+    private val mGalleryView: IGalleryView = GalleryViewImpl(mView)
 
     fun showImageOrVideo(filesList: List<Files>, file: Files) {
         mGalleryView.showImageOrVideo(filesList, file)

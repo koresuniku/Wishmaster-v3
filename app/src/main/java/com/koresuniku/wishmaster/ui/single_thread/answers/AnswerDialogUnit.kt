@@ -13,7 +13,8 @@ import org.jetbrains.anko.find
 
 
 class AnswerDialogUnit(private val mView: SingleThreadListViewView,
-                       private val mAnswersManager: AnswersManager) {
+                       private val mAnswersManager: AnswersManager,
+                       private val mPostWhomAnswered: String?) {
 
     private val mDialogListViewContainer: FrameLayout = LayoutInflater.from(mView.getActivity())
             .inflate(R.layout.dialog_list_template, null, false) as FrameLayout
@@ -23,7 +24,8 @@ class AnswerDialogUnit(private val mView: SingleThreadListViewView,
 
     fun buildDialog(answerNumbers: List<String>) {
         mDialog = Dialog(mView.getActivity())
-        mAnswersListViewAdapter = AnswersListViewAdapter(mView, getSchemaForAdapter(answerNumbers), mAnswersManager)
+        mAnswersListViewAdapter = AnswersListViewAdapter(
+                mView, getSchemaForAdapter(answerNumbers), mAnswersManager, mPostWhomAnswered)
         mDialogListView.adapter = mAnswersListViewAdapter
 
         mDialog.setContentView(mDialogListViewContainer)

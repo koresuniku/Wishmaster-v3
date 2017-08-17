@@ -46,7 +46,6 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
     private val mGalleryPresenter = GalleryPresenter(this)
 
     init {
-        initAnswersManager()
         EventBus.getDefault().register(this)
     }
 
@@ -66,7 +65,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
     @Subscribe(threadMode = ThreadMode.MAIN)
     open fun onThumbnailClickedEvent(event: OnThumbnailClickedEvent) {
         Log.d(LOG_TAG, "onThumbnailClickedEvent:")
-        //onThumbnailClicked(event.file)
+        onThumbnailClicked(event.file)
     }
 
     override fun onThumbnailClicked(file: Files) {
@@ -187,13 +186,9 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
     }
 
 
-    override fun getViewTypeCount(): Int {
-        return 3
-    }
+    override fun getViewTypeCount(): Int = 3
 
-    open fun getPost(position: Int): Post {
-        return mSchema.getPosts()!![position]
-    }
+    open fun getPost(position: Int): Post = mSchema.getPosts()!![position]
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
@@ -223,7 +218,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         }
 
         val mNumberAndTimeSpannable = TextUtils.getNumberAndTimeInfoSpannableString(
-                mView.getActivity(), post.getPostNUmberAsc(), post)
+                mView.getActivity(), post.getPostNumberAsc(), post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
         //Log.d(LOG_TAG, "raw html: ${post.getComment()}")
         ListViewAdapterUtils.setupComment(holder, post, mAnswersManager, mForDialog)
@@ -231,23 +226,22 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
 
-
         holder.mAnswers!!.bringToFront()
+
+        postGetView(holder)
 
         return convertView
     }
 
-    override fun getItem(position: Int): Any {
-        return mSchema.getPosts()!![position]
+    open fun postGetView(holder: ViewHolderAndFiles) {
+
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+    override fun getItem(position: Int): Any = mSchema.getPosts()!![position]
 
-    override fun getCount(): Int {
-        return mSchema.getPosts()!!.size
-    }
+    override fun getItemId(position: Int): Long = position.toLong()
+
+    override fun getCount(): Int = mSchema.getPosts()!!.size
 
     override fun getItemViewType(position: Int): Int {
         val size = mSchema.getPosts()!![position].getFiles().size
@@ -263,7 +257,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
 
     override fun notifyNewAnswersTextViews() {
         holders.forEach { it.mAnswers!!.text =
-                TextUtils.getAnswersStringUpperCased(mAnswersManager.mAnswersMap[it.postNumber]!!.size)}
+                TextUtils.getAnswersStringUpperCased(mAnswersManager.mAnswersMap[it.postNumber]!!.size)
+        }
     }
 
     override fun getSchema(): BaseJsonSchemaImpl = mSchema
@@ -290,7 +285,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
     }
 
     inner class OnAnswersClickListener(val postNumber: String) : View.OnClickListener {
-        override fun onClick(p0: View?) {
+        override fun onClick(view: View?) {
             mAnswersManager.onAnswersClicked(postNumber)
         }
     }

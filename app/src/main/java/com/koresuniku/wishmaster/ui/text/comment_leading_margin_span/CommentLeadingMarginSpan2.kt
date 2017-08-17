@@ -50,13 +50,15 @@ class CommentLeadingMarginSpan2(val every: Int) :
                     holder.imageAndSummaryContainer!!.context.dimen(R.dimen.post_item_side_padding)
         }
 
-        fun calculateCommentTextViewWidthInPx(holder: CommentAndFilesListViewViewHolder): Int {
+        fun calculateCommentTextViewWidthInPx(holder: CommentAndFilesListViewViewHolder,
+                                              forDialog: Boolean): Int {
             val commentTextView = holder.mCommentTextView!!
             commentTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
             val displayWidth = holder.getActivity().windowManager.defaultDisplay.width
             val marginWidth = calculateLeadingMarginWidthInPx(holder)
             val paddingWidth = holder.imageAndSummaryContainer!!.context.dimen(R.dimen.post_item_side_padding)
-            return displayWidth - (paddingWidth * 2) - marginWidth
+            val dialogPadding = UiUtils.convertDpToPixel(16.0f).toInt()
+            return displayWidth - (paddingWidth * 2) - marginWidth - if (forDialog) (dialogPadding * 2) else 0
         }
     }
 

@@ -26,6 +26,7 @@ class SingleThreadListViewUnit(val mView: SingleThreadListViewView) : IListViewA
     override fun createListViewAdapter() {
         adapterIsCreated = true
         mListViewAdapter = SingleThreadListViewAdapter(mView, mView.getSchema(), false)
+        mListViewAdapter!!.initAnswersManager()
         mListView!!.adapter = mListViewAdapter
         mListView!!.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {

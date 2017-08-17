@@ -3,12 +3,14 @@ package com.koresuniku.wishmaster.ui.gallery
 import android.app.Activity
 import android.content.res.Configuration
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.find
 
 class GalleryViewImpl(val mView: ActionBarView) : IGalleryView {
@@ -23,6 +25,9 @@ class GalleryViewImpl(val mView: ActionBarView) : IGalleryView {
     var filesList: List<Files>? = null
 
     override fun showImageOrVideo(filesList: List<Files>, file: Files) {
+        Log.d(GalleryViewImpl::class.java.simpleName, "showImageOrVideo:")
+        EventBus.getDefault().post(GalleryVisibilityEvent(true))
+
         this.filesList = filesList
 
         UiVisibilityManager.setBarsTranslucent(mView.getAppCompatActivity(), true)
@@ -51,6 +56,8 @@ class GalleryViewImpl(val mView: ActionBarView) : IGalleryView {
 
     override fun onBackPressed(): Boolean {
         if (mGalleryLayoutContainer.visibility == View.VISIBLE) {
+            Log.d(GalleryViewImpl::class.java.simpleName, "closing gallery:")
+            EventBus.getDefault().post(GalleryVisibilityEvent(false))
             UiVisibilityManager.setBarsTranslucent(mView.getAppCompatActivity(), false)
             mGalleryLayoutContainer.visibility = View.GONE
 

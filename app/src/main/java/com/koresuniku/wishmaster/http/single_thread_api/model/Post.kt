@@ -39,7 +39,7 @@ class Post {
         this.postNumberAsc = number
     }
 
-    fun getPostNUmberAsc(): Int = this.postNumberAsc!!
+    fun getPostNumberAsc(): Int = this.postNumberAsc!!
 
     fun getComment(): String {
         return comment!!
