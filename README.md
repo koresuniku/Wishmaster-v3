@@ -33,7 +33,7 @@ ______________________________________
 - [ ] Покрыть Local и Instrumented тестами
 
 **TODO list performance and features:**
-- [ ] Оптимизировать ListView
+- [ ] Оптимизировать ListView или заменить на RecyclerView
 - [ ] Добавить управление кешем картинок
 - [ ] Добавить Expandable TextView
 - [ ] Добавить постинг и обработать ответы сервера
