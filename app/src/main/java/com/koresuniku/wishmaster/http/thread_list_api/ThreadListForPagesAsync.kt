@@ -21,7 +21,7 @@ class ThreadListForPagesAsync(val mView: LoadDataView) {
     private fun getThreadsForThreadList(response: Response<ThreadListForPagesJsonSchema>) {
         var thread: com.koresuniku.wishmaster.http.thread_list_api.model.Thread
         var threadForPage: ThreadForPage
-        for (i in 0..response.body().getThreads().size - 1) {
+        for (i in 0 until response.body().getThreads().size) {
             thread = response.body().getThreads()[i].getPosts()[0]
             threadForPage = response.body().getThreads()[i]
 

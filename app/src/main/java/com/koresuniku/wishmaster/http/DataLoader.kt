@@ -13,7 +13,10 @@ import retrofit2.Response
 class DataLoader(private val view: LoadDataView) {
     private val LOG_TAG = DataLoader::class.java.simpleName
 
+
+
     fun loadData() {
+        DataLoader2.loadData()
         val call = HttpClient.boardsService.getBoards("get_boards")
         call.enqueue(object : Callback<BoardsJsonSchema> {
             override fun onResponse(call: Call<BoardsJsonSchema>, response: Response<BoardsJsonSchema>) {

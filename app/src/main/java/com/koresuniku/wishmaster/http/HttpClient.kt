@@ -1,6 +1,7 @@
 package com.koresuniku.wishmaster.http
 
 import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.koresuniku.wishmaster.http.boards_api.BoardsApiService
 import com.koresuniku.wishmaster.http.single_thread_api.SingleThreadApiService
 import com.koresuniku.wishmaster.http.thread_list_api.ThreadListApiService
@@ -22,6 +23,7 @@ object HttpClient {
 
     val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(Dvach.DVACH_BASE_URL)
             .client(client)
             .build()!!

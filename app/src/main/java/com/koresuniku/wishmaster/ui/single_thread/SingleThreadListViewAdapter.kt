@@ -15,6 +15,7 @@ import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.controller.DialogManager
+import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import com.koresuniku.wishmaster.ui.gallery.*
@@ -74,13 +75,11 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
 
     override fun getSingleThreadListViewView(): SingleThreadListViewView = mView
 
-    inner class ViewHolderAndFiles : CommentAndFilesListViewViewHolder() {
+    inner class ViewHolderAndFiles(activity: Activity) : FilesListViewViewHolder(activity) {
         var mItemContainer: RelativeLayout? = null
         var mNumberAndTimeInfo: TextView? = null
         var mAnswers: TextView? = null
         var postNumber: String? = null
-
-        override fun getActivity(): Activity = mView.getActivity()
 
         init {
             files = ArrayList()
@@ -134,7 +133,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
     }
 
     fun getViewHolderInstance(itemView: View, viewType: Int): ViewHolderAndFiles {
-        val holder: ViewHolderAndFiles = ViewHolderAndFiles()
+        val holder: ViewHolderAndFiles = ViewHolderAndFiles(getActivity())
         holder.viewType = viewType
 
         holder.mItemContainer = itemView.findViewById(R.id.post_item_container) as RelativeLayout

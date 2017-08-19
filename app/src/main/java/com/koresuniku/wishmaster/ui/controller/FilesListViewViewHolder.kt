@@ -1,11 +1,14 @@
 package com.koresuniku.wishmaster.ui.controller
 
+import android.app.Activity
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 
-open abstract class FilesListViewViewHolder {
+abstract class FilesListViewViewHolder(var activity: Activity) {
+    var mCommentTextView: TextView? = null
+
     var imageAndSummaryContainer: RelativeLayout? = null
     var imageAndSummaryContainer1: RelativeLayout? = null
     var imageAndSummaryContainer2: RelativeLayout? = null

@@ -1,5 +1,6 @@
 package com.koresuniku.wishmaster.ui.thread_list
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
@@ -51,10 +52,9 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         mGalleryPresenter.showImageOrVideo(getFilesList(file), file)
     }
 
-    inner class ViewHolder : FilesListViewViewHolder() {
+    inner class ViewHolder(activity: Activity) : FilesListViewViewHolder(activity) {
         var mItemContainer: RelativeLayout? = null
         var mSubjectTextView: TextView? = null
-        var mCommentTextView: NoScrollTextView? = null
         var mPostsAndFilesInfo: TextView? = null
 
         init {
@@ -125,7 +125,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
     }
 
     fun getViewHolderInstance(itemView: View, viewType: Int): ViewHolder {
-        val holder: ViewHolder = ViewHolder()
+        val holder: ViewHolder = ViewHolder(getAppCompatActivity())
         holder.viewType = viewType
 
         holder.mItemContainer = itemView.findViewById(R.id.thread_item_container) as RelativeLayout
@@ -134,7 +134,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mPostsAndFilesInfo = itemView.findViewById(R.id.answers) as TextView
         if (viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
             holder.imageAndSummaryContainer = itemView.findViewById(R.id.image_and_summary_container) as RelativeLayout
-            holder.image = itemView.findViewById(R.id.thread_image) as ImageView
+            holder.image = itemView.findViewById(R.id.post_image) as ImageView
             holder.webmImageView = itemView.findViewById(R.id.webm_imageview) as ImageView
             holder.summary = itemView.findViewById(R.id.image_summary) as TextView
         }
@@ -147,21 +147,21 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
             holder.imageAndSummaryContainer6 = itemView.findViewById(R.id.image_with_summary_container_6) as RelativeLayout
             holder.imageAndSummaryContainer7 = itemView.findViewById(R.id.image_with_summary_container_7) as RelativeLayout
             holder.imageAndSummaryContainer8 = itemView.findViewById(R.id.image_with_summary_container_8) as RelativeLayout
-            holder.image1 = itemView.findViewById(R.id.thread_image_1) as ImageView
+            holder.image1 = itemView.findViewById(R.id.post_image_1) as ImageView
             holder.webmImageView1 = itemView.findViewById(R.id.webm_imageview_1) as ImageView
-            holder.image2 = itemView.findViewById(R.id.thread_image_2) as ImageView
+            holder.image2 = itemView.findViewById(R.id.post_image_2) as ImageView
             holder.webmImageView2 = itemView.findViewById(R.id.webm_imageview_2) as ImageView
-            holder.image3 = itemView.findViewById(R.id.thread_image_3) as ImageView
+            holder.image3 = itemView.findViewById(R.id.post_image_3) as ImageView
             holder.webmImageView3 = itemView.findViewById(R.id.webm_imageview_3) as ImageView
-            holder.image4 = itemView.findViewById(R.id.thread_image_4) as ImageView
+            holder.image4 = itemView.findViewById(R.id.post_image_4) as ImageView
             holder.webmImageView4 = itemView.findViewById(R.id.webm_imageview_4) as ImageView
-            holder.image5 = itemView.findViewById(R.id.thread_image_5) as ImageView
+            holder.image5 = itemView.findViewById(R.id.post_image_5) as ImageView
             holder.webmImageView5 = itemView.findViewById(R.id.webm_imageview_5) as ImageView
-            holder.image6 = itemView.findViewById(R.id.thread_image_6) as ImageView
+            holder.image6 = itemView.findViewById(R.id.post_image_6) as ImageView
             holder.webmImageView6 = itemView.findViewById(R.id.webm_imageview_6) as ImageView
-            holder.image7 = itemView.findViewById(R.id.thread_image_7) as ImageView
+            holder.image7 = itemView.findViewById(R.id.post_image_7) as ImageView
             holder.webmImageView7 = itemView.findViewById(R.id.webm_imageview_7) as ImageView
-            holder.image8 = itemView.findViewById(R.id.thread_image_8) as ImageView
+            holder.image8 = itemView.findViewById(R.id.post_image_8) as ImageView
             holder.webmImageView8 = itemView.findViewById(R.id.webm_imageview_8) as ImageView
             holder.summary1 = itemView.findViewById(R.id.image_summary_1) as TextView
             holder.summary2 = itemView.findViewById(R.id.image_summary_2) as TextView
@@ -264,7 +264,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
     fun getViewForDialog(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
-        var holder: ViewHolder  = ViewHolder()
+        var holder: ViewHolder  = ViewHolder(getAppCompatActivity())
         val thread: Thread = mView.getSchema().getThreads()[position]
 
         if (convertView == null) {

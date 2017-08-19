@@ -64,12 +64,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_1"
+                        android:id="@+id/post_image_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_1"
@@ -113,12 +113,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_2"
+                        android:id="@+id/post_image_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_2"
@@ -161,12 +161,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_3"
+                        android:id="@+id/post_image_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_3"
@@ -210,12 +210,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_4"
+                        android:id="@+id/post_image_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_4"
@@ -257,12 +257,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_5"
+                        android:id="@+id/post_image_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_5"
@@ -308,12 +308,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_6"
+                        android:id="@+id/post_image_6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_6"
@@ -359,12 +359,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_7"
+                        android:id="@+id/post_image_7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_7"
@@ -410,12 +410,12 @@
                     android:layout_alignParentStart="true">
 
                     <ImageView
-                        android:id="@+id/thread_image_8"
+                        android:id="@+id/post_image_8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|center"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp" />
+                        android:maxHeight="150dp"/>
 
                     <ImageView
                         android:id="@+id/webm_imageview_8"

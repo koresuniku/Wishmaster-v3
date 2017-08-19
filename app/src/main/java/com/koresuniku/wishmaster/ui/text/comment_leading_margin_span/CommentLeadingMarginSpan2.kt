@@ -7,8 +7,8 @@ import android.text.style.LeadingMarginSpan
 import android.view.View
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.ui.UiUtils
+import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
-import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.util.Formats
 import org.jetbrains.anko.dimen
@@ -26,10 +26,10 @@ class CommentLeadingMarginSpan2(val every: Int) :
 //            return Math.ceil((imageContainerHeightInDp / commentLineHeightInDp).toDouble()).toInt()
 //        }
 
-        fun calculateImageContainerHeightInDp(holder: CommentAndFilesListViewViewHolder, forDialog: Boolean): Float {
+        fun calculateImageContainerHeightInDp(holder: FilesListViewViewHolder, forDialog: Boolean): Float {
             val containerView = holder.imageAndSummaryContainer
             val imageViewHeight = ListViewAdapterUtils
-                    .computeImageHeightInPx(holder.getActivity(), holder.files!![0], forDialog)
+                    .computeImageHeightInPx(holder.activity, holder.files!![0], forDialog)
             val summaryLineHeight = holder.summary!!.lineHeight
             val summaryHeight = if (Formats.VIDEO_FORMATS.contains(
                     TextUtils.getSubstringAfterDot(holder.files!![0].getPath()!!)))
@@ -44,17 +44,17 @@ class CommentLeadingMarginSpan2(val every: Int) :
 //            return UiUtils.convertPixelsToDp(commentTextView!!.lineHeight.toFloat())
 //        }
 
-        fun calculateLeadingMarginWidthInPx(holder: CommentAndFilesListViewViewHolder): Int {
+        fun calculateLeadingMarginWidthInPx(holder: FilesListViewViewHolder): Int {
             holder.imageAndSummaryContainer!!.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
             return holder.imageAndSummaryContainer!!.measuredWidth +
                     holder.imageAndSummaryContainer!!.context.dimen(R.dimen.post_item_side_padding)
         }
 
-        fun calculateCommentTextViewWidthInPx(holder: CommentAndFilesListViewViewHolder,
+        fun calculateCommentTextViewWidthInPx(holder: FilesListViewViewHolder,
                                               forDialog: Boolean): Int {
             val commentTextView = holder.mCommentTextView!!
             commentTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            val displayWidth = holder.getActivity().windowManager.defaultDisplay.width
+            val displayWidth = holder.activity.windowManager.defaultDisplay.width
             val marginWidth = calculateLeadingMarginWidthInPx(holder)
             val paddingWidth = holder.imageAndSummaryContainer!!.context.dimen(R.dimen.post_item_side_padding)
             val dialogPadding = UiUtils.convertDpToPixel(16.0f).toInt()

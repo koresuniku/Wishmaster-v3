@@ -13,4 +13,10 @@ interface ThreadListApiService {
 
     @GET("/{id}/{page}.json")
     fun getThreadsForPages(@Path("id") boardId: String, @Path("page") page: String): Call<ThreadListForPagesJsonSchema>
+
+    @GET("/{id}/catalog.json")
+    fun getThreadsObservable(@Path("id") boardId: String): Call<ThreadListJsonSchema>
+
+    @GET("/{id}/{page}.json")
+    fun getThreadsForPagesObservable(@Path("id") boardId: String, @Path("page") page: String): Call<ThreadListForPagesJsonSchema>
 }

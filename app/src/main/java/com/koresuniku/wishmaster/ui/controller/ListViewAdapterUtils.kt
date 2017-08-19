@@ -14,7 +14,6 @@ import com.koresuniku.wishmaster.http.Dvach
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.UiUtils
-import com.koresuniku.wishmaster.ui.controller.view_interface.CommentAndFilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.text.TextUtils
@@ -25,7 +24,6 @@ import com.pixplicity.htmlcompat.HtmlCompat
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import java.security.acl.LastOwnerException
 
 object ListViewAdapterUtils {
     val LOG_TAG: String = ListViewAdapterUtils::class.java.simpleName
@@ -38,7 +36,7 @@ object ListViewAdapterUtils {
         fun onThumbnailClicked(file: Files)
     }
 
-    fun setupComment(holder: CommentAndFilesListViewViewHolder, post: Post, mAnswersHolder: AnswersManager, forDialog: Boolean) {
+    fun setupComment(holder: FilesListViewViewHolder, post: Post, mAnswersHolder: AnswersManager, forDialog: Boolean) {
         val commentDocument: Document = Jsoup.parse(post.getComment())
         val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
 
@@ -54,13 +52,13 @@ object ListViewAdapterUtils {
 
         holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod =
-                CommentLinkMovementMethod(holder.getActivity(), mAnswersHolder)
+                CommentLinkMovementMethod(holder.activity, mAnswersHolder)
 
         if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
             //holder.mCommentTextView!!.post {
                 var spannable = SpannableString(HtmlCompat.fromHtml(
-                        holder.getActivity(), commentDocument.html(), 0,
-                        null, SpanTagHandlerCompat(holder.getActivity())))
+                        holder.activity, commentDocument.html(), 0,
+                        null, SpanTagHandlerCompat(holder.activity)))
                 val textViewWidth = CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder, forDialog)
 
                 var end: Int = 0
@@ -111,8 +109,8 @@ object ListViewAdapterUtils {
            // }
         } else {
             holder.mCommentTextView!!.text = HtmlCompat.fromHtml(
-                    holder.getActivity(), commentDocument.html(), 0,
-                    null, SpanTagHandlerCompat(holder.getActivity()))
+                    holder.activity, commentDocument.html(), 0,
+                    null, SpanTagHandlerCompat(holder.activity))
         }
     }
 
