@@ -15,6 +15,8 @@ ______________________________________
 * ExoPlayer (ExoMedia)
 * Jsoup
 * EventBus
+* ButterKnife
+* RxJava2, RxAndroid
 # 
 
 **Возможности**:
