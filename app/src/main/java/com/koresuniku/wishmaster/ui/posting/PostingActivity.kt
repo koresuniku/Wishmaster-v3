@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.WindowManager
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.ui.action_bar.PostingActionBarController
@@ -17,6 +18,7 @@ class PostingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posting)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
         mPostingActionBarController = PostingActionBarController(this, false)
         mPostingActionBarController.setupActionBar()

@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Wishmaster</string>
 
-
     <string name="adult_boards">Взрослым</string>
     <string name="games_boards">Игры</string>
     <string name="politics_boards">Политика</string>
@@ -25,6 +24,13 @@
     <string name="unknown">ноунейм.хз</string>
     <string name="action_copy_link">Копировать ссылку"</string>
     <string name="new_post_text">Новый пост</string>
+
+    <string name="email_text">Email</string>
+    <string name="comment_text">Комментарий</string>
+    <string name="sage_text">Сажи</string>
+    <string name="op_of_the_thread_text">Оп треда</string>
+    <string name="captcha_answer">Ответ из капчи</string>
+    <string name="send_post_text">Отправить</string>
 
     <string-array name="on_board_clicked_choice_remove">
         <item name="action_open_board">Открыть</item>
