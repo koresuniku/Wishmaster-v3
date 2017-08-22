@@ -6,6 +6,10 @@ import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.ThreadListForPagesAsync
 import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,20 +19,39 @@ class DataLoader(private val view: LoadDataView) {
 
 
 
-    fun loadData() {
-        DataLoader2.loadData()
-        val call = HttpClient.boardsService.getBoards("get_boards")
-        call.enqueue(object : Callback<BoardsJsonSchema> {
-            override fun onResponse(call: Call<BoardsJsonSchema>, response: Response<BoardsJsonSchema>) {
-                Log.i(LOG_TAG, "onResponse: " + response.body().adults)
-                view.onDataLoaded(listOf(response.body()))
-            }
+//    fun loadData() {
+//        DataLoader2.loadData()
+//        val call = HttpClient.boardsService.getBoards("get_boards")
+//        call.enqueue(object : Callback<BoardsJsonSchema> {
+//            override fun onResponse(call: Call<BoardsJsonSchema>, response: Response<BoardsJsonSchema>) {
+//                Log.i(LOG_TAG, "onResponse: " + response.body().adults)
+//                view.onDataLoaded(listOf(response.body()))
+//            }
+//
+//            override fun onFailure(call: Call<BoardsJsonSchema>, t: Throwable) {
+//                Log.d(LOG_TAG, "onFailure: ")
+//                t.printStackTrace()
+//            }
+//        })
+//    }
 
-            override fun onFailure(call: Call<BoardsJsonSchema>, t: Throwable) {
-                Log.d(LOG_TAG, "onFailure: ")
-                t.printStackTrace()
-            }
-        })
+    companion object {
+        fun loadData(loadDataView: LoadDataView) {
+            HttpClient.boardsService.getBoardsObservable("get_boards")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<BoardsJsonSchema> {
+                        override fun onError(p0: Throwable) {}
+
+                        override fun onComplete() {}
+
+                        override fun onSubscribe(disposable: Disposable) {}
+
+                        override fun onNext(schema: BoardsJsonSchema) {
+                            loadDataView.onDataLoaded(listOf(schema))
+                        }
+                    })
+        }
     }
 
     fun loadData(boardId: String) {

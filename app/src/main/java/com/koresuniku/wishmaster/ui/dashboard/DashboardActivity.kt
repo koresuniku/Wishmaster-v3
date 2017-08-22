@@ -96,8 +96,10 @@ class DashboardActivity : AppCompatActivity(), ActionBarWithTabsView, Expandable
     }
 
     override fun loadData() {
-        doAsync{ mDataLoader!!.loadData() }
+
+        doAsync{ DataLoader.loadData(this@DashboardActivity) }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.dashboard_menu, menu)

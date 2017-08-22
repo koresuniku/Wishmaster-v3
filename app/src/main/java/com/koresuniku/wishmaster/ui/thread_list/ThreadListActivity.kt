@@ -25,6 +25,7 @@ import com.koresuniku.wishmaster.application.settings.ResultCodes
 import com.koresuniku.wishmaster.application.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
+import com.koresuniku.wishmaster.ui.thread_list.rv.ThreadListRecyclerViewAdapter
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import org.jetbrains.anko.doAsync
 
@@ -69,6 +70,13 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         mDataLoader = DataLoader(this)
         mProgressUnit!!.showProgressYoba()
         loadData()
+
+        //testRvAdapter()
+    }
+
+    fun testRvAdapter() {
+        val rvAdapter = ThreadListRecyclerViewAdapter(this, boardId!!)
+        rvAdapter.initAdapter()
     }
 
     override fun getGalleryLayoutContainer(): ViewGroup {
@@ -226,20 +234,6 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun openFullPost(position: Int) {
-//        val args: Bundle = Bundle()
-//        args.putInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY, position)
-//        removeDialog(DIALOG_FULL_POST_ID)
-//
-//        val dialog: Dialog = Dialog(this)
-//        val scrollView = ScrollView(this)
-//        val itemView: View = mThreadListListViewUnit!!.mListViewAdapter!!.getViewForDialog(
-//                args.getInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY), null, scrollView)
-//        scrollView.addView(itemView)
-//        dialog.setContentView(scrollView)
-//        dialog.window.attributes.width = WindowManager.LayoutParams.MATCH_PARENT
-//
-//        dialog.show()
-
         mFullPostDialogManager!!.openFullPost(position)
     }
 

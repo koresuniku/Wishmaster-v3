@@ -43,8 +43,10 @@ class AnswersManager(val mView: AnswersManagerView) {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLifecycleEvent(event: LifecycleEvent) {
         when (event.anEvent) {
-            LifecycleEvent.onStart -> EventBus.getDefault().register(this)
-            LifecycleEvent.onStop -> EventBus.getDefault().unregister(this)
+            LifecycleEvent.onStart ->
+                if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
+            LifecycleEvent.onStop ->
+                if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this)
         }
     }
 

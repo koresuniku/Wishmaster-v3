@@ -2,6 +2,7 @@ package com.koresuniku.wishmaster.ui.single_thread
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -10,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.application.DeviceUtils
+import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
@@ -19,6 +22,7 @@ import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import com.koresuniku.wishmaster.ui.gallery.*
+import com.koresuniku.wishmaster.ui.posting.PostingActivity
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManagerView
 import com.koresuniku.wishmaster.ui.single_thread.answers.OnThumbnailClickedEvent
@@ -58,8 +62,10 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLifecycleEvent(event: LifecycleEvent) {
         when (event.anEvent) {
-            LifecycleEvent.onStart -> EventBus.getDefault().register(this)
-            LifecycleEvent.onStop -> EventBus.getDefault().unregister(this)
+            LifecycleEvent.onStart ->
+                if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
+            LifecycleEvent.onStop ->
+                if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this)
         }
     }
 
@@ -212,7 +218,16 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
 
         holder.mItemContainer!!.setOnLongClickListener {
-            mView.showPostDialog(position)
+            //mView.showPostDialog(position)
+            val intent = Intent(mView.getActivity(), PostingActivity::class.java)
+
+            intent.putExtra(IntentUtils.WHOM_TO_ANSWER_CODE, post.getNum())
+
+            if (DeviceUtils.sdkIsLollipopOrHigher()) {
+                mView.getActivity().startActivity(intent)
+                //this.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+            } else mView.getAppCompatActivity().startActivity(intent)
+
             false
         }
 

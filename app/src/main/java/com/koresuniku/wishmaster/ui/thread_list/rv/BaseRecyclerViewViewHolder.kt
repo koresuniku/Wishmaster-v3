@@ -10,7 +10,7 @@ import butterknife.ButterKnife
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
 
-open class BaseRecyclerViewViewHolder(itemView: View?, var viewType: Int) : RecyclerView.ViewHolder(itemView) {
+open class BaseRecyclerViewViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
     @BindView(R.id.post_comment) lateinit var mCommentTextView: TextView
 
     @BindView(R.id.image_and_summary_container) lateinit var imageAndSummaryContainer: RelativeLayout
@@ -51,8 +51,4 @@ open class BaseRecyclerViewViewHolder(itemView: View?, var viewType: Int) : Recy
     @BindView(R.id.image_summary_8) lateinit var summary8: TextView
 
     var files: List<Files> = ArrayList()
-
-//    init {
-//        ButterKnife.bind(this, itemView!!)
-//    }
 }

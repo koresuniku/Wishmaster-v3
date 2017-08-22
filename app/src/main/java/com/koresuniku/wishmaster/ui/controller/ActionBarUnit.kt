@@ -28,11 +28,10 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
         mLocalToolbarContainer = mView.getAppCompatActivity().layoutInflater
                 .inflate(getIdRes(), null, false) as RelativeLayout
         mToolbar = mLocalToolbarContainer!!.findViewById(R.id.toolbar) as Toolbar?
-        val height: Int
-        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            height = mView.getAppCompatActivity().resources.getDimension(R.dimen.action_bar_height_portrait).toInt()
+        val height: Int = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mView.getAppCompatActivity().resources.getDimension(R.dimen.action_bar_height_portrait).toInt()
         } else {
-            height = mView.getAppCompatActivity().resources.getDimension(R.dimen.action_bar_height_landscape).toInt()
+            mView.getAppCompatActivity().resources.getDimension(R.dimen.action_bar_height_landscape).toInt()
         }
         mToolbar!!.layoutParams!!.height = height
         mToolbar!!.layoutParams!!.width = Toolbar.LayoutParams.MATCH_PARENT
@@ -44,9 +43,7 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
         postSetupActionBar()
     }
 
-    open fun getIdRes(): Int {
-        return R.layout.action_bar_layout
-    }
+    open fun getIdRes(): Int = R.layout.action_bar_layout
 
     open fun setSupportActionBarAndTitle() {
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)

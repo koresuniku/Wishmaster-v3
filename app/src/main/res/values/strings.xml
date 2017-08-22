@@ -24,6 +24,7 @@
     <string name="no_new_posts">Новых постов нет</string>
     <string name="unknown">ноунейм.хз</string>
     <string name="action_copy_link">Копировать ссылку"</string>
+    <string name="new_post_text">Новый пост</string>
 
     <string-array name="on_board_clicked_choice_remove">
         <item name="action_open_board">Открыть</item>
