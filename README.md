@@ -1,6 +1,6 @@
 Wishmaster - клиент для имиджборда <a href="2ch.hk">2ch.hk</a> на Android
 =========================
-Скачать <a href="https://github.com/koresuniku/Wishmaster-v3/releases/download/v3.0.1_alpha/wishmaster.apk">последний_релиз.apk</a>
+Скачать <a href="https://github.com/koresuniku/Wishmaster-v3/releases/download/v3.0.2-alpha/wishmaster-v3.0.2-alpha.apk">последний_релиз.apk</a>
 -------------------------
 Для работы приложения нужен android 4.1 и выше.
 
@@ -15,6 +15,8 @@ ______________________________________
 * ExoPlayer (ExoMedia)
 * Jsoup
 * EventBus
+* ButterKnife
+* RxJava2, RxAndroid
 # 
 
 **Возможности**:
@@ -31,7 +33,7 @@ ______________________________________
 - [ ] Покрыть Local и Instrumented тестами
 
 **TODO list performance and features:**
-- [ ] Оптимизировать ListView
+- [ ] Оптимизировать ListView или заменить на RecyclerView
 - [ ] Добавить управление кешем картинок
 - [ ] Добавить Expandable TextView
 - [ ] Добавить постинг и обработать ответы сервера
@@ -48,3 +50,4 @@ ______________________________________
 - [ ] Приклеить больше анимаций
 - [ ] Вывести в DrawerLayout сводку по тредам
 - [ ] Настроить автопроверку обновлений
+- [ ] Добавить стикеры
