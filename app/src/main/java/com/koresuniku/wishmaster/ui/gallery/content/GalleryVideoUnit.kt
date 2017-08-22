@@ -303,7 +303,7 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
     }
 
     override fun onClick(view: View?) {
-        Log.d(LOG_TAG, "onClick:")
+        Log.d(LOG_TAG, "onClickNoSpoilersOrLinksFound:")
         mFragment.onClick()
     }
 

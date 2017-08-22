@@ -8,8 +8,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ScrollView
-import com.koresuniku.wishmaster.ui.controller.DialogManager
-import com.koresuniku.wishmaster.ui.single_thread.answers.ScrollsHolder
+import com.koresuniku.wishmaster.ui.dialog.DialogManager
 
 class FullPostDialogManager(var mView: ThreadListActivity) {
     val LOG_TAG: String = FullPostDialogManager::class.java.simpleName

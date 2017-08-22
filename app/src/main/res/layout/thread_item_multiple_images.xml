@@ -247,7 +247,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="false"
-                android:layout_below="@+id/image_with_summary_container_1">
+                android:layout_below="@+id/image_with_summary_container_1"
+                android:layout_marginTop="2dp">
 
                 <FrameLayout
                     android:id="@+id/image_container_5"
@@ -272,7 +273,7 @@
                         android:layout_gravity="center"
                         android:padding="2dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
+                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
 
                 </FrameLayout>
 
@@ -285,7 +286,7 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="summary"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -297,6 +298,7 @@
                 android:layout_below="@+id/image_with_summary_container_2"
 
                 android:layout_marginLeft="@dimen/post_item_side_padding"
+                android:layout_marginTop="2dp"
                 android:layout_toEndOf="@+id/image_with_summary_container_5"
                 android:layout_toRightOf="@+id/image_with_summary_container_5">
 
@@ -323,7 +325,7 @@
                         android:layout_gravity="center"
                         android:padding="2dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
+                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
 
                 </FrameLayout>
 
@@ -336,7 +338,7 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="summary"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -348,6 +350,7 @@
                 android:layout_below="@+id/image_with_summary_container_2"
 
                 android:layout_marginLeft="@dimen/post_item_side_padding"
+                android:layout_marginTop="2dp"
                 android:layout_toEndOf="@+id/image_with_summary_container_6"
                 android:layout_toRightOf="@+id/image_with_summary_container_6">
 
@@ -374,7 +377,7 @@
                         android:layout_gravity="center"
                         android:padding="2dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
+                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
 
                 </FrameLayout>
 
@@ -387,7 +390,7 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="summary"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -399,6 +402,7 @@
                 android:layout_below="@+id/image_with_summary_container_2"
 
                 android:layout_marginLeft="@dimen/post_item_side_padding"
+                android:layout_marginTop="2dp"
                 android:layout_toEndOf="@+id/image_with_summary_container_7"
                 android:layout_toRightOf="@+id/image_with_summary_container_7">
 
@@ -425,7 +429,7 @@
                         android:layout_gravity="center"
                         android:padding="2dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
+                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
 
                 </FrameLayout>
 
@@ -438,7 +442,7 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="summary"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"/>
             </RelativeLayout>
 
 

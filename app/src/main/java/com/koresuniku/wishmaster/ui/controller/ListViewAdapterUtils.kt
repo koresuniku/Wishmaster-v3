@@ -36,7 +36,9 @@ object ListViewAdapterUtils {
         fun onThumbnailClicked(file: Files)
     }
 
-    fun setupComment(holder: FilesListViewViewHolder, post: Post, mAnswersHolder: AnswersManager, forDialog: Boolean) {
+    fun setupComment(holder: FilesListViewViewHolder, post: Post,
+                     clickableAdapter: ClickableAdapter?, mAnswersHolder: AnswersManager,
+                     forDialog: Boolean) {
         val commentDocument: Document = Jsoup.parse(post.getComment())
         val commentElements: Elements = commentDocument.select(SpanTagHandlerCompat.SPAN_TAG)
 
@@ -52,7 +54,7 @@ object ListViewAdapterUtils {
 
         holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod =
-                CommentLinkMovementMethod(holder.activity, mAnswersHolder)
+                CommentLinkMovementMethod(holder.activity, clickableAdapter, mAnswersHolder, post.getNum())
 
         if (holder.viewType == ListViewAdapterUtils.ITEM_SINGLE_IMAGE) {
             //holder.mCommentTextView!!.post {

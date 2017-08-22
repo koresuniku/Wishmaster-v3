@@ -24,6 +24,7 @@ import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.application.settings.ResultCodes
 import com.koresuniku.wishmaster.application.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
+import com.koresuniku.wishmaster.ui.dialog.DialogManager
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
 import com.koresuniku.wishmaster.ui.thread_list.rv.ThreadListRecyclerViewAdapter
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
@@ -32,7 +33,7 @@ import org.jetbrains.anko.doAsync
 
 class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         LoadDataView, ThreadListListViewView, ProgressView, SwipyRefreshLayoutView,
-        DialogManager.PostCallBack, IActivityView {
+        DialogManager.ThreadPostCallback, IActivityView {
     val LOG_TAG: String = ThreadListActivity::class.java.simpleName
 
     val DIALOG_POST_ID = 0
@@ -226,7 +227,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     override fun onCreateDialog(id: Int, args: Bundle?): Dialog {
         when (id) {
             DIALOG_POST_ID -> {
-                return DialogManager.createPostDialog(this, args)
+                return DialogManager.createThreadPostDialog(this, args)
             }
 
         }

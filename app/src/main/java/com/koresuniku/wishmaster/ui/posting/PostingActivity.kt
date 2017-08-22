@@ -5,23 +5,40 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.WindowManager
+import android.widget.EditText
+import android.widget.TextView
+import butterknife.BindView
+import butterknife.ButterKnife
+import butterknife.bindView
 import com.koresuniku.wishmaster.R
+import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.ui.action_bar.PostingActionBarController
+import com.koresuniku.wishmaster.ui.text.TextUtils
 import org.greenrobot.eventbus.EventBus
 
 class PostingActivity : AppCompatActivity() {
     val LOG_TAG: String = PostingActivity::class.java.simpleName
 
+    lateinit private var mWhomAnswered: String
+
     private lateinit var mPostingActionBarController: PostingActionBarController
+
+    private val mCommentEditText: EditText by bindView(R.id.comment_edit_text)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posting)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
-        mPostingActionBarController = PostingActionBarController(this, false)
+        ButterKnife.bind(this, this)
+
+        mWhomAnswered = intent.getStringExtra(IntentUtils.WHOM_TO_ANSWER_CODE)
+
+        mPostingActionBarController = PostingActionBarController(this)
         mPostingActionBarController.setupActionBar()
+
+        setupCommentEditText()
     }
 
     override fun onStart() {
@@ -45,5 +62,13 @@ class PostingActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupCommentEditText() {
+        mCommentEditText.setText(
+                TextUtils.getMakabaFormattedAnswerString("$mWhomAnswered\n"),
+                TextView.BufferType.SPANNABLE)
+        mCommentEditText.setSelection(mCommentEditText.text.lastIndex)
+
     }
 }

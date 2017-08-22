@@ -156,4 +156,7 @@ object TextUtils {
 
         return sb.toString()
     }
+
+    fun getMakabaFormattedAnswerString(number: String): SpannableString =
+            SpannableString(">>$number")
 }

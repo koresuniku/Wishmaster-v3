@@ -222,9 +222,23 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
             mSingleThreadListViewUnit!!.createListViewAdapter()
             mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema = this.mSchema!!
         } else {
-            mSwipyRefreshLayoutUnit!!.onDataLoaded(
-                    mNewPostsNotifier!!.previousPostsCount != schema[0].getPosts()!!.size)
-            mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema = this.mSchema!!
+            val newPostsCame = mNewPostsNotifier!!.previousPostsCount != schema[0].getPosts()!!.size
+            mSwipyRefreshLayoutUnit!!.onDataLoaded(newPostsCame)
+            if (newPostsCame) {
+                val preCount = mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema.getPosts()!!.size
+                mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema = this.mSchema!!
+                val afterCount = mSingleThreadListViewUnit!!.mListViewAdapter!!.mSchema.getPosts()!!.size
+                mSingleThreadListViewUnit!!.mListViewAdapter!!.notifyDataSetChanged()
+                Log.d(LOG_TAG, "pre: $preCount, after: $afterCount")
+                if (preCount != afterCount) {
+                    mSingleThreadListViewUnit!!.mListView!!.post {
+                        if (afterCount - preCount < 10)
+                            mSingleThreadListViewUnit!!.mListView!!.smoothScrollToPosition(preCount + 1)
+                        else mSingleThreadListViewUnit!!.mListView!!.setSelection(preCount + 1)
+                    }
+                }
+            }
+
             mSingleThreadListViewUnit!!.mListViewAdapter!!.mAnswersManager.assignAnswersToPosts()
         }
 

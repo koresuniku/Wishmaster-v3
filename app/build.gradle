@@ -56,7 +56,9 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
+    //annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
 
 }
 repositories {
@@ -66,7 +68,8 @@ repositories {
 
 allprojects {
     repositories {
-        maven { url  "http://dl.bintray.com/piasy/maven" }
+        maven { url "http://dl.bintray.com/piasy/maven" }
         maven { url "https://jitpack.io" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }

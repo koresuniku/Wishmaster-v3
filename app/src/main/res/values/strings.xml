@@ -48,6 +48,11 @@
         <item name="action_copy_link">@string/action_copy_link</item>
     </string-array>
 
+    <string-array name="on_post_item_clicked">
+        <item name="action_answer">Ответить</item>
+        <item name="action_copy_link">@string/action_copy_link</item>
+    </string-array>
+
 
     <string name="settings_text">Настройки</string>
     <string name="header_dashboard_text">Начальная страница</string>

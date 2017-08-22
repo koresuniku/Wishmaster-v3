@@ -16,7 +16,7 @@ class SpoilerSpan(mContext: Context, val start: Int, val end: Int) : ClickableSp
     val color: Int = mContext.resources.getColor(R.color.colorSpoiler)
 
     override fun onClick(view: View?) {
-        Log.d(LOG_TAG, "onClick: enabled: $enabled, clicked: $clicked")
+        Log.d(LOG_TAG, "onClickNoSpoilersOrLinksFound: enabled: $enabled, clicked: $clicked")
         if (enabled) {
             clicked = !clicked
             view!!.invalidate()

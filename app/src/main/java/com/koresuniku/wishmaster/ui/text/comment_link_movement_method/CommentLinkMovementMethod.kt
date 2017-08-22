@@ -14,25 +14,28 @@ import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.text.LinkHighlightSpan
 
-class CommentLinkMovementMethod(val mContext: Context, val answersManager: AnswersManager?) :
+class CommentLinkMovementMethod(val mContext: Context, val clickableAdapter: ClickableAdapter?,
+                                val answersManager: AnswersManager?, val postNumber: String) :
         LinkMovementMethod(), ICommentLinkMovementMethod {
     val LOG_TAG: String = CommentLinkMovementMethod::class.java.simpleName
 
     val presenter: ICommentLinkMovementMethodPresenter = CommentLinkMovementMethodPresenter(this)
 
-    var mClickableAdapter: ClickableAdapter? = null
-    var mThreadNumber: String? = null
-
-    constructor(mContext: Context, clickableAdapter: ClickableAdapter, threadNumber: String) :
-            this(mContext, null) {
-        mClickableAdapter = clickableAdapter
-        mThreadNumber = threadNumber
-    }
+    var mClickableAdapter: ClickableAdapter? = clickableAdapter
+    var mThreadNumber: String? = postNumber
+//
+//    constructor(mContext: Context, clickableAdapter: ClickableAdapter, threadNumber: String) :
+//            this(mContext, clickableAdapter, null, postNumber) {
+//        mClickableAdapter = clickableAdapter
+//        mThreadNumber = threadNumber
+//    }
 
     override fun initialize(widget: TextView?, text: Spannable?) {
         super.initialize(widget, text)
         presenter.initFixSpoilerSpans(text!!)
     }
+
+
 
     override fun onTouchEvent(widget: TextView?, buffer: Spannable?, event: MotionEvent?): Boolean {
         val action = event!!.action
@@ -52,19 +55,18 @@ class CommentLinkMovementMethod(val mContext: Context, val answersManager: Answe
             presenter.onActionCancel(widget!!, buffer!!, event)
             return true
         }
+
         return false
     }
 
-    override fun getContext(): Context {
-        return mContext
-    }
+    override fun getContext(): Context = mContext
 
     override fun onClickNoSpoilersOrLinksFound() {
-        mClickableAdapter?.onClick(mThreadNumber!!)
+        mClickableAdapter?.onClickNoSpoilersOrLinksFound(mThreadNumber!!)
     }
 
     override fun onLongClickNoSpoilersOrLinksFound() {
-        mClickableAdapter?.onLongClick(mThreadNumber!!)
+        mClickableAdapter?.onLongClickNoSpoilersOrLinksFound(mThreadNumber!!)
     }
 
     override fun on2chAnswerLinkClicked(number: String) {

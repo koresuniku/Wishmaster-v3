@@ -25,11 +25,11 @@ import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.application.PreferenceUtils
 import com.koresuniku.wishmaster.ui.controller.ActionBarWithTabsUnit
-import com.koresuniku.wishmaster.ui.controller.DialogManager
-import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_ID_KEY
-import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_BOARD_NAME_KEY
-import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_DASHBOARD_ID
-import com.koresuniku.wishmaster.ui.controller.DialogManager.DIALOG_REMOVE_FROM_FAVOURITES_KEY
+import com.koresuniku.wishmaster.ui.dialog.DialogManager
+import com.koresuniku.wishmaster.ui.dialog.DialogManager.DIALOG_BOARD_ID_KEY
+import com.koresuniku.wishmaster.ui.dialog.DialogManager.DIALOG_BOARD_NAME_KEY
+import com.koresuniku.wishmaster.ui.dialog.DialogManager.DIALOG_DASHBOARD_ID
+import com.koresuniku.wishmaster.ui.dialog.DialogManager.DIALOG_REMOVE_FROM_FAVOURITES_KEY
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarWithTabsView
 import com.koresuniku.wishmaster.ui.controller.view_interface.LoadDataView
 import com.koresuniku.wishmaster.application.settings.SettingsActivity

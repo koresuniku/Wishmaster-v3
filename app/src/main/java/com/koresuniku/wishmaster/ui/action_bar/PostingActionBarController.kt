@@ -14,8 +14,7 @@ import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.configuration
 import org.jetbrains.anko.find
 
-class PostingActionBarController(private val mAppCompatActivity: AppCompatActivity,
-                                 private val mSetTopMargin: Boolean) {
+class PostingActionBarController(private val mAppCompatActivity: AppCompatActivity) {
     val LOG_TAG: String  = PostingActionBarController::class.java.simpleName
 
     lateinit var mActivityToolbarContainer: ViewGroup
@@ -52,7 +51,7 @@ class PostingActionBarController(private val mAppCompatActivity: AppCompatActivi
         mToolbar.layoutParams!!.height = height
         mToolbar.layoutParams!!.width = Toolbar.LayoutParams.MATCH_PARENT
 
-        if (mSetTopMargin) setTopMargin()
+        //setTopMargin()
 
         mActivityToolbarContainer.addView(mLocalToolbarContainer)
         mAppCompatActivity.setSupportActionBar(mToolbar)

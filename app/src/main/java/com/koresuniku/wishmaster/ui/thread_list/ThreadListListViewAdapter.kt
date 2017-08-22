@@ -78,7 +78,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         return filesList
     }
 
-    override fun onClick(threadNumber: String) {
+    override fun onClickNoSpoilersOrLinksFound(threadNumber: String) {
         mView.openThread(threadNumber)
     }
 
@@ -176,13 +176,17 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         return holder
     }
 
-    override fun onLongClick(threadNumber: String) {
+    override fun onLongClickNoSpoilersOrLinksFound(threadNumber: String) {
         for (thread in mView.getSchema().getThreads()) {
             if (thread.getNum() == threadNumber) {
                 mView.showPostDialog(mView.getSchema().getThreads().indexOf(thread))
                 break
             }
         }
+    }
+
+    override fun onLongClickLinkFound(link: String) {
+
     }
 
     override fun getViewTypeCount(): Int = 3
@@ -255,7 +259,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
                 null, SpanTagHandlerCompat(mView.getActivity()))
         holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod =
-                CommentLinkMovementMethod(mView.getActivity(), this, thread.getNum())
+                CommentLinkMovementMethod(mView.getActivity(), this, null, thread.getNum())
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 
@@ -317,7 +321,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
         holder.mCommentTextView!!.maxLines = Int.MAX_VALUE
         holder.mCommentTextView!!.linksClickable = false
         holder.mCommentTextView!!.movementMethod =
-                CommentLinkMovementMethod(mView.getActivity(), this, thread.getNum())
+                CommentLinkMovementMethod(mView.getActivity(), this, null, thread.getNum())
         holder.mPostsAndFilesInfo!!.text = TextUtils.getPostsAndFilesString(
                 thread.getPostsCount().toInt(), thread.getFilesCount().toInt())
 

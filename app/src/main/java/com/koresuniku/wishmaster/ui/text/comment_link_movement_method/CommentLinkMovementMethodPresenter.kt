@@ -128,6 +128,9 @@ class CommentLinkMovementMethodPresenter(val linkMovementMethod: ICommentLinkMov
                 else findSpoiler(off, buffer)!!.clicked) {
             widget.postDelayed(onLongClickLinkFoundAndSpoilerIsClickedRunnable, Constants.LONG_CLICK_TIME)
         } else Log.d(LOG_TAG, "link isnt found")
+        if (!isLinkFound && isSpoilerFound) {
+            widget.postDelayed(onLongClickSpoilerFoundAndNoLinksRunnable, Constants.LONG_CLICK_TIME)
+        }
     }
 
     override fun onActionUp(widget: TextView, buffer: Spannable, event: MotionEvent) {
@@ -154,23 +157,35 @@ class CommentLinkMovementMethodPresenter(val linkMovementMethod: ICommentLinkMov
     override fun onActionCancel(widget: TextView, buffer: Spannable, event: MotionEvent) {
         widget.removeCallbacks(onLongClickNoSpoilersOrLinksFoundRunnable)
         widget.removeCallbacks(onLongClickLinkFoundAndSpoilerIsClickedRunnable)
+        widget.removeCallbacks(onLongClickSpoilerFoundAndNoLinksRunnable)
     }
 
-    val onLongClickNoSpoilersOrLinksFoundRunnable: Runnable = Runnable {
+    private val onLongClickNoSpoilersOrLinksFoundRunnable: Runnable = Runnable {
         if (isPressed) {
             isLongPressed = true
             linkMovementMethod.onLongClickNoSpoilersOrLinksFound()
         } else isLongPressed = false
     }
 
-    val onLongClickLinkFoundAndSpoilerIsClickedRunnable: Runnable = Runnable {
+    private val onLongClickLinkFoundAndSpoilerIsClickedRunnable: Runnable = Runnable {
         if (isPressed) {
             isLongPressed = true
-            Log.d(LOG_TAG, "link long pressed: $currentLink")
+            Log.d(LOG_TAG, "link long pressed: $currentLink") //TODO: handle link long click
         } else {
             isLongPressed = false
             Log.d(LOG_TAG, "is pressed was false")
         }
+    }
+
+    private val onLongClickSpoilerFoundAndNoLinksRunnable: Runnable = Runnable {
+        if (isPressed) {
+            Log.d(LOG_TAG, "unpressed spoiler pressed and no links found")
+            isLongPressed = true
+            linkMovementMethod.onLongClickNoSpoilersOrLinksFound()
+        } else {
+            isLongPressed = false
+        }
+
     }
 
     fun findLinks(widget: TextView, off: Int, buffer: Spannable?, allowPerformClick: Boolean): Boolean {

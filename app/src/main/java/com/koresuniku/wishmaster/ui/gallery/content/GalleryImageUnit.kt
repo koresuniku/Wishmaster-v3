@@ -46,7 +46,7 @@ class GalleryImageUnit(val mFragment: GalleryFragment, val file: Files) : View.O
     }
 
     override fun onClick(p0: View?) {
-        Log.d(LOG_TAG, "onClick:")
+        Log.d(LOG_TAG, "onClickNoSpoilersOrLinksFound:")
         mFragment.onClick()
     }
 

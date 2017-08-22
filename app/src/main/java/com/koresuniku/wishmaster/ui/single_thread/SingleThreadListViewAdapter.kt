@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +18,8 @@ import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.http.single_thread_api.model.Post
 import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.ui.controller.DialogManager
+import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
+import com.koresuniku.wishmaster.ui.dialog.DialogManager
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
@@ -40,8 +42,8 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
                                        var mSchema: BaseJsonSchemaImpl,
                                        val mForDialog: Boolean) :
         BaseAdapter(), INotifyableListViewAdapter, AnswersManagerView, ActionBarView,
-        DialogManager.GalleryVisibilityListener, AppCompatActivityView,
-        ListViewAdapterUtils.OnThumbnailClickedCallback {
+        DialogManager.GalleryVisibilityListener, AppCompatActivityView, ClickableAdapter,
+        ListViewAdapterUtils.OnThumbnailClickedCallback, DialogManager.PostDialogView {
     open val LOG_TAG: String = SingleThreadListViewAdapter::class.java.simpleName
 
 
@@ -79,6 +81,17 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         mGalleryPresenter.showImageOrVideo(getFilesList(), file)
     }
 
+    override fun openPostingActivity(postNumber: String) {
+        val intent = Intent(mView.getActivity(), PostingActivity::class.java)
+
+        intent.putExtra(IntentUtils.WHOM_TO_ANSWER_CODE, postNumber)
+
+        if (DeviceUtils.sdkIsLollipopOrHigher()) {
+            mView.getActivity().startActivity(intent)
+            //this.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+        } else mView.getAppCompatActivity().startActivity(intent)
+    }
+
     override fun getSingleThreadListViewView(): SingleThreadListViewView = mView
 
     inner class ViewHolderAndFiles(activity: Activity) : FilesListViewViewHolder(activity) {
@@ -90,6 +103,20 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         init {
             files = ArrayList()
         }
+    }
+
+    override fun onClickNoSpoilersOrLinksFound(threadNumber: String) {
+
+    }
+
+    override fun onLongClickNoSpoilersOrLinksFound(threadNumber: String) {
+        val bundle = Bundle()
+        bundle.putString(DialogManager.DIALOG_POST_ITEM_POST_NUMBER_KEY, threadNumber)
+        DialogManager.createAndShowPostDialog(this@SingleThreadListViewAdapter, bundle)
+    }
+
+    override fun onLongClickLinkFound(link: String) {
+
     }
 
     private fun getFilesList(): List<Files> {
@@ -218,16 +245,9 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
         Log.d(LOG_TAG, "viewholder.size: ${holders.size}")
 
         holder.mItemContainer!!.setOnLongClickListener {
-            //mView.showPostDialog(position)
-            val intent = Intent(mView.getActivity(), PostingActivity::class.java)
-
-            intent.putExtra(IntentUtils.WHOM_TO_ANSWER_CODE, post.getNum())
-
-            if (DeviceUtils.sdkIsLollipopOrHigher()) {
-                mView.getActivity().startActivity(intent)
-                //this.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
-            } else mView.getAppCompatActivity().startActivity(intent)
-
+            val bundle = Bundle()
+            bundle.putString(DialogManager.DIALOG_POST_ITEM_POST_NUMBER_KEY, post.getNum())
+            DialogManager.createAndShowPostDialog(this@SingleThreadListViewAdapter, bundle)
             false
         }
 
@@ -235,7 +255,7 @@ open class SingleThreadListViewAdapter(val mView: SingleThreadListViewView,
                 mView.getActivity(), post.getPostNumberAsc(), post)
         holder.mNumberAndTimeInfo!!.setText(mNumberAndTimeSpannable, TextView.BufferType.SPANNABLE)
         //Log.d(LOG_TAG, "raw html: ${post.getComment()}")
-        ListViewAdapterUtils.setupComment(holder, post, mAnswersManager, mForDialog)
+        ListViewAdapterUtils.setupComment(holder, post, this, mAnswersManager, mForDialog)
 
         holder.postNumber = post.getNum()
         setupAnswers(holder, post)
