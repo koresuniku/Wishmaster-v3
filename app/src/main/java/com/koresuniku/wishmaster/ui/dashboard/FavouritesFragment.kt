@@ -17,7 +17,7 @@ import android.widget.TextView
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.database.BoardsUtils
 import com.koresuniku.wishmaster.database.DatabaseContract
-import com.koresuniku.wishmaster.http.boards_api.model.BaseBoardSchema
+import com.koresuniku.wishmaster.domain.boards_api.model.BaseBoardSchema
 import com.koresuniku.wishmaster.application.PreferenceUtils
 import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.controller.view_interface.drag_and_swipe_recycler_view.ItemTouchHelperAdapter

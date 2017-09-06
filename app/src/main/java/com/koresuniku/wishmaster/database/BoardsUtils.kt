@@ -4,9 +4,8 @@ import android.app.Activity
 import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
-import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
-import com.koresuniku.wishmaster.http.boards_api.model.*
+import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchema
+import com.koresuniku.wishmaster.domain.boards_api.model.*
 import java.util.ArrayList
 
 object BoardsUtils {
@@ -248,7 +247,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.creativity!!) {
+        for (board in mSchema.creativity!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_CREATIVITY)
@@ -256,7 +255,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.games!!) {
+        for (board in mSchema.games!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_GAMES)
@@ -264,7 +263,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.japanese!!) {
+        for (board in mSchema.japanese!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_JAPANESE)
@@ -272,7 +271,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.other!!) {
+        for (board in mSchema.other!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_OTHER)
@@ -280,7 +279,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.politics!!) {
+        for (board in mSchema.politics!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_POLITICS)
@@ -288,7 +287,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.subject!!) {
+        for (board in mSchema.subject!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_SUBJECTS)
@@ -296,7 +295,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.tech!!) {
+        for (board in mSchema.tech!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_TECH)
@@ -304,7 +303,7 @@ object BoardsUtils {
             values = ContentValues()
         }
 
-        for (board in mSchema!!.users!!) {
+        for (board in mSchema.users!!) {
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_ID, board.id)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_NAME, board.name)
             values.put(DatabaseContract.BoardsEntry.COLUMN_BOARD_CATEGORY, DatabaseContract.BoardsEntry.CATEGORY_USERS)
@@ -321,26 +320,26 @@ object BoardsUtils {
         for (adults: Adults in mSchema!!.adults!!) {
             boardsNewIdsSet.add(adults.id)
         }
-        for (creativity: Creativity in mSchema!!.creativity!!) {
+        for (creativity: Creativity in mSchema.creativity!!) {
             boardsNewIdsSet.add(creativity.id)
         }
-        for (games: Games in mSchema!!.games!!) {
+        for (games: Games in mSchema.games!!) {
             boardsNewIdsSet.add(games.id)
         }
-        mSchema!!.japanese!!.mapTo(boardsNewIdsSet) { it.id }
-        for (other: Other in mSchema!!.other!!) {
+        mSchema.japanese!!.mapTo(boardsNewIdsSet) { it.id }
+        for (other: Other in mSchema.other!!) {
             boardsNewIdsSet.add(other.id)
         }
-        for (politics: Politics in mSchema!!.politics!!) {
+        for (politics: Politics in mSchema.politics!!) {
             boardsNewIdsSet.add(politics.id)
         }
-        for (subjects: Subjects in mSchema!!.subject!!) {
+        for (subjects: Subjects in mSchema.subject!!) {
             boardsNewIdsSet.add(subjects.id)
         }
-        for (tech: Tech in mSchema!!.tech!!) {
+        for (tech: Tech in mSchema.tech!!) {
             boardsNewIdsSet.add(tech.id)
         }
-        for (users: Users in mSchema!!.users!!) {
+        for (users: Users in mSchema.users!!) {
             boardsNewIdsSet.add(users.id)
         }
 
@@ -358,47 +357,47 @@ object BoardsUtils {
         val resultSet: Set<String?> = boardsNewIdsSet.subtract(boardsDatabaseIdsSet)
 
         for (newBoardId: String? in resultSet) {
-            mSchema!!.adults!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.adults!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_ADULTS), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.creativity!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.creativity!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_CREATIVITY), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.games!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.games!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_GAMES), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.japanese!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.japanese!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_JAPANESE), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.other!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.other!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_OTHER), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.politics!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.politics!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_POLITICS), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.subject!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.subject!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_SUBJECTS), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.tech!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.tech!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_TECH), activity)
             }
         }
         for (newBoardId: String? in resultSet) {
-            mSchema!!.users!!.filter { it.id!! == newBoardId }.forEach {
+            mSchema.users!!.filter { it.id!! == newBoardId }.forEach {
                 insertNewBoard(arrayOf(it.id, it.name, DatabaseContract.BoardsEntry.CATEGORY_USERS), activity)
             }
         }
@@ -419,26 +418,26 @@ object BoardsUtils {
         for (adults: Adults in mSchema!!.adults!!) {
             boardsNewIdsSet.add(adults.id)
         }
-        for (creativity: Creativity in mSchema!!.creativity!!) {
+        for (creativity: Creativity in mSchema.creativity!!) {
             boardsNewIdsSet.add(creativity.id)
         }
-        for (games: Games in mSchema!!.games!!) {
+        for (games: Games in mSchema.games!!) {
             boardsNewIdsSet.add(games.id)
         }
-        mSchema!!.japanese!!.mapTo(boardsNewIdsSet) { it.id }
-        for (other: Other in mSchema!!.other!!) {
+        mSchema.japanese!!.mapTo(boardsNewIdsSet) { it.id }
+        for (other: Other in mSchema.other!!) {
             boardsNewIdsSet.add(other.id)
         }
-        for (politics: Politics in mSchema!!.politics!!) {
+        for (politics: Politics in mSchema.politics!!) {
             boardsNewIdsSet.add(politics.id)
         }
-        for (subjects: Subjects in mSchema!!.subject!!) {
+        for (subjects: Subjects in mSchema.subject!!) {
             boardsNewIdsSet.add(subjects.id)
         }
-        for (tech: Tech in mSchema!!.tech!!) {
+        for (tech: Tech in mSchema.tech!!) {
             boardsNewIdsSet.add(tech.id)
         }
-        for (users: Users in mSchema!!.users!!) {
+        for (users: Users in mSchema.users!!) {
             boardsNewIdsSet.add(users.id)
         }
 

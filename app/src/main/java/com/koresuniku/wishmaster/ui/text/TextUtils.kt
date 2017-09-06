@@ -6,8 +6,8 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.single_thread_api.model.Post
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.single_thread_api.model.Post
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import com.koresuniku.wishmaster.util.Formats
 import com.pixplicity.htmlcompat.HtmlCompat
 import org.jsoup.Jsoup

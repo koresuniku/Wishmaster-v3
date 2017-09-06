@@ -9,8 +9,8 @@ import android.widget.ProgressBar
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.github.piasy.biv.view.BigImageView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.Dvach
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.Dvach
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import org.jetbrains.anko.find
 import org.jetbrains.anko.layoutInflater
 import java.lang.Exception

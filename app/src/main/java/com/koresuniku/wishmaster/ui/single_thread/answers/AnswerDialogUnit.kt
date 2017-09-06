@@ -6,8 +6,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ListView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
-import com.koresuniku.wishmaster.http.single_thread_api.model.Post
+import com.koresuniku.wishmaster.domain.BaseJsonSchemaImpl
+import com.koresuniku.wishmaster.domain.single_thread_api.model.Post
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewView
 import org.jetbrains.anko.find
 

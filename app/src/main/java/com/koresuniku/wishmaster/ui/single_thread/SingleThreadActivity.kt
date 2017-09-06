@@ -14,13 +14,13 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ListView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.DataLoader
-import com.koresuniku.wishmaster.http.IBaseJsonSchema
-import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
+import com.koresuniku.wishmaster.domain.DataLoader
+import com.koresuniku.wishmaster.domain.IBaseJsonSchema
+import com.koresuniku.wishmaster.domain.BaseJsonSchemaImpl
 import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.application.settings.ResultCodes
 import com.koresuniku.wishmaster.application.settings.SettingsActivity
-import com.koresuniku.wishmaster.http.BaseJsonSchemaMapper
+import com.koresuniku.wishmaster.domain.BaseJsonSchemaMapper
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.ActionBarUnit
 import com.koresuniku.wishmaster.ui.controller.AppBarLayoutUnit

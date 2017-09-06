@@ -1,13 +1,12 @@
 package com.koresuniku.wishmaster.ui.thread_list.rv
 
-import android.util.Log
-import com.koresuniku.wishmaster.http.HttpClient
-import com.koresuniku.wishmaster.http.IBaseJsonSchema
-import com.koresuniku.wishmaster.http.thread_list_api.ThreadListForPagesAsync
-import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
-import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadForPage
-import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListForPagesJsonSchema
-import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
+import com.koresuniku.wishmaster.domain.HttpClient
+import com.koresuniku.wishmaster.domain.IBaseJsonSchema
+import com.koresuniku.wishmaster.domain.thread_list_api.ThreadListForPagesAsync
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Thread
+import com.koresuniku.wishmaster.domain.thread_list_api.model.ThreadForPage
+import com.koresuniku.wishmaster.domain.thread_list_api.model.ThreadListForPagesJsonSchema
+import com.koresuniku.wishmaster.domain.thread_list_api.model.ThreadListJsonSchema
 import org.jetbrains.anko.doAsync
 import retrofit2.Response
 import java.util.ArrayList
@@ -20,7 +19,7 @@ class ThreadListForPagesRvAsyncTask(val callback: OnCompletionCallback, boardId:
     private var mLocalSchema: ThreadListJsonSchema = ThreadListJsonSchema()
 
     interface OnCompletionCallback {
-        fun onSchemaReceived(schema: List<IBaseJsonSchema>)
+        fun onSchemaReceivedFromForPages(schema: List<IBaseJsonSchema>)
     }
 
     init {
@@ -28,7 +27,7 @@ class ThreadListForPagesRvAsyncTask(val callback: OnCompletionCallback, boardId:
     }
 
     private fun getThreadsForThreadList(response: Response<ThreadListForPagesJsonSchema>) {
-        var thread: com.koresuniku.wishmaster.http.thread_list_api.model.Thread
+        var thread: com.koresuniku.wishmaster.domain.thread_list_api.model.Thread
         var threadForPage: ThreadForPage
         for (i in 0 until response.body().getThreads().size) {
             thread = response.body().getThreads()[i].getPosts()[0]
@@ -65,6 +64,6 @@ class ThreadListForPagesRvAsyncTask(val callback: OnCompletionCallback, boardId:
 
     private fun finish() {
         this.mLocalSchema.setThreads(threadList)
-        callback.onSchemaReceived(listOf(this.mLocalSchema as IBaseJsonSchema))
+        callback.onSchemaReceivedFromForPages(listOf(this.mLocalSchema as IBaseJsonSchema))
     }
 }

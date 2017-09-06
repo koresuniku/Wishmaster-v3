@@ -1,7 +1,7 @@
 package com.koresuniku.wishmaster.ui.controller.view_interface
 
 import android.app.Activity
-import com.koresuniku.wishmaster.http.IBaseJsonSchema
+import com.koresuniku.wishmaster.domain.IBaseJsonSchema
 
 interface LoadDataView {
     fun loadData()

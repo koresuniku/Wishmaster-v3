@@ -1,9 +1,8 @@
 package com.koresuniku.wishmaster.ui.gallery
 
 import android.content.res.Configuration
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
-import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewAdapter
 
 class GalleryPresenter(val mView: ActionBarView) {
     val LOG_TAG: String = GalleryPresenter::class.java.simpleName

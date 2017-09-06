@@ -13,8 +13,8 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.Dvach
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.Dvach
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import org.jetbrains.anko.find
 import org.jetbrains.anko.layoutInflater
 

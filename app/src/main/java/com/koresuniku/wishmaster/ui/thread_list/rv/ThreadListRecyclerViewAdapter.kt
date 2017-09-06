@@ -1,33 +1,47 @@
 package com.koresuniku.wishmaster.ui.thread_list.rv
 
 import android.app.Activity
+import android.content.Intent
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.IBaseJsonSchema
-import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
-import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
+import com.koresuniku.wishmaster.application.DeviceUtils
+import com.koresuniku.wishmaster.application.IntentUtils
+import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
+import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
+import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
 import com.koresuniku.wishmaster.ui.widget.FixedRecyclerView
+import android.support.v4.content.ContextCompat
+import android.os.Bundle
+import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration
+import com.koresuniku.wishmaster.ui.dialog.DialogManager
 
 
-class ThreadListRecyclerViewAdapter(private val mActivity: Activity, val boardId: String) :
-        RecyclerView.Adapter<ThreadListRecyclerViewViewHolder>(), RvAdapterView {
+class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, val boardId: String) :
+        RecyclerView.Adapter<ThreadListRecyclerViewViewHolder>(), RecyclerViewAdapterView, ClickableAdapter {
     val LOG_TAG: String = ThreadListRecyclerViewAdapter::class.java.simpleName
 
-    private val mRvPresenter = RvPresenter<ThreadListJsonSchema>(this)
+    private val mRvPresenter = ThreadListPresenter(this, boardId)
 
-    var mRvLayout = LayoutInflater.
-            from(mActivity)
-            .inflate(R.layout.activity_thread_list_rv_content, null, false)
-    var mRecyclerView: FixedRecyclerView = mRvLayout.findViewById(R.id.rv) as FixedRecyclerView
-
-    var mSchema: ThreadListJsonSchema = ThreadListJsonSchema()
+    var mRecyclerView: FixedRecyclerView = mActivity.findViewById(R.id.rv) as FixedRecyclerView
 
     fun initAdapter() {
         mRvPresenter.loadData(boardId)
+    }
+
+    override fun onClickNoSpoilersOrLinksFound(threadNumber: String) {
+        openThread(threadNumber)
+    }
+
+    override fun onLongClickNoSpoilersOrLinksFound(threadNumber: String) {
+
+    }
+
+    override fun onLongClickLinkFound(link: String) {
+
     }
 
     override fun showProgressBar() {
@@ -36,50 +50,49 @@ class ThreadListRecyclerViewAdapter(private val mActivity: Activity, val boardId
 
     override fun hideProgressBar() {
         Log.d(LOG_TAG, "hideProgressBar")
-        mActivity.runOnUiThread {
-            
-            mRecyclerView.adapter = this
-        }
     }
 
-    override fun setSchema(schema: IBaseJsonSchema) {
-        mSchema = schema as ThreadListJsonSchema
-        Log.d(LOG_TAG, "mSchema.count: ${mSchema.getThreads().size}")
+    override fun attachAdapter() {
+        mRecyclerView.layoutManager = LinearLayoutManager(mActivity)
+        mRecyclerView.adapter = this
+        val dividerDrawable =
+                ContextCompat.getDrawable(mActivity, R.drawable.thread_list_recycler_view_divider)
+        mRecyclerView.addItemDecoration(DividerItemDecoration(dividerDrawable))
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ThreadListRecyclerViewViewHolder {
-        var itemView: View? = null
-        when (viewType) {
-            ListViewAdapterUtils.ITEM_NO_IMAGES -> {
-                itemView = LayoutInflater.from(mActivity)
-                        .inflate(R.layout.thread_item_no_images, parent, false)
-            }
-            ListViewAdapterUtils.ITEM_SINGLE_IMAGE -> {
-                itemView = LayoutInflater.from(mActivity)
-                        .inflate(R.layout.thread_item_single_image, parent, false)
-            }
-            ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES -> {
-                itemView = LayoutInflater.from(mActivity)
+        val itemView = LayoutInflater.from(mActivity)
                         .inflate(R.layout.thread_item_multiple_images, parent, false)
-            }
-        }
-        if (itemView == null) itemView = View(mActivity)
-        return ThreadListRecyclerViewViewHolder(itemView)
+        return ThreadListRecyclerViewViewHolder(mActivity, this, itemView)
     }
 
     override fun onBindViewHolder(holder: ThreadListRecyclerViewViewHolder?, position: Int) {
         Log.d(LOG_TAG, "onBinfViewHolder: $position")
+        if (holder != null) mRvPresenter.bindViewHolder(holder, position)
     }
 
-    override fun getItemCount(): Int = mSchema.getThreads().size
+    override fun getItemCount(): Int = mRvPresenter.getData().getItemList().size
 
-    override fun getItemViewType(position: Int): Int {
-        val size = mSchema.getThreads()[position].getFiles().size
-        if (size == 0) return ListViewAdapterUtils.ITEM_NO_IMAGES
-        if (size == 1) return ListViewAdapterUtils.ITEM_SINGLE_IMAGE
-        if (size > 1) return ListViewAdapterUtils.ITEM_MULTIPLE_IMAGES
-        return ListViewAdapterUtils.ITEM_NO_IMAGES
+    fun openThread(threadNumber: String) {
+        val intent = Intent(mActivity, SingleThreadActivity::class.java)
+
+        intent.putExtra(IntentUtils.BOARD_ID_CODE, boardId)
+        intent.putExtra(IntentUtils.BOARD_NAME_CODE, mRvPresenter.getData().getBoardModel().getBoardName())
+        intent.putExtra(IntentUtils.THREAD_NUMBER_CODE, threadNumber)
+
+        if (DeviceUtils.sdkIsLollipopOrHigher()) {
+            mActivity.startActivity(intent)
+            //this.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+        } else mActivity.startActivity(intent)
     }
 
+    fun showPostDialog(position: Int) {
+        val args = Bundle()
+        args.putInt(DialogManager.DIALOG_THREAD_ITEM_POSITION_KEY, position)
+        mActivity.removeDialog(0)
+        mActivity.showDialog(0, args)
+    }
 
+    override fun getActivity(): Activity = mActivity
 }

@@ -10,15 +10,16 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.Dvach
-import com.koresuniku.wishmaster.http.single_thread_api.model.Post
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.Dvach
+import com.koresuniku.wishmaster.domain.single_thread_api.model.Post
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.single_thread.answers.AnswersManager
 import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
 import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.text.comment_leading_margin_span.CommentLeadingMarginSpan2
 import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
+import com.koresuniku.wishmaster.ui.thread_list.rv.BaseRecyclerViewViewHolder
 import com.koresuniku.wishmaster.util.Formats
 import com.pixplicity.htmlcompat.HtmlCompat
 import org.jsoup.Jsoup
@@ -150,6 +151,45 @@ object ListViewAdapterUtils {
                 }
             }
         }
+    }
+
+    fun setupImagesForMultipleItem(callback: OnThumbnailClickedCallback, activity: Activity,
+                    holder: BaseRecyclerViewViewHolder, viewModeIsDialog: Boolean,
+                    reloadImages: Boolean) {
+        val filesSize = holder.files.size
+        switchImagesVisibilityForMultipleItem(holder, filesSize)
+
+        if (filesSize != 0) {
+            for (file in holder.files) {
+                    when (holder.files.indexOf(file)) {
+                        0 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image1, holder.webmImageView1,
+                                holder.summary1, file, viewModeIsDialog, reloadImages)
+                        1 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image2, holder.webmImageView2,
+                                holder.summary2, file, viewModeIsDialog, reloadImages)
+                        2 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image3, holder.webmImageView3,
+                                holder.summary3, file, viewModeIsDialog, reloadImages)
+                        3 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image4, holder.webmImageView4,
+                                holder.summary4, file, viewModeIsDialog, reloadImages)
+                        4 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image5, holder.webmImageView5,
+                                holder.summary5, file, viewModeIsDialog, reloadImages)
+                        5 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image6, holder.webmImageView6,
+                                holder.summary6, file, viewModeIsDialog, reloadImages)
+                        6 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image7, holder.webmImageView7,
+                                holder.summary7, file, viewModeIsDialog, reloadImages)
+                        7 -> setupImageContainerForMultipleItem(callback, activity, holder, holder.image8, holder.webmImageView8,
+                                holder.summary8, file, viewModeIsDialog, reloadImages)
+                    }
+            }
+        }
+    }
+
+    fun switchImagesVisibilityForMultipleItem(holder: BaseRecyclerViewViewHolder, filesSize: Int) {
+        switchImagesVisibility(
+                holder.imageAndSummaryContainer1, holder.imageAndSummaryContainer2,
+                holder.imageAndSummaryContainer3, holder.imageAndSummaryContainer4,
+                holder.imageAndSummaryContainer5, holder.imageAndSummaryContainer6,
+                holder.imageAndSummaryContainer7, holder.imageAndSummaryContainer8,
+                filesSize)
     }
 
     fun switchImagesVisibility(holder: FilesListViewViewHolder, filesSize: Int) {
@@ -317,6 +357,27 @@ object ListViewAdapterUtils {
 
     fun setupImageContainer(callback: OnThumbnailClickedCallback, activity: Activity,
                             holder: FilesListViewViewHolder, image: ImageView, webmImage: ImageView,
+                            summary: TextView, file: Files, viewModeIsDialog: Boolean,
+                            reloadImages: Boolean) {
+        val path: String = file.getPath()!!
+
+        if (Formats.VIDEO_FORMATS.contains(TextUtils.getSubstringAfterDot(path))) {
+            webmImage.visibility = View.VISIBLE
+            setCorrectVideoImageSize(activity, webmImage, viewModeIsDialog)
+        } else {
+            webmImage.visibility = View.GONE
+        }
+
+        setCorrectImageSize(activity, image, file, viewModeIsDialog)
+        summary.text = TextUtils.getSummaryString(activity, file)
+        if (reloadImages) loadImageThumbnail(activity, image, file)
+        image.setOnClickListener({
+            callback.onThumbnailClicked(file)
+        })
+    }
+
+    fun setupImageContainerForMultipleItem(callback: OnThumbnailClickedCallback, activity: Activity,
+                            holder: BaseRecyclerViewViewHolder, image: ImageView, webmImage: ImageView,
                             summary: TextView, file: Files, viewModeIsDialog: Boolean,
                             reloadImages: Boolean) {
         val path: String = file.getPath()!!

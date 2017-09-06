@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.koresuniku.wishmaster.R;
 import com.koresuniku.wishmaster.database.BoardsUtils;
 import com.koresuniku.wishmaster.database.DatabaseContract;
-import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema;
+import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchema;
 
 import java.util.List;
 

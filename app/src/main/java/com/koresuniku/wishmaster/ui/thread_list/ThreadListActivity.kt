@@ -13,9 +13,9 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ListView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.DataLoader
-import com.koresuniku.wishmaster.http.IBaseJsonSchema
-import com.koresuniku.wishmaster.http.thread_list_api.model.ThreadListJsonSchema
+import com.koresuniku.wishmaster.domain.DataLoader
+import com.koresuniku.wishmaster.domain.IBaseJsonSchema
+import com.koresuniku.wishmaster.domain.thread_list_api.model.ThreadListJsonSchema
 import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
@@ -54,7 +54,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_thread_list_drawer)
+        setContentView(R.layout.activity_thread_list_rv_drawer)
 
         boardId = intent.getStringExtra(IntentUtils.BOARD_ID_CODE)
         boardName = intent.getStringExtra(IntentUtils.BOARD_NAME_CODE)
@@ -64,15 +64,15 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
         mActionBarUnit = ActionBarUnit(this, false, false)
         mProgressUnit = ProgressUnit(this)
-        mThreadListListViewUnit = ThreadListListViewUnit(this)
-        mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
+        //mThreadListListViewUnit = ThreadListListViewUnit(this)
+        //mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
         mFullPostDialogManager = FullPostDialogManager(this)
 
         mDataLoader = DataLoader(this)
-        mProgressUnit!!.showProgressYoba()
-        loadData()
+        //mProgressUnit!!.showProgressYoba()
+        //loadData()
 
-        //testRvAdapter()
+        testRvAdapter()
     }
 
     fun testRvAdapter() {
@@ -101,9 +101,9 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     override fun onBackPressed() {
-        if (mThreadListListViewUnit!!.adapterIsCreated()) {
-            if (mThreadListListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
-        }
+//        if (mThreadListListViewUnit!!.adapterIsCreated()) {
+//            if (mThreadListListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+//        }
 
         super.onBackPressed()
     }
@@ -114,9 +114,9 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration?) {
         super.onConfigurationChanged(newConfig)
-        mActionBarUnit!!.onConfigurationChanged(newConfig!!)
-        if (mThreadListListViewUnit!!.adapterIsCreated())
-            mThreadListListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
+//        mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+//        if (mThreadListListViewUnit!!.adapterIsCreated())
+//            mThreadListListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
     }
 
     override fun loadData() {

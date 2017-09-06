@@ -1,7 +1,7 @@
 package com.koresuniku.wishmaster.ui.dashboard
 
 import android.app.Activity
-import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
+import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchema
 
 interface ExpandableListViewView {
     fun getActivity(): Activity

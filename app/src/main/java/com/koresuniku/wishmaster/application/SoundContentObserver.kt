@@ -14,7 +14,7 @@ class SoundContentObserver(internal var context: Context, handler: Handler) : Co
     val listeners: HashSet<SoundVolumeChangeListener> = HashSet()
 
     init {
-        App.soundVolume = audioService.getStreamVolume(AudioManager.STREAM_MUSIC)
+        WishmasterApplication.soundVolume = audioService.getStreamVolume(AudioManager.STREAM_MUSIC)
     }
 
     override fun deliverSelfNotifications(): Boolean {
@@ -24,8 +24,8 @@ class SoundContentObserver(internal var context: Context, handler: Handler) : Co
     override fun onChange(selfChange: Boolean) {
         super.onChange(selfChange)
         Log.d(LOG_TAG, "onChange:")
-        App.soundVolume = audioService.getStreamVolume(AudioManager.STREAM_MUSIC)
-        listeners.forEach { it.onVolumeChanged(App.soundVolume) }
+        WishmasterApplication.soundVolume = audioService.getStreamVolume(AudioManager.STREAM_MUSIC)
+        listeners.forEach { it.onVolumeChanged(WishmasterApplication.soundVolume) }
     }
 
     fun bindListener(soundVolumeChangeListener: SoundVolumeChangeListener) {

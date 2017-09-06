@@ -15,9 +15,9 @@ import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.application.LifecycleEvent
-import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
-import com.koresuniku.wishmaster.http.single_thread_api.model.Post
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.BaseJsonSchemaImpl
+import com.koresuniku.wishmaster.domain.single_thread_api.model.Post
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.dialog.DialogManager
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder

@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.View
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.application.App
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
+import com.koresuniku.wishmaster.application.WishmasterApplication
 import com.koresuniku.wishmaster.application.CacheUtils
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.gallery.content.GalleryFragment
@@ -43,7 +43,7 @@ class GalleryPagerAdapter(fragmentManager: FragmentManager, val galleryPagerView
 
         //TODO: Start video view if needed
         if (mGalleryFragments[currentPosition]!!.mGalleryVideoUnit != null) {
-            mGalleryFragments[currentPosition]!!.mGalleryVideoUnit!!.onSoundChanged(App.soundVolume)
+            mGalleryFragments[currentPosition]!!.mGalleryVideoUnit!!.onSoundChanged(WishmasterApplication.soundVolume)
             mGalleryFragments[currentPosition]!!.mGalleryVideoUnit!!.startVideoView()
         }
 

@@ -18,9 +18,9 @@ import android.widget.FrameLayout
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.database.BoardsUtils
 import com.koresuniku.wishmaster.database.DatabaseContract
-import com.koresuniku.wishmaster.http.DataLoader
-import com.koresuniku.wishmaster.http.IBaseJsonSchema
-import com.koresuniku.wishmaster.http.boards_api.BoardsJsonSchema
+import com.koresuniku.wishmaster.domain.DataLoader
+import com.koresuniku.wishmaster.domain.IBaseJsonSchema
+import com.koresuniku.wishmaster.domain.boards_api.BoardsJsonSchema
 import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.application.IntentUtils
 import com.koresuniku.wishmaster.application.PreferenceUtils

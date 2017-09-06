@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.widget.*
 
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.Dvach
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.http.thread_list_api.model.Thread
+import com.koresuniku.wishmaster.domain.Dvach
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.application.PreferenceUtils
 import com.koresuniku.wishmaster.ui.controller.ClickableAdapter
 import com.koresuniku.wishmaster.ui.controller.FilesListViewViewHolder

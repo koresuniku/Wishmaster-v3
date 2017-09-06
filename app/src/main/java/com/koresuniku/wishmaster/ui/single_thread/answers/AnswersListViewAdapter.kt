@@ -4,17 +4,12 @@ import android.app.Activity
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.View
-import android.widget.TextView
-import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.BaseJsonSchemaImpl
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
+import com.koresuniku.wishmaster.domain.BaseJsonSchemaImpl
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewAdapter
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadListViewView
 import org.greenrobot.eventbus.EventBus
-import org.jetbrains.anko.find
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

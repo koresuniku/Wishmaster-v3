@@ -12,9 +12,9 @@ import com.devbrackets.android.exomedia.listener.OnCompletionListener
 import com.devbrackets.android.exomedia.listener.OnPreparedListener
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.koresuniku.wishmaster.R
-import com.koresuniku.wishmaster.http.Dvach
-import com.koresuniku.wishmaster.http.thread_list_api.model.Files
-import com.koresuniku.wishmaster.application.App
+import com.koresuniku.wishmaster.domain.Dvach
+import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
+import com.koresuniku.wishmaster.application.WishmasterApplication
 import com.koresuniku.wishmaster.application.DeviceUtils
 import com.koresuniku.wishmaster.ui.UiUtils
 import com.koresuniku.wishmaster.ui.UiVisibilityManager
@@ -78,7 +78,7 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
             mVideoProgress!!.secondaryProgress = percent }
         }
         mVideoView!!.setOnCompletionListener(this)
-        onSoundChanged(App.soundVolume)
+        onSoundChanged(WishmasterApplication.soundVolume)
 
         mFragment.mRootView!!.addView(mVideoLayout)
     }
@@ -183,11 +183,11 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
             }
         })
         mSoundSwitcherContainer!!.setOnClickListener {
-            if (App.mSoundContentObserver!!.getStreamVolume() == 0) {
-                App.mSoundContentObserver!!.setStreamVolume(previousVolume)
+            if (WishmasterApplication.mSoundContentObserver!!.getStreamVolume() == 0) {
+                WishmasterApplication.mSoundContentObserver!!.setStreamVolume(previousVolume)
             } else {
-                previousVolume = App.mSoundContentObserver!!.getStreamVolume()
-                App.mSoundContentObserver!!.setStreamVolume(0)
+                previousVolume = WishmasterApplication.mSoundContentObserver!!.getStreamVolume()
+                WishmasterApplication.mSoundContentObserver!!.setStreamVolume(0)
             }
         }
 
@@ -272,7 +272,7 @@ class GalleryVideoUnit(val mFragment: GalleryFragment, val file: Files) :
 
     fun onSoundChanged(volume: Int) {
         Log.d(LOG_TAG, "volume: $volume")
-        Log.d(LOG_TAG, "maxVolume: ${App.mSoundContentObserver!!.getMaxVolume()}")
+        Log.d(LOG_TAG, "maxVolume: ${WishmasterApplication.mSoundContentObserver!!.getMaxVolume()}")
 
         if (volume == 0) {
             mSoundSwitcherImage!!.imageResource = R.drawable.ic_volume_off_white_24dp
