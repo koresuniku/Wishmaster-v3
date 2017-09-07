@@ -16,20 +16,28 @@ import com.koresuniku.wishmaster.ui.thread_list.ThreadListActivity
 import com.koresuniku.wishmaster.ui.widget.FixedRecyclerView
 import android.support.v4.content.ContextCompat
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
+import android.view.MotionEvent
+import android.view.View
+import android.widget.AbsListView
+import com.bumptech.glide.Glide
 import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration
 import com.koresuniku.wishmaster.ui.dialog.DialogManager
-
+import com.koresuniku.wishmaster.ui.widget.recycler_view_fast_scroll.RecyclerFastScroller
 
 class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, val boardId: String) :
         RecyclerView.Adapter<ThreadListRecyclerViewViewHolder>(), RecyclerViewAdapterView, ClickableAdapter {
     val LOG_TAG: String = ThreadListRecyclerViewAdapter::class.java.simpleName
 
-    private val mRvPresenter = ThreadListPresenter(this, boardId)
+    private val mThreadListPresenter = ThreadListPresenter(this, boardId)
 
-    var mRecyclerView: FixedRecyclerView = mActivity.findViewById(R.id.rv) as FixedRecyclerView
+    private var mRecyclerView: FixedRecyclerView = mActivity.findViewById(R.id.rv) as FixedRecyclerView
+    private var mFastScroller: RecyclerFastScroller = mActivity.findViewById(R.id.fs) as RecyclerFastScroller
+    private var mScrollState: Int = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 
     fun initAdapter() {
-        mRvPresenter.loadData(boardId)
+        mThreadListPresenter.loadData(boardId)
     }
 
     override fun onClickNoSpoilersOrLinksFound(threadNumber: String) {
@@ -55,30 +63,63 @@ class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, v
     override fun attachAdapter() {
         mRecyclerView.layoutManager = LinearLayoutManager(mActivity)
         mRecyclerView.adapter = this
+        mRecyclerView.setOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                //Log.d(LOG_TAG, "computeverticalscrollrange: ${mRecyclerView.computeVerticalScrollRange()}")
+                //Log.d(LOG_TAG, "${mRecyclerView.computeVerticalScrollOffset()}")
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                mScrollState = newState
+                when (newState) {
+                    AbsListView.OnScrollListener.SCROLL_STATE_FLING -> {
+                    //Log.d(LOG_TAG, "state fling")
+                            Glide . with (mActivity).pauseRequests()
+                }
+                    AbsListView.OnScrollListener.SCROLL_STATE_IDLE -> {
+                        //Log.d(LOG_TAG, "state idle")
+                    Glide.with(mActivity).resumeRequests()
+                }
+                }
+            }
+        })
+
+        mFastScroller.attachRecyclerView(mRecyclerView)
+        mFastScroller.attachAdapter(mRecyclerView.adapter)
+        mFastScroller.attachAppBarLayout(
+                mActivity.findViewById(R.id.coordinator) as CoordinatorLayout,
+                mActivity.findViewById(R.id.app_bar_layout) as AppBarLayout)
+        mFastScroller.setOnHandleTouchListener { v, event ->
+            //Log.d(LOG_TAG, "onTouch")
+            false
+        }
+
         val dividerDrawable =
                 ContextCompat.getDrawable(mActivity, R.drawable.thread_list_recycler_view_divider)
         mRecyclerView.addItemDecoration(DividerItemDecoration(dividerDrawable))
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ThreadListRecyclerViewViewHolder {
         val itemView = LayoutInflater.from(mActivity)
-                        .inflate(R.layout.thread_item_multiple_images, parent, false)
+                .inflate(R.layout.thread_item_multiple_images, parent, false)
         return ThreadListRecyclerViewViewHolder(mActivity, this, itemView)
     }
 
     override fun onBindViewHolder(holder: ThreadListRecyclerViewViewHolder?, position: Int) {
-        Log.d(LOG_TAG, "onBinfViewHolder: $position")
-        if (holder != null) mRvPresenter.bindViewHolder(holder, position)
+        if (holder != null) {
+            mThreadListPresenter.bindViewHolder(holder, position)
+        }
     }
 
-    override fun getItemCount(): Int = mRvPresenter.getData().getItemList().size
+    override fun getItemCount(): Int = mThreadListPresenter.getData().getItemList().size
 
     fun openThread(threadNumber: String) {
         val intent = Intent(mActivity, SingleThreadActivity::class.java)
 
         intent.putExtra(IntentUtils.BOARD_ID_CODE, boardId)
-        intent.putExtra(IntentUtils.BOARD_NAME_CODE, mRvPresenter.getData().getBoardModel().getBoardName())
+        intent.putExtra(IntentUtils.BOARD_NAME_CODE, mThreadListPresenter.getData().getBoardModel().getBoardName())
         intent.putExtra(IntentUtils.THREAD_NUMBER_CODE, threadNumber)
 
         if (DeviceUtils.sdkIsLollipopOrHigher()) {

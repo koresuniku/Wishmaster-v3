@@ -59,6 +59,7 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'com.bignerdranch.android:simple-item-decoration:1.0.0'
+    compile 'com.github.pluscubed:recycler-fast-scroll:0.3.2@aar'
 }
 repositories {
     mavenCentral()

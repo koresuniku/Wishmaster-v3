@@ -35,11 +35,13 @@ class ThreadListRecyclerViewViewHolder(private val mContext: Context,
     @BindView (R.id.post_subject) lateinit var mSubjectTextView: TextView
     @BindView (R.id.answers) lateinit var mPostsAndFilesInfo: TextView
 
-    init {
-        ButterKnife.bind(this, itemView!!)
-    }
+    init { ButterKnife.bind(this, itemView!!) }
 
     fun provideFiles(files: List<Files>) { this.files = files }
+
+    fun setOnClickListener(threadNum: String) {
+        mItemContainer.setOnClickListener { mAdapter.openThread(threadNum) }
+    }
 
     fun setImages() {
         ListViewAdapterUtils.setupImagesForMultipleItem(this, mAdapter.getActivity(), this, false, true)

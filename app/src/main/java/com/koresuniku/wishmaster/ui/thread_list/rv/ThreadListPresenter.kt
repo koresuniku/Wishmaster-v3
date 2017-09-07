@@ -41,6 +41,7 @@ class ThreadListPresenter(private val mRecyclerViewAdapterView: RecyclerViewAdap
     fun bindViewHolder(holder: ThreadListRecyclerViewViewHolder, position: Int) {
         val thread = getData().getItemList()[position]
 
+        holder.setOnClickListener(thread.getNum())
         holder.provideFiles(thread.getFiles())
         holder.setImages()
 
@@ -58,9 +59,7 @@ class ThreadListPresenter(private val mRecyclerViewAdapterView: RecyclerViewAdap
         }
     }
 
-    private fun setupMaxLines(holder: ThreadListRecyclerViewViewHolder) {
-        holder.setMaxLines()
-    }
+    private fun setupMaxLines(holder: ThreadListRecyclerViewViewHolder) { holder.setMaxLines() }
 
     private fun setupComment(holder: ThreadListRecyclerViewViewHolder, comment: String, threadNum: String) {
         object : AsyncTask<Void, Void, Short>() {

@@ -1,1 +1,2 @@
 include ':app'
+//project(':recycler-fast-scroll-debug').projectDir = new File('libs/recycler-fast-scroll-debug')
