@@ -1,10 +1,7 @@
 package com.koresuniku.wishmaster.ui.thread_list.rv
 
 import android.content.Context
-import android.os.AsyncTask
 import android.text.Html
-import android.text.Spanned
-import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -12,21 +9,15 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.application.PreferenceUtils
-import com.koresuniku.wishmaster.domain.Dvach
 import com.koresuniku.wishmaster.domain.thread_list_api.model.Files
-import com.koresuniku.wishmaster.domain.thread_list_api.model.Thread
 import com.koresuniku.wishmaster.ui.controller.ListViewAdapterUtils
 import com.koresuniku.wishmaster.ui.text.SpanTagHandlerCompat
-import com.koresuniku.wishmaster.ui.text.TextUtils
 import com.koresuniku.wishmaster.ui.text.comment_link_movement_method.CommentLinkMovementMethod
 import com.pixplicity.htmlcompat.HtmlCompat
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.topPadding
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 
 class ThreadListRecyclerViewViewHolder(private val mContext: Context,
         private val mAdapter: ThreadListRecyclerViewAdapter, itemView: View?) :
@@ -41,6 +32,10 @@ class ThreadListRecyclerViewViewHolder(private val mContext: Context,
 
     fun setOnClickListener(threadNum: String) {
         mItemContainer.setOnClickListener { mAdapter.openThread(threadNum) }
+    }
+
+    override fun onThumbnailClicked(file: Files) {
+        mAdapter.mGalleryUnit.showImageOrVideo(files, file)
     }
 
     fun setImages() {
@@ -66,14 +61,28 @@ class ThreadListRecyclerViewViewHolder(private val mContext: Context,
         else mCommentTextView.maxLines = maxLines
     }
 
-    fun setComment(comment: String, threadNum: String) {
+    fun setComment(commentHtml: String, threadNum: String) {
         mCommentTextView.context.runOnUiThread {
-            mCommentTextView.text = HtmlCompat.fromHtml(
-                    mContext, comment, 0,
-                    null, SpanTagHandlerCompat(mContext))
             mCommentTextView.linksClickable = false
             mCommentTextView.movementMethod =
                     CommentLinkMovementMethod(mContext, mAdapter, null, threadNum)
+            val params = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT)
+            if (files.size == 1) {
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                mCommentTextView.layoutParams = params
+                imagesAndSummariesContainer.bringToFront()
+                doAsync { ListViewAdapterUtils.setCommentSpannableForItemSingleImage(
+                            mAdapter.getActivity(),
+                            this@ThreadListRecyclerViewViewHolder, commentHtml, false)
+                }
+            } else {
+                params.addRule(RelativeLayout.BELOW, imagesAndSummariesContainer.id)
+                mCommentTextView.layoutParams = params
+                mCommentTextView.text = HtmlCompat.fromHtml(
+                        mContext, commentHtml, 0, null, SpanTagHandlerCompat(mContext))
+            }
         }
     }
 

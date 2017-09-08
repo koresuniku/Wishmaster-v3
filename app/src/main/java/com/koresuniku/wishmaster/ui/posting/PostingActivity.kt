@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.bindView
 import com.koresuniku.wishmaster.R
@@ -43,17 +42,17 @@ class PostingActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        EventBus.getDefault().post(LifecycleEvent(LifecycleEvent.onStart))
+        EventBus.getDefault().post(LifecycleEvent(LifecycleEvent.ON_START))
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        EventBus.getDefault().post(LifecycleEvent(LifecycleEvent.onConfigurationChanged))
+        EventBus.getDefault().post(LifecycleEvent(LifecycleEvent.ON_CONFIGURATION_CHANGED))
     }
 
     override fun onStop() {
         super.onStop()
-        EventBus.getDefault().post(LifecycleEvent(LifecycleEvent.onStop))
+        EventBus.getDefault().post(LifecycleEvent(LifecycleEvent.ON_STOP))
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

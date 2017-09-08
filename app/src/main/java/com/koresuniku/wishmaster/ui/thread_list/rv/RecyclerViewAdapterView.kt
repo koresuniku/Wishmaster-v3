@@ -5,5 +5,6 @@ import com.koresuniku.wishmaster.ui.controller.view_interface.IActivityView
 interface RecyclerViewAdapterView : IActivityView {
     fun showProgressBar()
     fun hideProgressBar()
-    fun attachAdapter()
+    fun onDataLoadedSuccessfully()
+    fun onDataLoadingFailed()
 }

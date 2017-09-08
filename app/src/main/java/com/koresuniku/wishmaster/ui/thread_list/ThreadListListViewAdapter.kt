@@ -42,7 +42,7 @@ class ThreadListListViewAdapter(val mView: ThreadListListViewView) : BaseAdapter
 
     val holders: ArrayList<ViewHolder> = ArrayList()
 
-    val mGalleryPresenter = GalleryPresenter(this)
+    val mGalleryPresenter = GalleryUnit(mView.getAppCompatActivity())
 
     override fun iNotifyDataSetChanged() {
         this.notifyDataSetChanged()

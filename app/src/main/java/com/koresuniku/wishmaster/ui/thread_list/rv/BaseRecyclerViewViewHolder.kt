@@ -15,6 +15,7 @@ open class BaseRecyclerViewViewHolder(itemView: View?) :
         RecyclerView.ViewHolder(itemView), ListViewAdapterUtils.OnThumbnailClickedCallback {
     @BindView(R.id.post_comment) lateinit var mCommentTextView: TextView
 
+    @BindView (R.id.imagies_and_summaries_container) lateinit var imagesAndSummariesContainer: RelativeLayout
     @Nullable @BindView(R.id.image_and_summary_container) lateinit var imageAndSummaryContainer: RelativeLayout
     @BindView(R.id.image_with_summary_container_1) lateinit var imageAndSummaryContainer1: RelativeLayout
     @BindView(R.id.image_with_summary_container_2) lateinit var imageAndSummaryContainer2: RelativeLayout

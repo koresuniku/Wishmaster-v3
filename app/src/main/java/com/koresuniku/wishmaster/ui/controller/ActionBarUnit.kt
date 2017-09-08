@@ -7,7 +7,11 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.koresuniku.wishmaster.R
 import com.koresuniku.wishmaster.application.DeviceUtils
+import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.ui.controller.view_interface.ActionBarView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean, val presetupTitleLoading: Boolean) {
     open var LOG_TAG: String = ActionBarWithTabsUnit::class.java.simpleName
@@ -18,6 +22,7 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
     var mToolbar: Toolbar? = null
 
     init {
+        EventBus.getDefault().register(this)
         setupActionBar(mView.getAppCompatActivity().resources.configuration)
         if (presetupTitleLoading) setLoadingTitle()
     }
@@ -26,7 +31,7 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
         mActivityToolbarContainer.removeAllViews()
 
         mLocalToolbarContainer = mView.getAppCompatActivity().layoutInflater
-                .inflate(getIdRes(), null, false) as RelativeLayout
+                .inflate(R.layout.action_bar_layout, null, false) as RelativeLayout
         mToolbar = mLocalToolbarContainer!!.findViewById(R.id.toolbar) as Toolbar?
         val height: Int = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             mView.getAppCompatActivity().resources.getDimension(R.dimen.action_bar_height_portrait).toInt()
@@ -40,18 +45,11 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
         mActivityToolbarContainer.addView(mLocalToolbarContainer)
 
         setSupportActionBarAndTitle()
-        postSetupActionBar()
     }
-
-    open fun getIdRes(): Int = R.layout.action_bar_layout
 
     open fun setSupportActionBarAndTitle() {
         mView.getAppCompatActivity().setSupportActionBar(mToolbar)
         mView.setupActionBarTitle()
-    }
-
-    open fun postSetupActionBar() {
-
     }
 
     fun setProperDimensForToolbarContainer() {
@@ -66,8 +64,21 @@ open class ActionBarUnit(var mView: ActionBarView, val createTopMargin: Boolean,
         mLocalToolbarContainer!!.findViewById(R.id.tab_layout).visibility = View.VISIBLE
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onLifecyclerEvent(event: LifecycleEvent) {
+        when(event.anEvent) {
+            LifecycleEvent.ON_CONFIGURATION_CHANGED -> {
+                val configuration = event.configuration
+                setupActionBar(configuration)
+            }
+            LifecycleEvent.ON_START -> EventBus.getDefault().register(this)
+
+            LifecycleEvent.ON_STOP -> EventBus.getDefault().unregister(this)
+        }
+    }
     open fun onConfigurationChanged(configuration: Configuration) {
-        setupActionBar(configuration)
+
     }
 
     fun setLoadingTitle() {

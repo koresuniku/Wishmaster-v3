@@ -10,7 +10,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import android.view.KeyEvent
 import com.koresuniku.wishmaster.application.LifecycleEvent
-import com.koresuniku.wishmaster.ui.gallery.GalleryVisibilityEvent
+import com.koresuniku.wishmaster.ui.gallery.GalleryEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -36,9 +36,9 @@ class AnswersManager(val mView: AnswersManagerView) {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLifecycleEvent(event: LifecycleEvent) {
         when (event.anEvent) {
-            LifecycleEvent.onStart ->
+            LifecycleEvent.ON_START ->
                 if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
-            LifecycleEvent.onStop ->
+            LifecycleEvent.ON_STOP ->
                 if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this)
         }
     }
@@ -94,15 +94,15 @@ class AnswersManager(val mView: AnswersManagerView) {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onGalleryVisibilityEvent(event: GalleryVisibilityEvent) {
+    fun onGalleryVisibilityEvent(event: GalleryEvent) {
         if (mAnswerDialogStack.isNotEmpty()) {
             when (event.visibitity) {
-                GalleryVisibilityEvent.IS_HIDDEN -> {
+                GalleryEvent.IS_HIDDEN -> {
                     mBackgroundTintDialog.show()
                     mAnswerDialogStack.forEach { it.showDialog() }
                     restoreCurrentDialogScroll()
                 }
-                GalleryVisibilityEvent.IS_SHOWN -> {
+                GalleryEvent.IS_SHOWN -> {
                     saveCurrentDialogScroll()
                     mAnswerDialogStack.forEach { it.closeDialog() }
                     mBackgroundTintDialog.dismiss()

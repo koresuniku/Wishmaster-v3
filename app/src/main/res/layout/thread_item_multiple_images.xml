@@ -21,473 +21,465 @@
         android:paddingRight="@dimen/post_item_side_padding"
         android:paddingTop="@dimen/post_item_side_padding">
 
-        <TextView
-            android:id="@+id/post_subject"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-
-            android:text="subject"
-            android:textColor="@color/colorSubject"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/post_number_and_time_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/post_subject"
-            android:text="number and time"
-            android:visibility="gone" />
-
-
         <RelativeLayout
-            android:id="@+id/imagies_and_summaries_container"
+            android:id="@+id/post_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/post_number_and_time_info">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_1"
+            <TextView
+                android:id="@+id/post_number_and_time_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/post_subject"
+                android:text="number and time"
+                android:visibility="gone"/>
 
-                <FrameLayout
-                    android:id="@+id/image_container_1"
+            <TextView
+                android:id="@+id/post_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+
+                android:text="subject"
+                android:textColor="@color/colorSubject"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <RelativeLayout
+                android:id="@+id/imagies_and_summaries_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_number_and_time_info">
+
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true">
 
-                    <ImageView
-                        android:id="@+id/post_image_1"
+                    <FrameLayout
+                        android:id="@+id/image_container_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
 
-                    <ImageView
-                        android:id="@+id/webm_imageview_1"
+                        <ImageView
+                            android:id="@+id/post_image_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
 
+                        <ImageView
+                            android:id="@+id/webm_imageview_1"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_1"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
 
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_1"
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_1"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
 
 
-                android:layout_marginLeft="@dimen/post_item_side_padding"
-                android:layout_toEndOf="@+id/image_with_summary_container_1"
-                android:layout_toRightOf="@+id/image_with_summary_container_1">
+                    android:layout_marginLeft="@dimen/post_item_side_padding"
+                    android:layout_toEndOf="@+id/image_with_summary_container_1"
+                    android:layout_toRightOf="@+id/image_with_summary_container_1">
 
-                <FrameLayout
-                    android:id="@+id/image_container_2"
+                    <FrameLayout
+                        android:id="@+id/image_container_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
+
+                        <ImageView
+                            android:id="@+id/post_image_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
+
+                        <ImageView
+                            android:id="@+id/webm_imageview_2"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_2"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="@dimen/post_item_side_padding"
+                    android:layout_toEndOf="@+id/image_with_summary_container_2"
+                    android:layout_toRightOf="@+id/image_with_summary_container_2">
+
+                    <FrameLayout
+                        android:id="@+id/image_container_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
+
+                        <ImageView
+                            android:id="@+id/post_image_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
+
+                        <ImageView
+                            android:id="@+id/webm_imageview_3"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_3"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/image_with_summary_container_3"
+
+                    android:layout_marginLeft="@dimen/post_item_side_padding"
+                    android:layout_toEndOf="@+id/image_with_summary_container_3"
+                    android:layout_toRightOf="@+id/image_with_summary_container_3">
+
+                    <FrameLayout
+                        android:id="@+id/image_container_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
+
+                        <ImageView
+                            android:id="@+id/post_image_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
+
+                        <ImageView
+                            android:id="@+id/webm_imageview_4"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_4"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
+                    android:layout_alignParentStart="false"
+                    android:layout_below="@+id/image_with_summary_container_1"
+                    android:layout_marginTop="2dp">
 
-                    <ImageView
-                        android:id="@+id/post_image_2"
+                    <FrameLayout
+                        android:id="@+id/image_container_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
 
-                    <ImageView
-                        android:id="@+id/webm_imageview_2"
+                        <ImageView
+                            android:id="@+id/post_image_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
 
+                        <ImageView
+                            android:id="@+id/webm_imageview_5"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_5"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
 
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_2"
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_2"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp" />
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_below="@+id/image_with_summary_container_2"
+
+                    android:layout_marginLeft="@dimen/post_item_side_padding"
+                    android:layout_marginTop="2dp"
+                    android:layout_toEndOf="@+id/image_with_summary_container_5"
+                    android:layout_toRightOf="@+id/image_with_summary_container_5">
+
+                    <FrameLayout
+                        android:id="@+id/image_container_6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
+
+                        <ImageView
+                            android:id="@+id/post_image_6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
+
+                        <ImageView
+                            android:id="@+id/webm_imageview_6"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_6"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_below="@+id/image_with_summary_container_2"
+
+                    android:layout_marginLeft="@dimen/post_item_side_padding"
+                    android:layout_marginTop="2dp"
+                    android:layout_toEndOf="@+id/image_with_summary_container_6"
+                    android:layout_toRightOf="@+id/image_with_summary_container_6">
+
+                    <FrameLayout
+                        android:id="@+id/image_container_7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
+
+                        <ImageView
+                            android:id="@+id/post_image_7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
+
+                        <ImageView
+                            android:id="@+id/webm_imageview_7"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_7"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/image_with_summary_container_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_below="@+id/image_with_summary_container_2"
+
+                    android:layout_marginLeft="@dimen/post_item_side_padding"
+                    android:layout_marginTop="2dp"
+                    android:layout_toEndOf="@+id/image_with_summary_container_7"
+                    android:layout_toRightOf="@+id/image_with_summary_container_7">
+
+                    <FrameLayout
+                        android:id="@+id/image_container_8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
+
+                        <ImageView
+                            android:id="@+id/post_image_8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left|center"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="150dp"/>
+
+                        <ImageView
+                            android:id="@+id/webm_imageview_8"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="2dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/image_summary_8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="false"
+                        android:layout_below="@+id/image_container_8"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="summary"
+                        android:textSize="10sp"/>
+                </RelativeLayout>
+
+
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_3"
+            <com.koresuniku.wishmaster.ui.widget.NoScrollTextView
+                android:id="@+id/post_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:layout_marginLeft="@dimen/post_item_side_padding"
-                android:layout_toEndOf="@+id/image_with_summary_container_2"
-                android:layout_toRightOf="@+id/image_with_summary_container_2">
-
-                <FrameLayout
-                    android:id="@+id/image_container_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-
-                    <ImageView
-                        android:id="@+id/post_image_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
-
-                    <ImageView
-                        android:id="@+id/webm_imageview_3"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_3"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/image_with_summary_container_3"
-
-                android:layout_marginLeft="@dimen/post_item_side_padding"
-                android:layout_toEndOf="@+id/image_with_summary_container_3"
-                android:layout_toRightOf="@+id/image_with_summary_container_3">
-
-                <FrameLayout
-                    android:id="@+id/image_container_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-
-                    <ImageView
-                        android:id="@+id/post_image_4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
-
-                    <ImageView
-                        android:id="@+id/webm_imageview_4"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba" />
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_4"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="false"
-                android:layout_below="@+id/image_with_summary_container_1"
-                android:layout_marginTop="2dp">
-
-                <FrameLayout
-                    android:id="@+id/image_container_5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-
-                    <ImageView
-                        android:id="@+id/post_image_5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
-
-                    <ImageView
-                        android:id="@+id/webm_imageview_5"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_5"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="false"
                 android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
                 android:layout_alignParentStart="false"
-                android:layout_below="@+id/image_with_summary_container_2"
-
-                android:layout_marginLeft="@dimen/post_item_side_padding"
-                android:layout_marginTop="2dp"
-                android:layout_toEndOf="@+id/image_with_summary_container_5"
-                android:layout_toRightOf="@+id/image_with_summary_container_5">
-
-                <FrameLayout
-                    android:id="@+id/image_container_6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-
-                    <ImageView
-                        android:id="@+id/post_image_6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
-
-                    <ImageView
-                        android:id="@+id/webm_imageview_6"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_6"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentStart="false"
-                android:layout_below="@+id/image_with_summary_container_2"
-
-                android:layout_marginLeft="@dimen/post_item_side_padding"
-                android:layout_marginTop="2dp"
-                android:layout_toEndOf="@+id/image_with_summary_container_6"
-                android:layout_toRightOf="@+id/image_with_summary_container_6">
-
-                <FrameLayout
-                    android:id="@+id/image_container_7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-
-                    <ImageView
-                        android:id="@+id/post_image_7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
-
-                    <ImageView
-                        android:id="@+id/webm_imageview_7"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_7"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/image_with_summary_container_8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentStart="false"
-                android:layout_below="@+id/image_with_summary_container_2"
-
-                android:layout_marginLeft="@dimen/post_item_side_padding"
-                android:layout_marginTop="2dp"
-                android:layout_toEndOf="@+id/image_with_summary_container_7"
-                android:layout_toRightOf="@+id/image_with_summary_container_7">
-
-                <FrameLayout
-                    android:id="@+id/image_container_8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-
-                    <ImageView
-                        android:id="@+id/post_image_8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="150dp"/>
-
-                    <ImageView
-                        android:id="@+id/webm_imageview_8"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="2dp"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_circle_outline_makaba"/>
-
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/image_summary_8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_below="@+id/image_container_8"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:text="summary"
-                    android:textSize="10sp"/>
-            </RelativeLayout>
-
+                android:layout_below="@+id/imagies_and_summaries_container"
+                android:maxLines="6"
+                android:text="comment"
+                android:textAppearance="@style/TextAppearance.AppCompat"/>
 
         </RelativeLayout>
 
-        <com.koresuniku.wishmaster.ui.widget.NoScrollTextView
-            android:id="@+id/post_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/imagies_and_summaries_container"
-            android:maxLines="6"
-            android:text="comment"
-            android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
             android:id="@+id/answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/post_comment"
-
+            android:layout_alignParentRight="false"
+            android:layout_below="@+id/post_content"
             android:text="posts and files info"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
-
-        <FrameLayout
-            android:id="@+id/page_indicator_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/answers">
-
-            <include
-                android:id="@+id/threads_page_indicator_view"
-                layout="@layout/threads_page_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-            </include>
-        </FrameLayout>
 
     </RelativeLayout>
 

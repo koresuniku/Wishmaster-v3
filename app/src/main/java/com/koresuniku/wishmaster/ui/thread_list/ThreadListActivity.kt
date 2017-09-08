@@ -21,6 +21,7 @@ import com.koresuniku.wishmaster.ui.UiVisibilityManager
 import com.koresuniku.wishmaster.ui.controller.view_interface.*
 import org.jetbrains.anko.find
 import com.koresuniku.wishmaster.application.DeviceUtils
+import com.koresuniku.wishmaster.application.LifecycleEvent
 import com.koresuniku.wishmaster.application.settings.ResultCodes
 import com.koresuniku.wishmaster.application.settings.SettingsActivity
 import com.koresuniku.wishmaster.ui.controller.*
@@ -28,6 +29,7 @@ import com.koresuniku.wishmaster.ui.dialog.DialogManager
 import com.koresuniku.wishmaster.ui.single_thread.SingleThreadActivity
 import com.koresuniku.wishmaster.ui.thread_list.rv.ThreadListRecyclerViewAdapter
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.doAsync
 
 
@@ -49,6 +51,8 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     var mThreadListListViewUnit: ThreadListListViewUnit? = null
     var mSwipyRefreshLayoutUnit: SwipyRefreshLayoutUnit? = null
     var mFullPostDialogManager: FullPostDialogManager? = null
+
+    private lateinit var mRecyclerViewAdapter: ThreadListRecyclerViewAdapter
 
     var mDataLoader: DataLoader? = null
 
@@ -76,8 +80,8 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     }
 
     fun testRvAdapter() {
-        val rvAdapter = ThreadListRecyclerViewAdapter(this, boardId!!)
-        rvAdapter.initAdapter()
+        mRecyclerViewAdapter = ThreadListRecyclerViewAdapter(this, boardId!!)
+        mRecyclerViewAdapter.initAdapter()
     }
 
     override fun getGalleryLayoutContainer(): ViewGroup {
@@ -104,8 +108,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 //        if (mThreadListListViewUnit!!.adapterIsCreated()) {
 //            if (mThreadListListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
 //        }
-
-        super.onBackPressed()
+        if (mRecyclerViewAdapter.allowBackPress()) super.onBackPressed()
     }
 
     override fun onBackPressedOverridden(): Boolean {
@@ -114,9 +117,14 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration?) {
         super.onConfigurationChanged(newConfig)
-//        mActionBarUnit!!.onConfigurationChanged(newConfig!!)
+        if (newConfig != null) {
+            val lifecycleEvent = LifecycleEvent(LifecycleEvent.ON_CONFIGURATION_CHANGED)
+            lifecycleEvent.configuration = newConfig
+            EventBus.getDefault().post(lifecycleEvent)
+        }
+//        mActionBarUnit!!.ON_CONFIGURATION_CHANGED(newConfig!!)
 //        if (mThreadListListViewUnit!!.adapterIsCreated())
-//            mThreadListListViewUnit!!.mListViewAdapter!!.onConfigurationChanged(newConfig)
+//            mThreadListListViewUnit!!.mListViewAdapter!!.ON_CONFIGURATION_CHANGED(newConfig)
     }
 
     override fun loadData() {
@@ -132,14 +140,18 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_refresh -> {
-                mSwipyRefreshLayoutUnit!!.setRefreshing(true)
-                loadData(); Log.d(LOG_TAG, "action_refresh:")
+                //mSwipyRefreshLayoutUnit!!.setRefreshing(true)
+                //loadData(); Log.d(LOG_TAG, "action_refresh:")
+                mRecyclerViewAdapter.doRefresh()
             }
             R.id.action_settings -> {
                 val intent: Intent = Intent(getActivity(), SettingsActivity::class.java)
                 startActivityForResult(intent, ResultCodes.THREAD_LIST_RESULT_CODE)
             }
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> {
+                Log.d(LOG_TAG, "home clicked")
+                onBackPressed()
+            }
         }
 
         return true

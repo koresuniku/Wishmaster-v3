@@ -18,38 +18,38 @@ import android.support.v4.content.ContextCompat
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
-import android.view.MotionEvent
-import android.view.View
 import android.widget.AbsListView
 import com.bumptech.glide.Glide
 import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration
 import com.koresuniku.wishmaster.ui.dialog.DialogManager
+import com.koresuniku.wishmaster.ui.gallery.GalleryUnit
 import com.koresuniku.wishmaster.ui.widget.recycler_view_fast_scroll.RecyclerFastScroller
 
 class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, val boardId: String) :
-        RecyclerView.Adapter<ThreadListRecyclerViewViewHolder>(), RecyclerViewAdapterView, ClickableAdapter {
+        RecyclerView.Adapter<ThreadListRecyclerViewViewHolder>(), RecyclerViewAdapterView,
+        ClickableAdapter, SwipyRefreshLayoutUnit.RefreshLayoutCallback {
     val LOG_TAG: String = ThreadListRecyclerViewAdapter::class.java.simpleName
 
     private val mThreadListPresenter = ThreadListPresenter(this, boardId)
+    internal val mGalleryUnit = GalleryUnit(mActivity)
 
     private var mRecyclerView: FixedRecyclerView = mActivity.findViewById(R.id.rv) as FixedRecyclerView
     private var mFastScroller: RecyclerFastScroller = mActivity.findViewById(R.id.fs) as RecyclerFastScroller
     private var mScrollState: Int = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 
-    fun initAdapter() {
+    private var mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(mActivity, mRecyclerView, this)
+
+    fun initAdapter() { mThreadListPresenter.loadData(boardId) }
+
+    override fun onClickNoSpoilersOrLinksFound(threadNumber: String) { openThread(threadNumber) }
+
+    override fun onLongClickNoSpoilersOrLinksFound(threadNumber: String) {}
+
+    override fun onLongClickLinkFound(link: String) {}
+
+    override fun doRefresh() {
+        if (!mSwipyRefreshLayoutUnit.isRefreshing()) mSwipyRefreshLayoutUnit.setRefreshing(true)
         mThreadListPresenter.loadData(boardId)
-    }
-
-    override fun onClickNoSpoilersOrLinksFound(threadNumber: String) {
-        openThread(threadNumber)
-    }
-
-    override fun onLongClickNoSpoilersOrLinksFound(threadNumber: String) {
-
-    }
-
-    override fun onLongClickLinkFound(link: String) {
-
     }
 
     override fun showProgressBar() {
@@ -60,41 +60,46 @@ class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, v
         Log.d(LOG_TAG, "hideProgressBar")
     }
 
-    override fun attachAdapter() {
+    override fun onDataLoadingFailed() {
+
+    }
+
+    override fun onDataLoadedSuccessfully() {
+        if (mRecyclerView.adapter == null) attachAdapter()
+        else {
+            mSwipyRefreshLayoutUnit.setRefreshing(false)
+            mSwipyRefreshLayoutUnit.checkAbleToRefresh()
+            mSwipyRefreshLayoutUnit.expandAppBarLayout()
+            (mRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0)
+            notifyDataSetChanged()
+        }
+    }
+
+    private fun attachAdapter() {
         mRecyclerView.layoutManager = LinearLayoutManager(mActivity)
         mRecyclerView.adapter = this
         mRecyclerView.setOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                //Log.d(LOG_TAG, "computeverticalscrollrange: ${mRecyclerView.computeVerticalScrollRange()}")
-                //Log.d(LOG_TAG, "${mRecyclerView.computeVerticalScrollOffset()}")
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 mScrollState = newState
                 when (newState) {
-                    AbsListView.OnScrollListener.SCROLL_STATE_FLING -> {
-                    //Log.d(LOG_TAG, "state fling")
-                            Glide . with (mActivity).pauseRequests()
-                }
-                    AbsListView.OnScrollListener.SCROLL_STATE_IDLE -> {
-                        //Log.d(LOG_TAG, "state idle")
-                    Glide.with(mActivity).resumeRequests()
-                }
+                    AbsListView.OnScrollListener.SCROLL_STATE_FLING -> Glide.with (mActivity).pauseRequests()
+                    AbsListView.OnScrollListener.SCROLL_STATE_IDLE -> Glide.with(mActivity).resumeRequests()
                 }
             }
         })
+        mRecyclerView.setOnTouchListener { v, event ->
+            mSwipyRefreshLayoutUnit.checkAbleToRefresh(); false }
 
         mFastScroller.attachRecyclerView(mRecyclerView)
         mFastScroller.attachAdapter(mRecyclerView.adapter)
         mFastScroller.attachAppBarLayout(
                 mActivity.findViewById(R.id.coordinator) as CoordinatorLayout,
                 mActivity.findViewById(R.id.app_bar_layout) as AppBarLayout)
-        mFastScroller.setOnHandleTouchListener { v, event ->
-            //Log.d(LOG_TAG, "onTouch")
-            false
-        }
 
         val dividerDrawable =
                 ContextCompat.getDrawable(mActivity, R.drawable.thread_list_recycler_view_divider)
@@ -108,12 +113,12 @@ class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, v
     }
 
     override fun onBindViewHolder(holder: ThreadListRecyclerViewViewHolder?, position: Int) {
-        if (holder != null) {
-            mThreadListPresenter.bindViewHolder(holder, position)
-        }
+        if (holder != null) mThreadListPresenter.bindViewHolder(holder, position)
     }
 
     override fun getItemCount(): Int = mThreadListPresenter.getData().getItemList().size
+
+    fun allowBackPress(): Boolean = mGalleryUnit.onBackPressed()
 
     fun openThread(threadNumber: String) {
         val intent = Intent(mActivity, SingleThreadActivity::class.java)

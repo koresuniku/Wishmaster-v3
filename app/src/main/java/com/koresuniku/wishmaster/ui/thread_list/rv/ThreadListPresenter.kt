@@ -31,7 +31,7 @@ class ThreadListPresenter(private val mRecyclerViewAdapterView: RecyclerViewAdap
     override fun onDataLoadedSuccessFully(data: ThreadListData) {
         mRecyclerViewAdapterView.hideProgressBar()
         setData(data)
-        mRecyclerViewAdapterView.attachAdapter()
+        mRecyclerViewAdapterView.onDataLoadedSuccessfully()
     }
 
     override fun onDataLoadingFailed() {

@@ -37,9 +37,9 @@ object DialogManager {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLifecycleEvent(event: LifecycleEvent) {
         when (event.anEvent) {
-            LifecycleEvent.onStart ->
+            LifecycleEvent.ON_START ->
                 if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
-            LifecycleEvent.onStop ->
+            LifecycleEvent.ON_STOP ->
                 if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this)
         }
     }

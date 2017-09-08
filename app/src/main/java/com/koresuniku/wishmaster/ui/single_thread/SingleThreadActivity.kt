@@ -188,7 +188,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
 
     override fun onBackPressed() {
         if (mSingleThreadListViewUnit!!.adapterIsCreated()) {
-            if (mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
+            if (!mSingleThreadListViewUnit!!.mListViewAdapter!!.onBackPressedOverridden()) return
         }
 
         super.onBackPressed()

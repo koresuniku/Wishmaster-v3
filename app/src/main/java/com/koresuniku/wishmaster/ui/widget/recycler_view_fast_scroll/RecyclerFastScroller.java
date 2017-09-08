@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -34,6 +35,7 @@ public class RecyclerFastScroller extends FrameLayout {
 
     private static final int DEFAULT_AUTO_HIDE_DELAY = 1500;
     private static final int DEFAULT_FLING_SCROLL_DELTA = 100;
+    private static final int DEFAULT_INSTANT_SCROLL_TIMEOUT = 200;
 
     protected final View mBar;
     protected final View mHandle;
@@ -141,6 +143,32 @@ public class RecyclerFastScroller extends FrameLayout {
                 }
             }
         };
+
+        mBar.setOnTouchListener(new OnTouchListener() {
+            private boolean mIsPressed;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN && mRecyclerView != null) {
+                    mIsPressed = true;
+                    float y = event.getY();
+                    int barHeight = mBar.getHeight();
+                    float ratio = y / barHeight;
+                    final int positionToScroll = (int) (mRecyclerView.getAdapter().getItemCount() * ratio);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mIsPressed && mHandle.isEnabled()) {
+                                ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                                        .scrollToPositionWithOffset(positionToScroll, 0);
+                            }
+                        }
+                    }, DEFAULT_INSTANT_SCROLL_TIMEOUT);
+
+                } else mIsPressed = false;
+                return false;
+            }
+        });
 
         mHandle.setOnTouchListener(new OnTouchListener() {
             private float mInitialBarHeight;

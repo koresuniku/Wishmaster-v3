@@ -117,7 +117,63 @@ object ListViewAdapterUtils {
         }
     }
 
-    fun setupImages(callback: OnThumbnailClickedCallback, activity: Activity,
+    fun setCommentSpannableForItemSingleImage(activity: Activity, holder: BaseRecyclerViewViewHolder,
+                                              commentHtml: String, forDialog: Boolean) {
+        var spannable = SpannableString(HtmlCompat.fromHtml(
+                activity, commentHtml, 0,
+                null, SpanTagHandlerCompat(activity)))
+        val textViewWidth =
+                CommentLeadingMarginSpan2.calculateCommentTextViewWidthInPx(holder, activity, forDialog)
+
+        var end: Int = 0
+        var overallHeightOfLines: Int = 0
+        val imageContainerHeight: Int = UiUtils.convertDpToPixel(
+                CommentLeadingMarginSpan2.calculateImageContainerHeightInDp(holder, activity, forDialog)).toInt()
+        val commentParts = spannable.toString().split("\r")
+
+        var endReached: Boolean = false
+        commentParts.forEach {
+            if (endReached) return@forEach
+
+            val layout: StaticLayout = StaticLayout(it, holder.mCommentTextView.paint,
+                    textViewWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0f, false)
+            if (layout.lineCount > 0) {
+                var localHeight: Int
+
+                for (lineIndex in 0 until layout.lineCount) {
+                    localHeight = layout.getLineBottom(lineIndex)
+                    if (localHeight + overallHeightOfLines > imageContainerHeight) {
+                        endReached = true
+                        end = layout.getLineEnd(lineIndex)
+                        val spannableStringBuilder = SpannableStringBuilder(spannable)
+                        if (spannable.substring(end - 1, end) != "\n" &&
+                                spannable.substring(end - 1, end) != "\r") {
+                            if (spannable.substring(end - 1, end) == " ") {
+                                spannableStringBuilder.replace(end - 1, end, "\n")
+                            } else {
+                                spannableStringBuilder.insert(end, "\n")
+                            }
+                        }
+                        spannable = SpannableString(spannableStringBuilder)
+                        break
+                    }
+                }
+                overallHeightOfLines += layout.lineCount * holder.mCommentTextView.lineHeight
+            }
+        }
+
+        spannable.setSpan(CommentLeadingMarginSpan2(
+                CommentLeadingMarginSpan2.calculateLeadingMarginWidthInPx(holder)),
+                0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        activity.runOnUiThread {
+            holder.mCommentTextView.text = spannable
+            holder.mCommentTextView.requestLayout()
+            holder.imageAndSummaryContainer1.bringToFront()
+        }
+    }
+
+    fun setupImages(callback: ListViewAdapterUtils.OnThumbnailClickedCallback, activity: Activity,
                     holder: FilesListViewViewHolder, viewModeIsDialog: Boolean,
                     reloadImages: Boolean) {
         if (holder.files == null) {Log.d("ListViewAdapterUtils", "files is null"); return}
@@ -153,9 +209,9 @@ object ListViewAdapterUtils {
         }
     }
 
-    fun setupImagesForMultipleItem(callback: OnThumbnailClickedCallback, activity: Activity,
-                    holder: BaseRecyclerViewViewHolder, viewModeIsDialog: Boolean,
-                    reloadImages: Boolean) {
+    fun setupImagesForMultipleItem(callback: ListViewAdapterUtils.OnThumbnailClickedCallback, activity: Activity,
+                                   holder: BaseRecyclerViewViewHolder, viewModeIsDialog: Boolean,
+                                   reloadImages: Boolean) {
         val filesSize = holder.files.size
         switchImagesVisibilityForMultipleItem(holder, filesSize)
 
@@ -355,7 +411,7 @@ object ListViewAdapterUtils {
         }
     }
 
-    fun setupImageContainer(callback: OnThumbnailClickedCallback, activity: Activity,
+    fun setupImageContainer(callback: ListViewAdapterUtils.OnThumbnailClickedCallback, activity: Activity,
                             holder: FilesListViewViewHolder, image: ImageView, webmImage: ImageView,
                             summary: TextView, file: Files, viewModeIsDialog: Boolean,
                             reloadImages: Boolean) {
@@ -376,10 +432,10 @@ object ListViewAdapterUtils {
         })
     }
 
-    fun setupImageContainerForMultipleItem(callback: OnThumbnailClickedCallback, activity: Activity,
-                            holder: BaseRecyclerViewViewHolder, image: ImageView, webmImage: ImageView,
-                            summary: TextView, file: Files, viewModeIsDialog: Boolean,
-                            reloadImages: Boolean) {
+    fun setupImageContainerForMultipleItem(callback: ListViewAdapterUtils.OnThumbnailClickedCallback, activity: Activity,
+                                           holder: BaseRecyclerViewViewHolder, image: ImageView, webmImage: ImageView,
+                                           summary: TextView, file: Files, viewModeIsDialog: Boolean,
+                                           reloadImages: Boolean) {
         val path: String = file.getPath()!!
 
         if (Formats.VIDEO_FORMATS.contains(TextUtils.getSubstringAfterDot(path))) {

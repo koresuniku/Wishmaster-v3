@@ -67,12 +67,6 @@ class SwipyRefreshLayoutUnit(val mView: SwipyRefreshLayoutView) {
            // Log.d(LOG_TAG, "readyToRefreshBottom")
         }
 
-
-        //Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().mAppBarLayout.totalScrollRange)
-        //Log.d(LOG_TAG, "offsetTotal: " + mView.getAppBarLayoutUnit().appBarLayoutExpandedValue)
-
-        //Log.d(LOG_TAG, "offset: " + mView.getAppBarLayoutUnit().appBarVerticalOffset)
-
         if (!readyToRefreshTop && !readyToRefreshBottom) this.disableRefreshLayout()
     }
 
