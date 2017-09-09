@@ -21,9 +21,11 @@ import android.support.design.widget.CoordinatorLayout
 import android.widget.AbsListView
 import com.bumptech.glide.Glide
 import com.dgreenhalgh.android.simpleitemdecoration.linear.DividerItemDecoration
+import com.koresuniku.wishmaster.ui.controller.ProgressUnit
 import com.koresuniku.wishmaster.ui.dialog.DialogManager
 import com.koresuniku.wishmaster.ui.gallery.GalleryUnit
 import com.koresuniku.wishmaster.ui.widget.recycler_view_fast_scroll.RecyclerFastScroller
+import org.jetbrains.anko.find
 
 class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, val boardId: String) :
         RecyclerView.Adapter<ThreadListRecyclerViewViewHolder>(), RecyclerViewAdapterView,
@@ -38,6 +40,7 @@ class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, v
     private var mScrollState: Int = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 
     private var mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(mActivity, mRecyclerView, this)
+    private var mProgressUnit = ProgressUnit(mActivity, mActivity.find(R.id.progress_container))
 
     fun initAdapter() { mThreadListPresenter.loadData(boardId) }
 
@@ -54,10 +57,12 @@ class ThreadListRecyclerViewAdapter(private val mActivity: ThreadListActivity, v
 
     override fun showProgressBar() {
         Log.d(LOG_TAG, "showProgressBar")
+        mProgressUnit.showProgressYoba()
     }
 
     override fun hideProgressBar() {
         Log.d(LOG_TAG, "hideProgressBar")
+        mProgressUnit.hideProgressYoba()
     }
 
     override fun onDataLoadingFailed() {

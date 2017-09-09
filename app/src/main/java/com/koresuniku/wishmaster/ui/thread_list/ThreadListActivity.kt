@@ -67,7 +67,7 @@ class ThreadListActivity : AppCompatActivity(), AppBarLayoutView, ActionBarView,
 
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
         mActionBarUnit = ActionBarUnit(this, false, false)
-        mProgressUnit = ProgressUnit(this)
+        mProgressUnit = ProgressUnit(this, find(R.id.progress_container))
         //mThreadListListViewUnit = ThreadListListViewUnit(this)
         //mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
         mFullPostDialogManager = FullPostDialogManager(this)

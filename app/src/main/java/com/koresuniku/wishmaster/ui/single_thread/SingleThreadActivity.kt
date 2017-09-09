@@ -61,7 +61,7 @@ class SingleThreadActivity : AppCompatActivity(), AppBarLayoutView, ActionBarVie
 
         mAppBarLayoutUnit = AppBarLayoutUnit(this)
         mActionBarUnit = ActionBarUnit(this, false, true)
-        mProgressUnit = ProgressUnit(this)
+        mProgressUnit = ProgressUnit(this, find(R.id.progress_container))
         mSingleThreadListViewUnit = SingleThreadListViewUnit(this)
         mSwipyRefreshLayoutUnit = SwipyRefreshLayoutUnit(this)
         mNewPostsNotifier = NewPostsNotifier(this)

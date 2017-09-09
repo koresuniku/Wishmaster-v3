@@ -167,9 +167,11 @@ object ListViewAdapterUtils {
                 0, if (end == 0) spannable.length else end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         activity.runOnUiThread {
-            holder.mCommentTextView.text = spannable
-            holder.mCommentTextView.requestLayout()
-            holder.imageAndSummaryContainer1.bringToFront()
+            holder.mCommentTextView.post {
+                holder.mCommentTextView.text = spannable
+                holder.mCommentTextView.requestLayout()
+                holder.imageAndSummaryContainer1.bringToFront()
+            }
         }
     }
 

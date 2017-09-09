@@ -70,7 +70,7 @@ class ThreadListRecyclerViewViewHolder(private val mContext: Context,
                     RelativeLayout.LayoutParams.MATCH_PARENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT)
             if (files.size == 1) {
-                params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                params.addRule(RelativeLayout.BELOW, mSubjectTextView.id)
                 mCommentTextView.layoutParams = params
                 imagesAndSummariesContainer.bringToFront()
                 doAsync { ListViewAdapterUtils.setCommentSpannableForItemSingleImage(
