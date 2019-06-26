@@ -54,6 +54,3 @@ ______________________________________
 - [ ] Вывести в DrawerLayout сводку по тредам
 - [ ] Настроить автопроверку обновлений
 - [ ] Добавить стикеры
-
-**Задонатить**
-* ![](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/bitcoin.png) bitcoin: 139MgV4Bpe3qTxv7UK1NuztwU2UNATZ8ae
